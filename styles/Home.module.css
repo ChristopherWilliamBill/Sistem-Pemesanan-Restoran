@@ -1,0 +1,57 @@
+.title{
+  text-align: center;
+}
+
+.container{
+  display: flex;
+}
+
+.menucontainer{
+  width: 75%;
+  margin: 20px;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  column-gap: 50px;
+  row-gap: 20px;
+}
+
+.menucard{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 8px 0 rgba(203, 156, 156, 0.2);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.menucard p{
+  text-align: center;
+}
+
+.cardbutton{
+  display: flex;
+}
+
+.cartcontainer{
+  background-color: antiquewhite;
+  width: 25%;
+  border-radius: 10px;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.orderlist{
+  display: grid;
+  column-gap: 10px;
+  grid-template-columns: 3fr .5fr .3fr .3fr;
+  align-items: center;
+}
+
+.orderlist button{
+  width: 15px;
+  display: flex;
+  justify-content: center;
+}
