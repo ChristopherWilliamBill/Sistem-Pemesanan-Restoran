@@ -2,12 +2,15 @@ import styles from '../styles/Home.module.css'
 import { useRouter } from 'next/router';
 import React, { useState,useEffect } from 'react';
 import {conn} from '../lib/pg.ts';
+import MenuCard from '../component/menucard';
+
 //import prisma from '../lib/prisma.ts';
 
 // import {getDB} from '../lib/pgp.ts';
 // const {db, pgp} = getDB();
 
 let i = 0
+
 
 export default function Home({dataMenu}) {
 
@@ -20,6 +23,9 @@ export default function Home({dataMenu}) {
     setOrderOcc(countOcc(order))
   },[order])
 
+  const addToOrder = (menu) => {setOrder([...order, {name: menu.namaMenu, index: i.toString(), harga: menu.harga}]); i++;}
+
+  const learnMore = (menu) => {router.push(`/menu/${menu.id}`)}
 
   return (
     <> 
@@ -27,16 +33,8 @@ export default function Home({dataMenu}) {
 
       <div className={styles.container}>
         <div className={styles.menucontainer}>
-          {dataMenu.map((menu, index) => (
-            <div key={index} className={styles.menucard}>
-              <h3>{menu.namaMenu}</h3>
-              <p>{menu.deskripsiMenu}</p>
-              <p>IDR {menu.harga}</p>
-              <div className={styles.cardbutton}>
-                <button onClick={() => router.push(`/menu/${parseInt(index) + 1}`)}>learn more</button>
-                <button onClick={() => {setOrder([...order, {name: menu.namaMenu, index: i.toString(), harga: menu.harga}]); i++}}>add to order</button>
-              </div>
-            </div>
+          {dataMenu.map((menu) => (
+            <MenuCard menu={menu} addToOrder={addToOrder} learnMore={learnMore}></MenuCard>
           ))}
         </div>
 
