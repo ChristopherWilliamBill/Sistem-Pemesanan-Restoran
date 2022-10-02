@@ -1,14 +1,4 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-
-// export default function handler(req, res) {
-//   res.status(200).json({ name: 'John Doe' })
-// }
-
-
-
-
 import {conn} from '../../lib/pg.ts';
-
 
 export default async (req, res) => {
   if(req.method !== "POST"){
@@ -28,5 +18,5 @@ export default async (req, res) => {
     return
   }
 
-  res.status(405).send({ message: 'username salah' })
+  res.status(401).send({ message: 'username or password invalid' })
 }

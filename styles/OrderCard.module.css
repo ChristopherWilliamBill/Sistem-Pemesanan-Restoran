@@ -1,0 +1,22 @@
+.ordercontainer{
+    background-color: beige;
+    width: 25%;
+    border-radius: 10px;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.orderlist{
+    display: grid;
+    column-gap: 10px;
+    grid-template-columns: 3fr .5fr .3fr .3fr;
+    align-items: center;
+}
+
+.orderlist button{
+    width: 20px;
+    display: flex;
+    justify-content: center;
+}

@@ -45,7 +45,6 @@ export default NextAuth({
             return session
         }
     },
-    secret: "test",
     jwt: {
         encryption: true
     }
