@@ -1,6 +1,7 @@
 .container{
     width: 100%;
     padding: 10px;
-    background-color: aliceblue;
-
+    background-color: antiquewhite;
+    display: flex;
+    justify-content: space-between;
 }

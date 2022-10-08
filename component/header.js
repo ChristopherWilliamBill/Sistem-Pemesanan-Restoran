@@ -7,7 +7,7 @@ export default function Header({admin}){
     return(
         <>
         <div className={styles.container}>
-            Signed In As {admin}
+            <p>Signed In As <b>{admin}</b></p>
             <button onClick={() => signOut()}>Sign Out</button>
 
         </div>

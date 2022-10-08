@@ -1,25 +1,23 @@
-.notsignedin{
-    display: flex;
-    flex-direction: column;
+.container{
+    margin-top: 10%;
+    display: grid;
+    grid-template-columns: auto auto;
     justify-content: center;
     align-items: center;
-    width: 50%;
-    height: 30%;
-    margin-left: 25%;
-    margin-top: 3%;
+    column-gap: 50px;
+    row-gap: 20px;
 }
 
-.btnsignin{
-    background-color: lightcoral; /* Green */
-    border: none;
-    color: white;
-    padding: 16px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    transition-duration: 0.4s;
-    cursor: pointer;
-    border-radius: 3px;
+.card{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px 0 rgba(203, 156, 156, 0.2);
+    padding: 50px;
+    border-radius: 10px;
+    height: 25%;
+}
+
+.card:hover{
+    background-color: antiquewhite;
 }
