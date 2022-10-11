@@ -45,10 +45,13 @@ export default NextAuth({
             return session
         }
     },
+    session: {
+        maxAge: 60 * 60 * 12
+    },
     jwt: {
+        maxAge: 60 * 60 * 12,
         encryption: true
     },
-    secret: process.env.NEXTAUTH_SECRET,
     pages: {
         signIn: '../../authPage/signin'
     }

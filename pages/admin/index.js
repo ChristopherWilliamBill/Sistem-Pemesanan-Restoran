@@ -1,31 +1,30 @@
-import { signOut, useSession, signIn } from "next-auth/react"
 import styles from '../../styles/Admin.module.css'
 import Layout from '../../component/layout'
-
+import { useRouter } from 'next/router';
 
 export default function Admin(){
-  return(
 
+  const router = useRouter()
+
+  return(
     <div className={styles.container}>
-      <div className={styles.card}>
+      <div className={styles.card} onClick={() => router.push("admin/editmenu")}>
         edit menu
       </div>
 
-      <div className={styles.card}>
+      <div className={styles.card} onClick={() => router.push("admin/tambahmenu")}>
+        tambah menu
+      </div>
+
+      <div className={styles.card} onClick={() => router.push("admin/antrianpesanan")}>
         antrian pesanan
       </div>
 
-      <div className={styles.card}>
+      <div className={styles.card} onClick={() => router.push("admin/historitransaksi")}>
         histori transaksi
       </div>
-
-      <div className={styles.card}>
-        something
-      </div>
-
     </div>
   )
-
 }
 
 Admin.getLayout = function getLayout(page) {
