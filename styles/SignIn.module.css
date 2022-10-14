@@ -1,0 +1,32 @@
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.signinform{
+    display: flex;
+    flex-direction: column;
+    background-color: #222;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 20px;
+    text-align: center;
+    text-align: left;
+    border-radius: 10px;
+}
+
+.signinform label{
+    margin: 10px;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    column-gap: 10px;
+}
+
+.submitbtn {
+    width: 30%;
+    margin-top: 30px;
+    margin-left: 35%;
+}

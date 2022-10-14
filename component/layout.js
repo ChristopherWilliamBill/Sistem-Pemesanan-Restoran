@@ -1,5 +1,6 @@
 import Header from './header.js'
 import { useSession, signIn } from "next-auth/react"
+import styles from '../styles/Layout.module.css'
 
 export default function Layout({ children }) {
 
@@ -14,9 +15,9 @@ export default function Layout({ children }) {
     }
 
     return (
-      <>
-      <p>Not Signed In</p>
-      <button onClick={() => signIn()}>Sign In</button>
-      </>
+      <div className={styles.container}>
+        <h1>You Are Not Signed In</h1>
+        <button className={styles.buttonn}onClick={() => signIn()}>Sign In</button>
+      </div>
     )
   }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { signIn } from "next-auth/react"
 import { redirect } from 'next/dist/server/api-utils';
 import { useRouter } from 'next/router';
+import styles from '../../styles/SignIn.module.css'
 
 
 export default function SignIn() {
@@ -26,19 +27,20 @@ export default function SignIn() {
     }
 
     return(
-        <>
-            <form onSubmit={handleSubmit}>
-                username
-                <input type='text' value={username} onChange={({target}) => setUserName(target.value)}></input>
+        <div className={styles.container}>
+            <form onSubmit={handleSubmit} className={styles.signinform}>
+                <label>
+                    Username
+                    <input type='text' value={username} onChange={({target}) => setUserName(target.value)}></input>
+                </label>
 
-                <br></br>
+                <label>
+                    Password
+                    <input type='password' value={password} onChange={({target}) => setPassword(target.value)}></input>
+                </label>
 
-                password
-                <input type='password' value={password} onChange={({target}) => setPassword(target.value)}></input>
-
-                <br></br>
-                <input type='submit'></input>
+                <input type='submit' className={styles.submitbtn}></input>
             </form>
-        </>
+        </div>
     )
 }
