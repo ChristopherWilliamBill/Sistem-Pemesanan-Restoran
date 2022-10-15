@@ -17,7 +17,7 @@ export default function Layout({ children }) {
     return (
       <div className={styles.container}>
         <h1>You Are Not Signed In</h1>
-        <button className={styles.buttonn}onClick={() => signIn()}>Sign In</button>
+        <button className={styles.buttonn}onClick={signIn}>Sign In</button>
       </div>
     )
   }

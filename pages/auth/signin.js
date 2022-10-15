@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { signIn } from "next-auth/react"
-import { redirect } from 'next/dist/server/api-utils';
 import { useRouter } from 'next/router';
 import styles from '../../styles/SignIn.module.css'
 
@@ -43,4 +42,5 @@ export default function SignIn() {
             </form>
         </div>
     )
+
 }

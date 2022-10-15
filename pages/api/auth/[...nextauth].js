@@ -53,6 +53,7 @@ export default NextAuth({
         encryption: true
     },
     pages: {
-        signIn: '../../authPage/signin'
+        signIn: '/auth/signin',
+        error: '/auth/error'
     }
 })
