@@ -1,9 +1,12 @@
 import Layout from '../../component/layout'
+import Image from 'next/image';
+import fotomenu from '../api/images/nasgorAPI.jpg'
+
 
 export default function AntrianPesanan(){
     return(
         <>
-            ini antrian
+          <Image src={fotomenu}></Image>
         </>
     )
 }
