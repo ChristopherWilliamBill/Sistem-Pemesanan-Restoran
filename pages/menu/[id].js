@@ -3,13 +3,16 @@ import styles from '../../styles/Menu.module.css'
 import {conn} from '../../lib/pg.ts';
 
 export default function MenuDetail({dataMenu}){
-    const router = useRouter();
-    const {id} = router.query;
-    return(
-      <>
-      halo
-      </>
-    )
+  const router = useRouter();
+  const {id} = router.query;
+  return(
+  <div className={styles.detailcontainer}>
+      <h1 className={styles.text}>{dataMenu[0].namaMenu}</h1>
+      <p className={styles.text}>Description: {dataMenu[0].deskripsiMenu}</p>
+      <p className={styles.text}>Price: IDR {dataMenu[0].harga}</p>
+      <button onClick={() => router.push(`../`)}>Back</button>
+  </div>
+  )
 }
 
 export async function getStaticPaths(){
