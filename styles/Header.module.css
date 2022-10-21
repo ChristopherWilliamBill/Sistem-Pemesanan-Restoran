@@ -4,5 +4,5 @@
     background-color: antiquewhite;
     display: flex;
     justify-content: space-between;
-    position: fixed;
+    position: sticky;
 }

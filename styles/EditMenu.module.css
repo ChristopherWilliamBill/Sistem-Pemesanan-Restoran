@@ -1,0 +1,20 @@
+.container{
+    height: 100vh;
+    display: flex;
+}
+
+.listmenu{
+    display: grid;
+    grid-template-columns: auto auto auto auto ;
+    column-gap: 10px;
+    row-gap: 10px;
+}
+
+.menucard{
+    display: flex;
+    height: 50%;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px 0 rgba(203, 156, 156, 0.2);
+    border-radius: 10px;
+}
