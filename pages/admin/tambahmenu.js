@@ -2,6 +2,7 @@ import Layout from '../../component/layout'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import styles from '../../styles/TambahMenu.module.css'
+import FormMenu from '../../component/formeditmenu'
 
 export default function TambahMenu(){
   const router = useRouter()
@@ -39,6 +40,7 @@ export default function TambahMenu(){
   return(
     <div className={styles.container}>
       <h1>Tambah Menu</h1>
+
         <form className={styles.tambahmenuform} onSubmit={handleSubmit}>
             <label>
                 Nama Menu

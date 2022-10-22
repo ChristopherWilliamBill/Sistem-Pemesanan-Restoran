@@ -12,6 +12,7 @@ export default function EditMenu({dataMenu}){
         <div className={styles.listmenu}>
           { dataMenu.map((data) => <div key={data.id} className={styles.menucard} onClick={() => setSelectedMenu(data)}>{data.namaMenu}</div>)}
         </div>
+
         {selectedMenu == null ? <p>No menu selected</p> : <FormEditMenu dataMenu={selectedMenu}></FormEditMenu>}
       </div>
   )

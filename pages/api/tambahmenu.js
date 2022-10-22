@@ -1,5 +1,4 @@
 import {conn} from '../../lib/pg.ts';
-import { useRouter } from 'next/router'
 
 export default async (req, res) => {
 
