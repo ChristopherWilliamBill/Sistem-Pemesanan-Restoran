@@ -72,7 +72,7 @@ function countOcc(order){
   return orderOccurences
 }
 
-export async function getStaticProps(){
+export async function getServerSideProps(){
   const query = `SELECT * FROM "Menu"`
   const res = await conn.query(query)
   const dataMenu = res.rows

@@ -1,6 +1,6 @@
-////////////
-// HEROKU //
-////////////
+//////////
+///HEROKU //
+//////////
 
 // import { Pool } from "pg";
 
@@ -22,7 +22,7 @@
 
 
 ///////////////
-// LOCALHOST //
+/// LOCALHOST //
 ///////////////
 
 import { Pool } from "pg";
