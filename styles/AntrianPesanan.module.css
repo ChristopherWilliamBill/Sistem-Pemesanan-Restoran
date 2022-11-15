@@ -1,0 +1,14 @@
+.ordercard{
+    background-color: aliceblue;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+
+.container{
+    display: grid;
+    grid-template-columns: auto auto auto;
+    column-gap: 1em;
+}
