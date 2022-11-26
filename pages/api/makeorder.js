@@ -1,7 +1,6 @@
 import {conn} from '../../lib/pg.ts';
 
 export default async (req, res) => {
-
   if(req.method !== "POST"){
     res.status(405)
     return
@@ -15,7 +14,6 @@ export default async (req, res) => {
   const query = `INSERT INTO "PendingOrder" ("idMenu", "count", "idMeja", "time") VALUES ('${idMenu}', '${count}', 1, current_timestamp)`
 
   try{
-    console.log(query)
     const result = await conn.query(query)
     res.status(201).json({ message: 'Order Success' })
   }catch(err){

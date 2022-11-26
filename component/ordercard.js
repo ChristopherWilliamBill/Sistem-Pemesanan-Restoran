@@ -1,8 +1,10 @@
 import styles from "../styles/OrderCard.module.css"
+import { useSWRConfig } from 'swr'
 
 export default function OrderCard({order, orderOcc, setOrder, i, setI}){
-
+    
     const handleSubmit = async (e) => {
+
         e.preventDefault()
         const data = {orderOcc}
     
@@ -19,6 +21,7 @@ export default function OrderCard({order, orderOcc, setOrder, i, setI}){
     
         const response = await fetch(endpoint, options)
         const result = await response.json()
+
         alert(result.message)
     }
 

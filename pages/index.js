@@ -4,6 +4,8 @@ import React, { useState,useEffect } from 'react';
 import {conn} from '../lib/pg.ts';
 import MenuCard from '../component/menucard';
 import OrderCard from '../component/ordercard';
+import Layout from '../component/layout'
+
 
 let i = 0
 
@@ -82,3 +84,11 @@ export async function getServerSideProps(){
     }
   }
 }
+
+// Home.getLayout = function getLayout(page) {
+//   return (
+//     <Layout>
+//       {page}
+//     </Layout>
+//   )
+// }
