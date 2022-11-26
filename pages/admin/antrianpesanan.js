@@ -1,5 +1,6 @@
 import useSWR from 'swr';
 import Layout from '../../component/layout'
+import PendingOrderCard from '../../component/pendingordercard';
 import {conn} from '../../lib/pg.ts';
 import styles from '../../styles/AntrianPesanan.module.css'
 
@@ -18,28 +19,31 @@ export default function AntrianPesanan({dataMenu}){
   }
 
   return(
-    <div className={styles.container}>
-      {
-        data.map( //untuk setiap data pesanan
-          d => //membuat div yang isinya data pesanan tersebut
-            <div className={styles.ordercard}> 
-              <p>Meja: {d.idMeja}</p>
-              <p>Waktu dipesan: {d.time.split(".")[0]}</p>
+    <>
+      <h2>Pending</h2>
+      <div className={styles.container}>
+        {
+          data.map(
+            d => <PendingOrderCard d={d} dataMenu={dataMenu}></PendingOrderCard>
+          )
+        }
+      </div>
 
-              {d.idMenu.split(",").map(Number).map( //idMenu yang tadinya string dipecah menjadi array setiap kali ditemukan "," dan dijadikan int menggunakan .map(Number)
-                (order,index) => <p>{dataMenu[order - 1].namaMenu} x {d.count.split(",")[index]}</p> //setiap idMenu yang dipesan, tampilkan namanya dari dataMenu, dan jumlahnya
-              )}
-            </div>
-        )
-      }
-    </div>
+      <hr></hr>
+
+      <h2>Processing</h2>
+      <div className={styles.container}>
+        {
+          data.map(
+            d => <PendingOrderCard d={d} dataMenu={dataMenu}></PendingOrderCard>
+          )
+        }
+      </div>
+    </>
   )
 }
 
 export async function getStaticProps(){
-  // const queryOrder = `SELECT * FROM "PendingOrder"`
-  // const resOrder = await conn.query(queryOrder)
-  // const dataO = resOrder.rows
 
   const queryMenu = `SELECT * FROM "Menu"`
   const resMenu = await conn.query(queryMenu)
@@ -49,7 +53,6 @@ export async function getStaticProps(){
   return{
     props:{
       dataMenu,
-      //dataO
     }
   }
 }

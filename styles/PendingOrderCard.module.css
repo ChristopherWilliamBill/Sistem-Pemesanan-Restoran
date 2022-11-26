@@ -1,0 +1,28 @@
+.ordercard{
+    background-color: aliceblue;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(203, 156, 156, 0.2);
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-bottom: 1em;
+}
+
+.orderinfo{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.orderlist{
+    display: flex;
+    justify-content: space-between;
+}
+
+.orderlistcontainer{
+    width: 80%;
+
+}
