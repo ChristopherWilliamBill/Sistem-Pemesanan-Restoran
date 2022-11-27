@@ -1,7 +1,28 @@
 import styles from '../styles/PendingOrderCard.module.css'
 
 
-export default function PendingOrderCard({d, dataMenu}){
+export default function PendingOrderCard({d, dataMenu, status}){
+
+    const handleOrder = async (status) => {
+        const data = {id: d.id, status: status}
+        console.log(data)
+    
+        const JSONdata = JSON.stringify(data)
+        const endpoint = '../api/handleorder'
+    
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSONdata
+        }
+    
+        const response = await fetch(endpoint, options)
+        const result = await response.json()
+
+        alert(result.message)
+    }
 
     return(
         <div className={styles.ordercard}> 
@@ -21,7 +42,7 @@ export default function PendingOrderCard({d, dataMenu}){
             </div>
 
             <div>
-                <button>Accept</button>
+                {status == 1 ? <button onClick={() => handleOrder(2)}>Accept</button> : <button onClick={() => handleOrder(3)}>Done</button>}    
             </div>
 
         </div>

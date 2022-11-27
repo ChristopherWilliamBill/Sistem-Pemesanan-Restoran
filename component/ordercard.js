@@ -1,12 +1,35 @@
 import styles from "../styles/OrderCard.module.css"
-import { useSWRConfig } from 'swr'
+import { useState } from "react";
+import { useEffect } from "react";
 
-export default function OrderCard({order, orderOcc, setOrder, i, setI}){
+export default function OrderCard({order, addToOrder, reduceOrder, resetOrder}){
+    
+    const [isWaiting, setIsWaiting] = useState(false);
+
+    useEffect(() => {
+        let i = 0
+        const fetchOrderStatus = () => {
+            if(isWaiting){
+                console.log(i)
+                i++
+            }
+        }
+
+        const interval = setInterval(fetchOrderStatus, 1000)
+        
+        return () => {clearInterval(interval)}
+    }, [isWaiting]);
     
     const handleSubmit = async (e) => {
 
+        if( order.reduce((i, o) => {return i + o.count}, 0) == 0 ){
+            alert("Order your desired menu by clicking the menu card on the left.")
+            return
+        }
+
         e.preventDefault()
-        const data = {orderOcc}
+        const data = order.filter(o => o.count > 0)
+        console.log(data)
     
         const JSONdata = JSON.stringify(data)
         const endpoint = '../api/makeorder'
@@ -22,36 +45,55 @@ export default function OrderCard({order, orderOcc, setOrder, i, setI}){
         const response = await fetch(endpoint, options)
         const result = await response.json()
 
+        if(result.message === "Order Success"){
+            setIsWaiting(true)
+        }
+
         alert(result.message)
     }
 
     return(
         <div className={styles.ordercontainer}>
-            <h2>Your Order</h2>
 
-            {order.length > 0 ?
-            <ul>
-              {(orderOcc).map((menu =>
-                <li key={menu.index} className={styles.orderlist}>
-                <p>{menu.name} </p>
-                <p>{menu.count}</p>
-                <button onClick={
-                    () => {setOrder((order) => order.filter(o => o.index != menu.index.split(',')[menu.index.split(',').length - 1])); console.log(orderOcc)}
-                }>-</button> 
+            { isWaiting ? 
+                <>
+                    <h3>Your order is being prepared.</h3> 
+                    {order.reduce((i, o) => {return i + o.count}, 0) != 0 ?
+                        <ul>
+                            {order.filter(o => o.count > 0).map(or => 
+                                <li key={or.id}className={styles.orderlist}>
+                                    <p>{or.namaMenu}</p>
+                                    <p>x {or.count}</p>
+                                </li>
+                            )}
+                        </ul>
+                    : <p style={{textAlign: "center"}}>Order your desired menu by clicking the menu card on the left.</p>}
+                    <h3>Total: IDR {order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}</h3>
+                    <button onClick={() => setIsWaiting(false)}>Done</button>
+                </>
+            : 
+                <>
+                    <h2>Your Order</h2>
+                    {order.reduce((i, o) => {return i + o.count}, 0) != 0 ?
+                        <ul>
+                            {order.filter(o => o.count > 0).map(or => 
+                                <li key={or.id}className={styles.orderlist}>
+                                    <p>{or.namaMenu}</p>
+                                    <p>x {or.count}</p>
+                                    <button onClick={() => addToOrder(or)}>+</button>
+                                    <button onClick={() => reduceOrder(or)}>-</button>
+                                </li>
+                            )}
+                        </ul>
+                    : <p style={{textAlign: "center"}}>Order your desired menu by clicking the menu card on the left.</p>}
 
-                <button onClick={
-                    () => {setOrder([...order, {name: menu.name, index: i.toString(), id: menu.id, harga: menu.harga}]); setI(1); console.log(order)}
-                }>+</button>
-                </li>  
-              ))}
-            </ul>
-            : <p>You have no order</p>}
-
-            <h3>Total: IDR {orderOcc.reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}</h3>
-            <div>
-                <button onClick={() => {setOrder([]); setI(-i)}}>clear</button>
-                <button onClick={handleSubmit}>make order</button>
-            </div>
+                    {<h3>Total: IDR {order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}</h3>}
+                    <div>
+                        <button onClick={resetOrder}>clear</button>
+                        <button onClick={handleSubmit}>make order</button>
+                    </div>
+                </>
+            }
         </div>
     )
 }

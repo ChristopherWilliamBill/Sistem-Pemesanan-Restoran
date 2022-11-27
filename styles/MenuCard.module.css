@@ -11,3 +11,7 @@
 .menucard p{
     text-align: center;
 }
+
+.menucard:hover{
+    background-color: beige;
+}

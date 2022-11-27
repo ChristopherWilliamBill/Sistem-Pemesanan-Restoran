@@ -6,21 +6,39 @@ import MenuCard from '../component/menucard';
 import OrderCard from '../component/ordercard';
 import Layout from '../component/layout'
 
-
-let i = 0
-
 export default function Home({dataMenu}) {
 
   const router = useRouter()
 
-  const [order, setOrder] = useState([]);
-  const [orderOcc, setOrderOcc] = useState([]);
+  const [order, setOrder] = useState(dataMenu);
 
-  useEffect(() => {
-    setOrderOcc(countOcc(order))
-  },[order])
+  const resetOrder = () =>{
+    setOrder(dataMenu)
+  }
 
-  const addToOrder = (menu) => {setOrder([...order, {name: menu.namaMenu, index: i.toString(), id:menu.id, harga: menu.harga}]); i++;}
+  const addToOrder = (menu) => {
+    setOrder([...order].map(o => {
+      if(o.id === menu.id) {
+        return {
+          ...o,
+          count: o.count + 1,
+        }
+      }
+      else return o;
+    }))
+  }
+
+  const reduceOrder = (menu) => {
+    setOrder([...order].map(o => {
+      if(o.id === menu.id) {
+        return {
+          ...o,
+          count: o.count - 1,
+        }
+      }
+      else return o;
+    }))
+  }
 
   const learnMore = (menu) => {router.push(`/menu/${menu.id}`)}
 
@@ -35,49 +53,21 @@ export default function Home({dataMenu}) {
           ))}
         </div>
 
-        <OrderCard order={order} orderOcc={orderOcc} setOrder={setOrder} i={i} setI={setI}></OrderCard>
+        <OrderCard order={order} addToOrder={addToOrder} reduceOrder={reduceOrder} resetOrder={resetOrder}></OrderCard>
       </div>
     </>
   )
-}
-
-function setI(x){
-  i = i+x
-}
-
-function countOcc(order){
-  const orderOccurences = []
-
-  const x = {
-    name: '',
-    count: 1,
-    index: '',
-    harga: 1,
-    id: 1
-  }
-
-  for (const o of order) {    
-    if (orderOccurences.some(e => e['name'] === o.name)) {
-      let i = orderOccurences.findIndex(e => e['name'] === o.name)
-      orderOccurences[i].count++
-      orderOccurences[i].index = orderOccurences[i].index.toString() + ',' + o.index
-    }else{
-      x.name = o.name
-      x.count = 1
-      x.index = o.index
-      x.harga = o.harga
-      x.id = o.id
-      orderOccurences.push(Object.assign({},x))
-    }
-  }
-
-  return orderOccurences
 }
 
 export async function getServerSideProps(){
   const query = `SELECT * FROM "Menu"`
   const res = await conn.query(query)
   const dataMenu = res.rows
+
+  for(let i = 0; i < dataMenu.length; i++){
+    dataMenu[i].count = 0
+  }
+
   return{
     props:{
       dataMenu

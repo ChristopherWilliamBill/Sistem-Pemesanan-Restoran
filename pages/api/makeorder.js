@@ -6,12 +6,13 @@ export default async (req, res) => {
     return
   }
 
-  const request = JSON.parse(JSON.stringify(req.body)).orderOcc
+  const request = JSON.parse(JSON.stringify(req.body))
+  console.log(request)
 
   const idMenu = request.map(r => r.id).join(",")
   const count = request.map(r => r.count).join(",")
 
-  const query = `INSERT INTO "PendingOrder" ("idMenu", "count", "idMeja", "time") VALUES ('${idMenu}', '${count}', 1, current_timestamp)`
+  const query = `INSERT INTO "PendingOrder" ("idMenu", "count", "idMeja", "time", "status") VALUES ('${idMenu}', '${count}', 1, current_timestamp, 1)`
 
   try{
     const result = await conn.query(query)

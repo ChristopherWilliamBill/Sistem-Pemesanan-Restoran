@@ -20,23 +20,27 @@ export default function AntrianPesanan({dataMenu}){
 
   return(
     <>
-      <h2>Pending</h2>
+      <h2 className={styles.category}>Pending</h2>
       <div className={styles.container}>
         {
-          data.map(
-            d => <PendingOrderCard d={d} dataMenu={dataMenu}></PendingOrderCard>
-          )
+          data.filter(d => d.status == 1).length > 0 ?
+            data.filter(d => d.status == 1).map(
+              d => <PendingOrderCard d={d} dataMenu={dataMenu} status={1}></PendingOrderCard>
+            )
+          : <p>No Order</p>
         }
       </div>
 
       <hr></hr>
 
-      <h2>Processing</h2>
+      <h2 className={styles.category}>Processing</h2>
       <div className={styles.container}>
         {
-          data.map(
-            d => <PendingOrderCard d={d} dataMenu={dataMenu}></PendingOrderCard>
-          )
+          data.filter(d => d.status == 2).length > 0 ?
+            data.filter(d => d.status == 2).map(
+              d => <PendingOrderCard d={d} dataMenu={dataMenu} status={2}></PendingOrderCard>
+            )
+          : <p>Accept Pending Order</p>
         }
       </div>
     </>
