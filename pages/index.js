@@ -5,8 +5,33 @@ import {conn} from '../lib/pg.ts';
 import MenuCard from '../component/menucard';
 import OrderCard from '../component/ordercard';
 import Layout from '../component/layout'
+import io from 'Socket.IO-client'
+
+let socket = null
 
 export default function Home({dataMenu}) {
+
+  const [isWaiting, setIsWaiting] = useState(false);
+
+  const socketInitializer = async () => {
+    await fetch('/api/socket')
+    socket = io()
+
+    socket.on('connect', () => {
+      console.log('connected')
+    })
+
+    socket.on('trigger-listen', msg => {
+      console.log(msg)
+      setData(msg)
+    })
+  }
+
+  const notifyKitchen = async () => {
+    socket.emit('notify-kitchen', 'new-order')
+  }
+
+  useEffect(() => {socketInitializer()}, [])
 
   const router = useRouter()
 
@@ -17,6 +42,10 @@ export default function Home({dataMenu}) {
   }
 
   const addToOrder = (menu) => {
+    if(isWaiting){
+      return
+    }
+
     setOrder([...order].map(o => {
       if(o.id === menu.id) {
         return {
@@ -49,11 +78,11 @@ export default function Home({dataMenu}) {
       <div className={styles.container}>
         <div className={styles.menucontainer}>
           {dataMenu.map((menu) => (
-            <MenuCard key={menu.id} menu={menu} addToOrder={addToOrder} learnMore={learnMore}></MenuCard>
+            <MenuCard key={menu.id} menu={menu} addToOrder={addToOrder} learnMore={learnMore} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
           ))}
         </div>
 
-        <OrderCard order={order} addToOrder={addToOrder} reduceOrder={reduceOrder} resetOrder={resetOrder}></OrderCard>
+        <OrderCard order={order} addToOrder={addToOrder} reduceOrder={reduceOrder} resetOrder={resetOrder} notifyKitchen={notifyKitchen} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></OrderCard>
       </div>
     </>
   )

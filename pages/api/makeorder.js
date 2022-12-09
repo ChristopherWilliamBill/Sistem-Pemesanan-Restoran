@@ -7,7 +7,6 @@ export default async (req, res) => {
   }
 
   const request = JSON.parse(JSON.stringify(req.body))
-  console.log(request)
 
   const idMenu = request.map(r => r.id).join(",")
   const count = request.map(r => r.count).join(",")

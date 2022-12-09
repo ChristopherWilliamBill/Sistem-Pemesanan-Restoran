@@ -3,16 +3,39 @@ import Layout from '../../component/layout'
 import PendingOrderCard from '../../component/pendingordercard';
 import {conn} from '../../lib/pg.ts';
 import styles from '../../styles/AntrianPesanan.module.css'
+import io from 'Socket.IO-client'
+import { useState, useEffect } from 'react';
 
-export default function AntrianPesanan({dataMenu}){    
+let socket = null
 
-  const fetcher = async () => {
-    const response = await fetch('http://localhost:3000/api/getOrder')
-    const dataOrder = await response.json()
-    return dataOrder
+export default function AntrianPesanan({dataMenu, dataOrder}){
+  
+  const [data, setData] = useState(dataOrder)
+  
+  const socketInitializer = async () => {
+    await fetch('/api/socket')
+    socket = io()
+
+    socket.on('connect', () => {
+      console.log('connected')
+    })
+
+    socket.on('send-orders', msg => {
+      console.log("HALAMAN ANTRIAN "+msg)
+      setData(msg)
+    })
   }
 
-  const { data, error } = useSWR('order', fetcher, { refreshInterval: 10000})
+  useEffect(() => {socketInitializer()}, [])
+
+
+  // const fetcher = async () => {
+  //   const response = await fetch('http://localhost:3000/api/getOrder')
+  //   const dataOrder = await response.json()
+  //   return dataOrder
+  // }
+
+  // const { data, error } = useSWR('order', fetcher, { refreshInterval: 10000})
 
   if(!data){
     return <h1>LOADING</h1>
@@ -47,16 +70,22 @@ export default function AntrianPesanan({dataMenu}){
   )
 }
 
-export async function getStaticProps(){
+export async function getServerSideProps(){
 
   const queryMenu = `SELECT * FROM "Menu"`
+  const queryOrder = `SELECT * FROM "PendingOrder"`
+
   const resMenu = await conn.query(queryMenu)
   const dataMenu = resMenu.rows
   dataMenu.sort((a,b) => a.id - b.id)
-  
+
+  const resOrder = await conn.query(queryOrder)
+  const dataOrder = resOrder.rows
+
   return{
     props:{
       dataMenu,
+      dataOrder
     }
   }
 }

@@ -2,10 +2,8 @@ import styles from "../styles/OrderCard.module.css"
 import { useState } from "react";
 import { useEffect } from "react";
 
-export default function OrderCard({order, addToOrder, reduceOrder, resetOrder}){
+export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, notifyKitchen, isWaiting, setIsWaiting}){
     
-    const [isWaiting, setIsWaiting] = useState(false);
-
     useEffect(() => {
         let i = 0
         const fetchOrderStatus = () => {
@@ -46,6 +44,7 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder}){
         const result = await response.json()
 
         if(result.message === "Order Success"){
+            notifyKitchen()
             setIsWaiting(true)
         }
 
@@ -69,7 +68,7 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder}){
                         </ul>
                     : <p style={{textAlign: "center"}}>Order your desired menu by clicking the menu card on the left.</p>}
                     <h3>Total: IDR {order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}</h3>
-                    <button onClick={() => setIsWaiting(false)}>Done</button>
+                    <button onClick={() => {setIsWaiting(false); resetOrder()}}>Done</button>
                 </>
             : 
                 <>
