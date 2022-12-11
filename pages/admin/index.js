@@ -20,7 +20,7 @@ export default function Admin(){
         antrian pesanan
       </div>
 
-      <div className={styles.card} onClick={() => router.push("admin/historitransaksi")}>
+      <div className={styles.card} onClick={() => router.push("admin/riwayattransaksi")}>
         histori transaksi
       </div>
     </div>

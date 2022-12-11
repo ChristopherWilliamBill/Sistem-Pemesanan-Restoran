@@ -1,4 +1,3 @@
-import useSWR from 'swr';
 import Layout from '../../component/layout'
 import PendingOrderCard from '../../component/pendingordercard';
 import {conn} from '../../lib/pg.ts';
@@ -9,8 +8,24 @@ import { useState, useEffect } from 'react';
 let socket = null
 
 export default function AntrianPesanan({dataMenu, dataOrder}){
-  
-  const [data, setData] = useState(dataOrder)
+  const order = dataOrder.reduce((order, {idPesanan, isiPesanan, jumlah, status, jam, idMeja}) => {
+    if(!order[idPesanan -1]){
+      order[idPesanan -1] = {idPesanan: idPesanan, isiPesanan: [], jumlah: []}
+    }
+    //order[idPesanan] ??= {idPesanan: idPesanan, isiPesanan: "", jumlah: []}; // ??= --> logical nullish assignment
+
+    order[idPesanan -1].isiPesanan.push(isiPesanan)
+    order[idPesanan -1].jumlah.push(jumlah)
+    order[idPesanan -1].status = status
+    order[idPesanan -1].jam = jam
+    order[idPesanan -1].idMeja = idMeja
+
+
+    return order;
+  }, []);
+
+  console.log(order)  
+  const [data, setData] = useState(order)
   
   const socketInitializer = async () => {
     await fetch('/api/socket')
@@ -21,9 +36,14 @@ export default function AntrianPesanan({dataMenu, dataOrder}){
     })
 
     socket.on('send-orders', msg => {
-      console.log("HALAMAN ANTRIAN "+msg)
+      console.log(msg)
       setData(msg)
+      console.log(data)
     })
+  }
+
+  const notifyKitchen = async () => {
+    socket.emit('notify-kitchen', 'new-order')
   }
 
   useEffect(() => {socketInitializer()}, [])
@@ -48,7 +68,7 @@ export default function AntrianPesanan({dataMenu, dataOrder}){
         {
           data.filter(d => d.status == 1).length > 0 ?
             data.filter(d => d.status == 1).map(
-              d => <PendingOrderCard d={d} dataMenu={dataMenu} status={1}></PendingOrderCard>
+              d => <PendingOrderCard d={d} dataMenu={dataMenu} status={1} notifyKitchen={notifyKitchen}></PendingOrderCard>
             )
           : <p>No Order</p>
         }
@@ -73,11 +93,11 @@ export default function AntrianPesanan({dataMenu, dataOrder}){
 export async function getServerSideProps(){
 
   const queryMenu = `SELECT * FROM "Menu"`
-  const queryOrder = `SELECT * FROM "PendingOrder"`
+  const queryOrder = `SELECT * FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan"`
 
   const resMenu = await conn.query(queryMenu)
   const dataMenu = resMenu.rows
-  dataMenu.sort((a,b) => a.id - b.id)
+  dataMenu.sort((a,b) => a.idMenu - b.idMenu)
 
   const resOrder = await conn.query(queryOrder)
   const dataOrder = resOrder.rows

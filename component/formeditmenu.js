@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import styles from "../styles/FormMenu.module.css"
 import Router, { useRouter } from "next/router";
 
-export default function FormEditMenu({dataMenu}){
+export default function FormEditMenu({dataMenu, idAdmin}){
     const router = useRouter()
 
     const [namaMenu, setNamaMenu] = useState("")
@@ -24,7 +24,8 @@ export default function FormEditMenu({dataMenu}){
             namaMenu: namaMenu,
             deskripsiMenu: deskripsi,
             harga: harga,
-            id: dataMenu.id
+            idMenu: dataMenu.idMenu,
+            idAdmin: idAdmin
         }
     
         const JSONdata = JSON.stringify(data)

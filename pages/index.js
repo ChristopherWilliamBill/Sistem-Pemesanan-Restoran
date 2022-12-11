@@ -11,6 +11,8 @@ let socket = null
 
 export default function Home({dataMenu}) {
 
+  console.log(dataMenu)
+
   const [isWaiting, setIsWaiting] = useState(false);
 
   const socketInitializer = async () => {
@@ -19,11 +21,6 @@ export default function Home({dataMenu}) {
 
     socket.on('connect', () => {
       console.log('connected')
-    })
-
-    socket.on('trigger-listen', msg => {
-      console.log(msg)
-      setData(msg)
     })
   }
 
@@ -47,7 +44,7 @@ export default function Home({dataMenu}) {
     }
 
     setOrder([...order].map(o => {
-      if(o.id === menu.id) {
+      if(o.idMenu === menu.idMenu) {
         return {
           ...o,
           count: o.count + 1,
@@ -59,7 +56,7 @@ export default function Home({dataMenu}) {
 
   const reduceOrder = (menu) => {
     setOrder([...order].map(o => {
-      if(o.id === menu.id) {
+      if(o.idMenu === menu.idMenu) {
         return {
           ...o,
           count: o.count - 1,
@@ -69,7 +66,7 @@ export default function Home({dataMenu}) {
     }))
   }
 
-  const learnMore = (menu) => {router.push(`/menu/${menu.id}`)}
+  const learnMore = (menu) => {router.push(`/menu/${menu.idMenu}`)}
 
   return (
     <> 
@@ -78,7 +75,7 @@ export default function Home({dataMenu}) {
       <div className={styles.container}>
         <div className={styles.menucontainer}>
           {dataMenu.map((menu) => (
-            <MenuCard key={menu.id} menu={menu} addToOrder={addToOrder} learnMore={learnMore} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
+            <MenuCard key={menu.idMenu} menu={menu} addToOrder={addToOrder} learnMore={learnMore} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
           ))}
         </div>
 

@@ -1,14 +1,14 @@
 import Layout from '../../component/layout'
 
-export default function HistoriTransaksi(){
+export default function RiwayatTransaksi(){
     return(
         <>
-            ini histori
+            ini halaman riwayat transaksi
         </>
     )
 }
 
-HistoriTransaksi.getLayout = function getLayout(page) {
+RiwayatTransaksi.getLayout = function getLayout(page) {
     return (
       <Layout>
         {page}

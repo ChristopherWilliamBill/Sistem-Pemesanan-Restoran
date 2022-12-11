@@ -9,7 +9,7 @@ export default async (req, res) => {
 
   const request = JSON.parse(JSON.stringify(req.body))
 
-  const query = `INSERT INTO "Menu" ("namaMenu", "deskripsiMenu", "harga") VALUES ('${request.namaMenu}', '${request.deskripsi}', ${request.harga})`
+  const query = `INSERT INTO "Menu" ("namaMenu", "deskripsiMenu", "harga", "idAdmin") VALUES ('${request.namaMenu}', '${request.deskripsi}', ${request.harga}, '${request.idAdmin}')`
 
   try{
     const result = await conn.query(query)

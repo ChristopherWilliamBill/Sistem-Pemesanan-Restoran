@@ -9,7 +9,9 @@ export default async (req, res) => {
 
   const request = JSON.parse(JSON.stringify(req.body))
 
-  const query = `UPDATE "Menu" SET "namaMenu" = '${request.namaMenu}', "deskripsiMenu" = '${request.deskripsiMenu}', "harga" = ${request.harga} WHERE "id" = ${request.id}`
+  console.log(request)
+
+  const query = `UPDATE "Menu" SET "namaMenu" = '${request.namaMenu}', "deskripsiMenu" = '${request.deskripsiMenu}', "harga" = ${request.harga}, "idAdmin" = ${request.idAdmin} WHERE "idMenu" = ${request.idMenu}`
 
   try{
     const result = await conn.query(query)

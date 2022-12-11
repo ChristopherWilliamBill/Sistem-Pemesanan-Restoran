@@ -3,18 +3,30 @@ import React, { useState } from 'react';
 import {conn} from '../../lib/pg.ts';
 import styles from '../../styles/EditMenu.module.css';
 import FormEditMenu from '../../component/formeditmenu';
+import { useSession } from 'next-auth/react';
 
 export default function EditMenu({dataMenu}){
   const [selectedMenu, setSelectedMenu] = useState(null);
 
-  return(
+  const { data: session, status } = useSession()
+
+  if (status === "authenticated") {
+    return(
       <div className={styles.container}>
         <div className={styles.listmenu}>
           { dataMenu.map((data) => <div key={data.id} className={styles.menucard} onClick={() => setSelectedMenu(data)}>{data.namaMenu}</div>)}
         </div>
 
-        {selectedMenu == null ? <p>No menu selected</p> : <FormEditMenu dataMenu={selectedMenu}></FormEditMenu>}
+        {selectedMenu == null ? <p>No menu selected</p> : <FormEditMenu dataMenu={selectedMenu} idAdmin={session.idAdmin}></FormEditMenu>}
       </div>
+    )
+  }
+
+  return(
+    <div className={styles.container}>
+      <h1>You Are Not Signed In</h1>
+      <button className={styles.buttonn} onClick={signIn}>Sign In</button>
+    </div>
   )
 }
 

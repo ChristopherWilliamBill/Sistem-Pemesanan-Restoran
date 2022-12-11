@@ -7,7 +7,7 @@ export default async (req, res) => {
     return
   }
 
-  const queryOrder = `SELECT * FROM "PendingOrder"`
+  const queryOrder = `SELECT * FROM "Pesanan"`
 
   try{
     const result = await conn.query(queryOrder)

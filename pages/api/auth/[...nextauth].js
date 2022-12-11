@@ -20,7 +20,7 @@ export default NextAuth({
                 if(res.ok && hasil){
                     console.log("NEXTAUTH: ", hasil[0])
                     return {
-                        id: hasil[0].id,
+                        idAdmin: hasil[0].idAdmin,
                         name: hasil[0].username,
                     };
                 }
@@ -33,13 +33,15 @@ export default NextAuth({
         jwt: async({token, user}) => {
             if(user){
                 token.id = user.id
+                token.idAdmin = user.idAdmin
             }
 
             return token
         },
-        session: ({token, session}) => {
+        session: ({token, session, user}) => {
             if(token){
                 session.id = token.id
+                session.idAdmin = token.idAdmin
             }
 
             return session

@@ -8,13 +8,14 @@ export default async (req, res) => {
   }
 
   const request = JSON.parse(JSON.stringify(req.body))
+  console.log(request.idPesanan)
 
-
-  const query = `UPDATE "PendingOrder" SET "status" = ${request.status} WHERE "id" = ${request.id}`
+  const query = `UPDATE "Pesanan" SET "status" = ${request.status} WHERE "idPesanan" = ${request.idPesanan}`
+  const queryOrder = `SELECT * FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan"`
 
   try{
     const result = await conn.query(query)
-    res.status(200).json({ message: 'Update Success' })
+    res.status(200).json({ mesage: 'Success'})
   }catch(err){
     console.log(err)
     res.status(400).send({ message: 'Update Failed' })
