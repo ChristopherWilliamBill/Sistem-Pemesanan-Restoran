@@ -4,11 +4,15 @@ import {conn} from '../../lib/pg.ts';
 import styles from '../../styles/AntrianPesanan.module.css'
 import io from 'Socket.IO-client'
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
 let socket = null
 
-export default function AntrianPesanan({dataMenu, dataOrder}){
-  const order = dataOrder.reduce((order, {idPesanan, isiPesanan, jumlah, status, jam, idMeja}) => {
+export default function AntrianPesanan({dataMenu, dataO}){
+
+  const { data: session, status } = useSession()
+
+  const order = dataO.reduce((order, {idPesanan, isiPesanan, jumlah, status, jam, idMeja}) => {
     if(!order[idPesanan -1]){
       order[idPesanan -1] = {idPesanan: idPesanan, isiPesanan: [], jumlah: []}
     }
@@ -25,7 +29,7 @@ export default function AntrianPesanan({dataMenu, dataOrder}){
   }, []);
 
   console.log(order)  
-  const [data, setData] = useState(order)
+  const [dataOrder, setDataOrder] = useState(order)
   
   const socketInitializer = async () => {
     await fetch('/api/socket')
@@ -36,9 +40,7 @@ export default function AntrianPesanan({dataMenu, dataOrder}){
     })
 
     socket.on('send-orders', msg => {
-      console.log(msg)
-      setData(msg)
-      console.log(data)
+      setDataOrder(msg)
     })
   }
 
@@ -57,37 +59,40 @@ export default function AntrianPesanan({dataMenu, dataOrder}){
 
   // const { data, error } = useSWR('order', fetcher, { refreshInterval: 10000})
 
-  if(!data){
-    return <h1>LOADING</h1>
+  if (status === "authenticated") {
+
+    if(!dataOrder){
+      return <h1>LOADING</h1>
+    }
+  
+    return(
+      <>
+        <h2 className={styles.category}>Pending</h2>
+        <div className={styles.container}>
+          {
+            dataOrder.filter(d => d.status == 1).length > 0 ?
+              dataOrder.filter(d => d.status == 1).map(
+                d => <PendingOrderCard d={d} dataMenu={dataMenu} status={1} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin}></PendingOrderCard>
+              )
+            : <p>No Order</p>
+          }
+        </div>
+  
+        <hr></hr>
+  
+        <h2 className={styles.category}>Processing</h2>
+        <div className={styles.container}>
+          {
+            dataOrder.filter(d => d.status == 2).length > 0 ?
+              dataOrder.filter(d => d.status == 2).map(
+                d => <PendingOrderCard d={d} dataMenu={dataMenu} status={2} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin}></PendingOrderCard>
+              )
+            : <p>Accept Pending Order</p>
+          }
+        </div>
+      </>
+    )
   }
-
-  return(
-    <>
-      <h2 className={styles.category}>Pending</h2>
-      <div className={styles.container}>
-        {
-          data.filter(d => d.status == 1).length > 0 ?
-            data.filter(d => d.status == 1).map(
-              d => <PendingOrderCard d={d} dataMenu={dataMenu} status={1} notifyKitchen={notifyKitchen}></PendingOrderCard>
-            )
-          : <p>No Order</p>
-        }
-      </div>
-
-      <hr></hr>
-
-      <h2 className={styles.category}>Processing</h2>
-      <div className={styles.container}>
-        {
-          data.filter(d => d.status == 2).length > 0 ?
-            data.filter(d => d.status == 2).map(
-              d => <PendingOrderCard d={d} dataMenu={dataMenu} status={2}></PendingOrderCard>
-            )
-          : <p>Accept Pending Order</p>
-        }
-      </div>
-    </>
-  )
 }
 
 export async function getServerSideProps(){
@@ -100,12 +105,12 @@ export async function getServerSideProps(){
   dataMenu.sort((a,b) => a.idMenu - b.idMenu)
 
   const resOrder = await conn.query(queryOrder)
-  const dataOrder = resOrder.rows
+  const dataO = resOrder.rows
 
   return{
     props:{
       dataMenu,
-      dataOrder
+      dataO
     }
   }
 }

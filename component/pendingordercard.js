@@ -1,8 +1,8 @@
 import styles from '../styles/PendingOrderCard.module.css'
 
-export default function PendingOrderCard({d, dataMenu, status, notifyKitchen}){
+export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, idAdmin}){
     const handleOrder = async (status) => {
-        const data = {idPesanan: d.idPesanan, status: status}
+        const data = {idPesanan: d.idPesanan, status: status, idAdmin:idAdmin}
         console.log(data)
     
         const JSONdata = JSON.stringify(data)

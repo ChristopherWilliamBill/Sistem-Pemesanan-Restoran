@@ -27,6 +27,7 @@ export default function SignIn() {
 
     return(
         <div className={styles.container}>
+            <h2>Sign In</h2>
             <form onSubmit={handleSubmit} className={styles.signinform}>
                 <label>
                     Username
