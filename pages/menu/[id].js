@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import styles from '../../styles/Menu.module.css'
-import {conn} from '../../lib/pg.ts';
+import {conn} from '../../lib/pg.js';
 
 export default function MenuDetail({dataMenu}){
   const router = useRouter();

@@ -1,6 +1,6 @@
 import Layout from '../../component/layout'
 import PendingOrderCard from '../../component/pendingordercard';
-import {conn} from '../../lib/pg.ts';
+import {conn} from '../../lib/pg.js';
 import styles from '../../styles/AntrianPesanan.module.css'
 import io from 'Socket.IO-client'
 import { useState, useEffect } from 'react';

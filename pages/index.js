@@ -1,7 +1,7 @@
 import styles from '../styles/Home.module.css'
 import { useRouter } from 'next/router';
 import React, { useState,useEffect } from 'react';
-import {conn} from '../lib/pg.ts';
+import {conn} from '../lib/pg.js';
 import MenuCard from '../component/menucard';
 import OrderCard from '../component/ordercard';
 import Layout from '../component/layout'

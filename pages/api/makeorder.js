@@ -1,4 +1,4 @@
-import {conn} from '../../lib/pg.ts';
+import {conn} from '../../lib/pg.js';
 
 export default async (req, res) => {
   if(req.method !== "POST"){

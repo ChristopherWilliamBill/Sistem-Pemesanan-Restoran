@@ -1,5 +1,5 @@
 import { Server } from 'Socket.IO'
-import {conn} from '../../lib/pg.ts';
+import {conn} from '../../lib/pg.js';
 
 export default (req, res) => {
     if (res.socket.server.io) {

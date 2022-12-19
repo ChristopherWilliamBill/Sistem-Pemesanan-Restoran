@@ -1,6 +1,6 @@
 import Layout from '../../component/layout'
 import React, { useState } from 'react';
-import {conn} from '../../lib/pg.ts';
+import {conn} from '../../lib/pg.js';
 import styles from '../../styles/EditMenu.module.css';
 import FormEditMenu from '../../component/formeditmenu';
 import { useSession } from 'next-auth/react';
