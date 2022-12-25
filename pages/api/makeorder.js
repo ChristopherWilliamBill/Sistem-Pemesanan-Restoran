@@ -6,10 +6,7 @@ export default async (req, res) => {
     return
   }
 
-  const request = JSON.parse(JSON.stringify(req.body))
-
-  const idMenu = request.map(r => r.id).join(",")
-  const count = request.map(r => r.count).join(",")
+  const request = req.body
 
   const queryPesanan = `INSERT INTO "Pesanan" ("idMeja", "jam", "status") VALUES (1, current_timestamp, 1) RETURNING "idPesanan"`
 
