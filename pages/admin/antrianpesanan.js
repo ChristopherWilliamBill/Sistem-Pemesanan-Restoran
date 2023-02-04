@@ -107,6 +107,8 @@ export async function getServerSideProps(){
   const resOrder = await conn.query(queryOrder)
   const dataO = resOrder.rows
 
+  console.log(dataO)
+
   return{
     props:{
       dataMenu,

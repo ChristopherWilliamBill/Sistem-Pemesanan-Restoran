@@ -22,6 +22,7 @@ export default NextAuth({
                     return {
                         idAdmin: hasil[0].idAdmin,
                         name: hasil[0].username,
+                        role: hasil[0].role,
                     };
                 }
 
@@ -34,6 +35,7 @@ export default NextAuth({
             if(user){
                 token.id = user.id
                 token.idAdmin = user.idAdmin
+                token.role = user.role
             }
 
             return token
@@ -42,6 +44,7 @@ export default NextAuth({
             if(token){
                 session.id = token.id
                 session.idAdmin = token.idAdmin
+                session.role = token.role
             }
 
             return session

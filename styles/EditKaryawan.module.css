@@ -1,0 +1,33 @@
+.admincard{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px 0 rgba(203, 156, 156, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.listcontainer{
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    width: 30%;
+    
+}
+
+.container{
+    display: flex;
+}
+
+.left{
+    width: 30%;
+}
+
+.admincard p{
+    text-align: center;
+}
+
+.admincard:hover{
+    background-color: beige;
+}

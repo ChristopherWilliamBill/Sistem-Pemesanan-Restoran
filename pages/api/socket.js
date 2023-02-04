@@ -21,7 +21,6 @@ export default (req, res) => {
                         if(!order[idPesanan -1]){
                           order[idPesanan -1] = {idPesanan: idPesanan, isiPesanan: [], jumlah: []}
                         }
-                        //order[idPesanan] ??= {idPesanan: idPesanan, isiPesanan: "", jumlah: []}; // ??= --> logical nullish assignment
                     
                         order[idPesanan -1].isiPesanan.push(isiPesanan)
                         order[idPesanan -1].jumlah.push(jumlah)
@@ -30,7 +29,7 @@ export default (req, res) => {
                         order[idPesanan -1].idMeja = idMeja
                     
                         return order;
-                      }, []);
+                    }, []);
 
                     order.filter(o => o != null)
                     console.log(order)
