@@ -9,16 +9,18 @@ export default function SignIn() {
 
     const [username, setUserName] = useState('')
     const [password, setPassword] = useState('')
+    const [role, setRole] = useState('')
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         const res = await signIn('credentials',{
             username: username,
             password: password,
+            role: role,
             redirect: false
         }).then(({ok, error}) => {
             if(ok){
-                router.push('../admin')
+                router.push('../')
             }else{
                 alert("Username or password invalid")
             }
@@ -37,6 +39,11 @@ export default function SignIn() {
                 <label>
                     Password
                     <input type='password' value={password} onChange={({target}) => setPassword(target.value)}></input>
+                </label>
+
+                <label>
+                    <input type='radio' value={"meja"} onChange={({target}) => setRole(target.value)} name="role"></input> Table
+                    <input type='radio' value={"admin"} onChange={({target}) => setRole(target.value)} name="role"></input> Administrator
                 </label>
 
                 <input type='submit' className={styles.submitbtn}></input>

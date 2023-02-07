@@ -16,6 +16,7 @@ export default NextAuth({
                 })
 
                 const hasil = await res.json();
+                console.log(hasil)
                 
                 if(res.ok && hasil){
                     console.log("NEXTAUTH: ", hasil[0])

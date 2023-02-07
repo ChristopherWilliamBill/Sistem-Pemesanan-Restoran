@@ -4,14 +4,15 @@ import React, { useState,useEffect } from 'react';
 import {conn} from '../lib/pg.js';
 import MenuCard from '../component/menucard';
 import OrderCard from '../component/ordercard';
-import Layout from '../component/layout'
+import { useSession, signIn } from 'next-auth/react';
 import io from 'Socket.IO-client'
 
 let socket = null
 
 export default function Home({dataMenu}) {
 
-  console.log(dataMenu)
+  const { data: session, status } = useSession()
+  console.log(session)
 
   const [isWaiting, setIsWaiting] = useState(false);
 
@@ -68,21 +69,31 @@ export default function Home({dataMenu}) {
 
   const learnMore = (menu) => {router.push(`/menu/${menu.idMenu}`)}
 
-  return (
-    <> 
-      <h1 className={styles.title}>Welcome!</h1>
-
-      <div className={styles.container}>
-        <div className={styles.menucontainer}>
-          {dataMenu.map((menu) => (
-            <MenuCard key={menu.idMenu} menu={menu} addToOrder={addToOrder} learnMore={learnMore} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
-          ))}
+  if (status === "authenticated"){
+    return (
+      <>
+        <h1 className={styles.title}>Welcome {session.user.name} !</h1>
+  
+        <div className={styles.container}>
+          <div className={styles.menucontainer}>
+            {dataMenu.map((menu) => (
+              <MenuCard key={menu.idMenu} menu={menu} addToOrder={addToOrder} learnMore={learnMore} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
+            ))}
+          </div>
+  
+          <OrderCard order={order} addToOrder={addToOrder} reduceOrder={reduceOrder} resetOrder={resetOrder} notifyKitchen={notifyKitchen} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></OrderCard>
         </div>
+      </>
+    )
+  }
 
-        <OrderCard order={order} addToOrder={addToOrder} reduceOrder={reduceOrder} resetOrder={resetOrder} notifyKitchen={notifyKitchen} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></OrderCard>
-      </div>
-    </>
+  return (
+    <div className={styles.container}>
+      <h1>Please contact administrator.</h1>
+      <button className={styles.button} onClick={signIn}>Sign In</button>
+    </div>
   )
+
 }
 
 export async function getServerSideProps(){
@@ -100,11 +111,3 @@ export async function getServerSideProps(){
     }
   }
 }
-
-// Home.getLayout = function getLayout(page) {
-//   return (
-//     <Layout>
-//       {page}
-//     </Layout>
-//   )
-// }

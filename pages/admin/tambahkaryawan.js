@@ -9,7 +9,7 @@ export default function TambahKaryawan(){
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [role, setRole] = useState('karyawan')
+  const [role, setRole] = useState('')
 
   const { data: session, status } = useSession()
 
@@ -58,7 +58,7 @@ export default function TambahKaryawan(){
               <label>Role:</label>
 
               <label>
-                  <input type='radio' value={"karyawan"} onChange={({target}) => setRole(target.value)} name="role" checked></input> Karyawan
+                  <input type='radio' value={"karyawan"} onChange={({target}) => setRole(target.value)} name="role"></input> Karyawan
                   <input type='radio' value={"manager"} onChange={({target}) => setRole(target.value)} name="role"></input> Manager
               </label>
 
