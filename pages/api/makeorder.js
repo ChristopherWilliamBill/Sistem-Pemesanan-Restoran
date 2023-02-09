@@ -8,15 +8,19 @@ export default async (req, res) => {
 
   const request = req.body
 
-  const queryPesanan = `INSERT INTO "Pesanan" ("idMeja", "jam", "status") VALUES (1, current_timestamp, 1) RETURNING "idPesanan"`
+  console.log(request)
+
+  const idMeja = parseInt(request.idMeja)
+
+  const queryPesanan = `INSERT INTO "Pesanan" ("idMeja", "jam", "status") VALUES (${idMeja}, current_timestamp, 1) RETURNING "idPesanan"`
 
   try{
     const result = await conn.query(queryPesanan)
     const currentOrder = result.rows[0].idPesanan
 
-    for(let i = 0; i < request.length; i++){
-      let idMenu = request[i].idMenu
-      let jumlah = request[i].count
+    for(let i = 0; i < request.dataOrder.length; i++){
+      let idMenu = request.dataOrder[i].idMenu
+      let jumlah = request.dataOrder[i].count
   
       let queryTP = `INSERT INTO "TerdiriPesanan" ("idPesanan", "isiPesanan", "jumlah") VALUES (${currentOrder}, ${idMenu}, ${jumlah})`
       let resultTerdiriPesanan = await conn.query(queryTP)

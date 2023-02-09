@@ -6,8 +6,7 @@ export default function Layout({ children }) {
 
     const { data: session, status } = useSession()
 
-    if (status === "authenticated") {
-
+    if (status === "authenticated" && session.role !== "meja") {
       return(<>
         <Header admin={session.user.name}/>
         <main>{children}</main>
@@ -17,7 +16,7 @@ export default function Layout({ children }) {
 
     return (
       <div className={styles.container}>
-        <h1>You Are Not Signed In</h1>
+        <h1>Administrator Only</h1>
         <button className={styles.buttonn} onClick={signIn}>Sign In</button>
       </div>
     )

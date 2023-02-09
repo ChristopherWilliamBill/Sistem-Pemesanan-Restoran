@@ -12,7 +12,6 @@ let socket = null
 export default function Home({dataMenu}) {
 
   const { data: session, status } = useSession()
-  console.log(session)
 
   const [isWaiting, setIsWaiting] = useState(false);
 
@@ -81,7 +80,7 @@ export default function Home({dataMenu}) {
             ))}
           </div>
   
-          <OrderCard order={order} addToOrder={addToOrder} reduceOrder={reduceOrder} resetOrder={resetOrder} notifyKitchen={notifyKitchen} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></OrderCard>
+          <OrderCard order={order} addToOrder={addToOrder} reduceOrder={reduceOrder} resetOrder={resetOrder} notifyKitchen={notifyKitchen} isWaiting={isWaiting} setIsWaiting={setIsWaiting} meja={session.user.name}></OrderCard>
         </div>
       </>
     )

@@ -2,21 +2,21 @@ import styles from "../styles/OrderCard.module.css"
 import { useState } from "react";
 import { useEffect } from "react";
 
-export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, notifyKitchen, isWaiting, setIsWaiting}){
+export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, notifyKitchen, isWaiting, setIsWaiting, meja}){
     
-    useEffect(() => {
-        let i = 0
-        const fetchOrderStatus = () => {
-            if(isWaiting){
-                console.log(i)
-                i++
-            }
-        }
+    // useEffect(() => {
+    //     let i = 0
+    //     const fetchOrderStatus = () => {
+    //         if(isWaiting){
+    //             console.log(i)
+    //             i++
+    //         }
+    //     }
 
-        const interval = setInterval(fetchOrderStatus, 1000)
+    //     const interval = setInterval(fetchOrderStatus, 1000)
         
-        return () => {clearInterval(interval)}
-    }, [isWaiting]);
+    //     return () => {clearInterval(interval)}
+    // }, [isWaiting]);
     
     const handleSubmit = async (e) => {
 
@@ -26,7 +26,15 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
         }
 
         e.preventDefault()
-        const data = order.filter(o => o.count > 0)
+
+        const dataOrder = order.filter(o => o.count > 0)
+
+        const idMeja = meja.substring(6, meja.length)
+        const data = {
+            idMeja: idMeja,
+            dataOrder: dataOrder
+        }
+        
         console.log(data)
     
         const JSONdata = JSON.stringify(data)
