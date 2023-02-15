@@ -28,7 +28,50 @@ export default function Home({dataMenu}) {
     socket.emit('notify-kitchen', 'new-order')
   }
 
+  const getCurrentOrder = async () => {
+    const data = {
+      idMeja: session.user.name.substring(6, session.user.name.length),
+    }
+
+    const JSONdata = JSON.stringify(data)
+
+    const endpoint = '../api/getcurrentorder'
+
+    const options = {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSONdata
+    }
+    const response = await fetch(endpoint, options)
+    const dataJSON = await response.json()
+    console.log(dataJSON.message)
+
+    if(dataJSON.message.length > 0){
+      
+      for(let i = 0; i < dataJSON.message.length; i++){
+        setOrder((order) => [...order].map(o => {
+          if(o.idMenu === dataJSON.message[i].isiPesanan) {
+            return {
+              ...o,
+              count: o.count + dataJSON.message[i].jumlah,
+            }
+          }
+          else return o;
+        }))
+      }
+      setIsWaiting(true)
+    }
+  }
+
   useEffect(() => {socketInitializer()}, [])
+
+  useEffect(() => {
+    if(session){
+      getCurrentOrder()
+    }
+  },[status])
 
   const router = useRouter()
 
@@ -36,7 +79,7 @@ export default function Home({dataMenu}) {
 
   const resetOrder = () =>{
     setOrder(dataMenu)
-  }
+  } 
 
   const addToOrder = (menu) => {
     if(isWaiting){
@@ -80,7 +123,12 @@ export default function Home({dataMenu}) {
             ))}
           </div>
   
+          {session.user.name.substring(0,5) == "Table" ? 
           <OrderCard order={order} addToOrder={addToOrder} reduceOrder={reduceOrder} resetOrder={resetOrder} notifyKitchen={notifyKitchen} isWaiting={isWaiting} setIsWaiting={setIsWaiting} meja={session.user.name}></OrderCard>
+          : 
+          <div>
+            <h3>Hanya Untuk Pengunjung</h3>
+          </div>}
         </div>
       </>
     )
@@ -99,6 +147,7 @@ export async function getServerSideProps(){
   const query = `SELECT * FROM "Menu"`
   const res = await conn.query(query)
   const dataMenu = res.rows
+  dataMenu.sort((a,b) => a.idMenu - b.idMenu)
 
   for(let i = 0; i < dataMenu.length; i++){
     dataMenu[i].count = 0

@@ -24,12 +24,11 @@ export default function AntrianPesanan({dataMenu, dataO}){
     order[idPesanan -1].jam = jam
     order[idPesanan -1].idMeja = idMeja
 
-
     return order;
   }, []);
 
-  console.log(order)  
   const [dataOrder, setDataOrder] = useState(order)
+  const [tab, setTab] = useState("pesananbaru")
   
   const socketInitializer = async () => {
     await fetch('/api/socket')
@@ -50,15 +49,6 @@ export default function AntrianPesanan({dataMenu, dataO}){
 
   useEffect(() => {socketInitializer()}, [])
 
-
-  // const fetcher = async () => {
-  //   const response = await fetch('http://localhost:3000/api/getOrder')
-  //   const dataOrder = await response.json()
-  //   return dataOrder
-  // }
-
-  // const { data, error } = useSWR('order', fetcher, { refreshInterval: 10000})
-
   if (status === "authenticated") {
 
     if(!dataOrder){
@@ -67,29 +57,38 @@ export default function AntrianPesanan({dataMenu, dataO}){
   
     return(
       <>
-        <h2 className={styles.category}>Pending</h2>
-        <div className={styles.container}>
-          {
-            dataOrder.filter(d => d.status == 1).length > 0 ?
-              dataOrder.filter(d => d.status == 1).map(
-                d => <PendingOrderCard d={d} dataMenu={dataMenu} status={1} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin}></PendingOrderCard>
-              )
-            : <p>No Order</p>
-          }
+        <div className={styles.navbar}>
+          <button onClick={() => setTab("pesananbaru")}>Pesanan Baru</button>
+          <button onClick={() => setTab("diproses")}>Diproses</button>
         </div>
-  
-        <hr></hr>
-  
-        <h2 className={styles.category}>Processing</h2>
-        <div className={styles.container}>
-          {
-            dataOrder.filter(d => d.status == 2).length > 0 ?
-              dataOrder.filter(d => d.status == 2).map(
-                d => <PendingOrderCard d={d} dataMenu={dataMenu} status={2} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin}></PendingOrderCard>
-              )
-            : <p>Accept Pending Order</p>
-          }
-        </div>
+
+        {tab == "pesananbaru" ? 
+          <>
+            <h2 className={styles.category}>Pesanan Baru</h2>
+            <div className={styles.container}>
+              {
+                dataOrder.filter(d => d.status == 1).length > 0 ?
+                  dataOrder.filter(d => d.status == 1).map(
+                    d => <PendingOrderCard d={d} dataMenu={dataMenu} status={1} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin}></PendingOrderCard>
+                  )
+                : <p>No Order</p>
+              }
+            </div>
+          </>
+          : 
+          <>
+            <h2 className={styles.category}>Pesanan Diproses</h2>
+            <div className={styles.container}>
+              {
+                dataOrder.filter(d => d.status == 2).length > 0 ?
+                  dataOrder.filter(d => d.status == 2).map(
+                    d => <PendingOrderCard d={d} dataMenu={dataMenu} status={2} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin}></PendingOrderCard>
+                  )
+                : <p>No Order</p>
+              }
+            </div>
+          </>
+        }
       </>
     )
   }

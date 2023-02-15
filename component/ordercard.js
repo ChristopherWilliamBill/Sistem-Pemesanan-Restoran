@@ -34,9 +34,7 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
             idMeja: idMeja,
             dataOrder: dataOrder
         }
-        
-        console.log(data)
-    
+            
         const JSONdata = JSON.stringify(data)
         const endpoint = '../api/makeorder'
     
@@ -76,7 +74,7 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
                         </ul>
                     : <p style={{textAlign: "center"}}>Order your desired menu by clicking the menu card on the left.</p>}
                     <h3>Total: IDR {order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}</h3>
-                    <button onClick={() => {setIsWaiting(false); resetOrder()}}>Done</button>
+                    {/* <button onClick={() => {setIsWaiting(false); resetOrder()}}>Done</button> */}
                 </>
             : 
                 <>

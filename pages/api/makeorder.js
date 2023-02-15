@@ -12,7 +12,7 @@ export default async (req, res) => {
 
   const idMeja = parseInt(request.idMeja)
 
-  const queryPesanan = `INSERT INTO "Pesanan" ("idMeja", "jam", "status") VALUES (${idMeja}, current_timestamp, 1) RETURNING "idPesanan"`
+  const queryPesanan = `INSERT INTO "Pesanan" ("idMeja", "jam", "status", "selesai") VALUES (${idMeja}, current_timestamp, 1, 0) RETURNING "idPesanan"`
 
   try{
     const result = await conn.query(queryPesanan)
@@ -22,7 +22,7 @@ export default async (req, res) => {
       let idMenu = request.dataOrder[i].idMenu
       let jumlah = request.dataOrder[i].count
   
-      let queryTP = `INSERT INTO "TerdiriPesanan" ("idPesanan", "isiPesanan", "jumlah") VALUES (${currentOrder}, ${idMenu}, ${jumlah})`
+      let queryTP = `INSERT INTO "TerdiriPesanan" ("idPesanan", "isiPesanan", "jumlah", "selesai") VALUES (${currentOrder}, ${idMenu}, ${jumlah}, 0)`
       let resultTerdiriPesanan = await conn.query(queryTP)
     }
 
