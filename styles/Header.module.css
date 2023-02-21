@@ -6,4 +6,23 @@
     display: flex;
     justify-content: space-between;
     position: sticky;
+    align-items: center;
+}
+
+.container button{
+    margin: 1rem;
+    background-color: lightblue;
+    border: none;
+    border-radius: .5rem;
+    color: black;
+    padding: .3rem;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    width: 100px;
+    font-size: 12px;
+}
+
+.container button:hover{
+    background-color: gainsboro;
 }

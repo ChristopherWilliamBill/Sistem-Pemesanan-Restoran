@@ -2,21 +2,7 @@ import styles from "../styles/OrderCard.module.css"
 import { useState } from "react";
 import { useEffect } from "react";
 
-export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, notifyKitchen, isWaiting, setIsWaiting, meja}){
-    
-    // useEffect(() => {
-    //     let i = 0
-    //     const fetchOrderStatus = () => {
-    //         if(isWaiting){
-    //             console.log(i)
-    //             i++
-    //         }
-    //     }
-
-    //     const interval = setInterval(fetchOrderStatus, 1000)
-        
-    //     return () => {clearInterval(interval)}
-    // }, [isWaiting]);
+export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, notifyKitchen, isWaiting, setIsWaiting, meja, idPesanan, getCurrentOrder}){
     
     const handleSubmit = async (e) => {
 
@@ -57,18 +43,47 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
         alert(result.message)
     }
 
+    const cancelMenu = async (menu) => {
+        console.log(menu)
+        console.log(idPesanan)
+
+        const data = {
+            idPesanan: idPesanan,
+            isiPesanan: menu.idMenu
+        }
+
+        const JSONdata = JSON.stringify(data)
+        const endpoint = '../api/cancelmenu'
+        const options = {
+            method: "PUT",
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSONdata
+        }
+        const response = await fetch(endpoint, options)
+        const result = await response.json()
+        resetOrder()
+        getCurrentOrder(meja.substring(6, meja.length))
+        notifyKitchen()
+
+        console.log(result)
+    }
+
     return(
         <div className={styles.ordercontainer}>
 
             { isWaiting ? 
                 <>
                     <h3>Your order is being prepared.</h3> 
+                    <h5>Order ID: {idPesanan}</h5>
                     {order.reduce((i, o) => {return i + o.count}, 0) != 0 ?
                         <ul>
                             {order.filter(o => o.count > 0).map(or => 
-                                <li key={or.id}className={styles.orderlist}>
+                                <li key={or.id} className={styles.orderlistfinished}>
                                     <p>{or.namaMenu}</p>
                                     <p>x {or.count}</p>
+                                    {or.statusPesanan == 1 ? <button className={styles.cancelbtn} onClick={() => cancelMenu(or)}>cancel</button> : null}
                                 </li>
                             )}
                         </ul>
@@ -82,7 +97,7 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
                     {order.reduce((i, o) => {return i + o.count}, 0) != 0 ?
                         <ul>
                             {order.filter(o => o.count > 0).map(or => 
-                                <li key={or.id}className={styles.orderlist}>
+                                <li key={or.id} className={styles.orderlist}>
                                     <p>{or.namaMenu}</p>
                                     <p>x {or.count}</p>
                                     <button onClick={() => addToOrder(or)}>+</button>

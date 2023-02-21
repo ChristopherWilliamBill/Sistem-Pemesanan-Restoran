@@ -10,10 +10,13 @@ import io from 'Socket.IO-client'
 let socket = null
 
 export default function Home({dataMenu}) {
+  const router = useRouter()
 
   const { data: session, status } = useSession()
 
   const [isWaiting, setIsWaiting] = useState(false);
+  const [idPesanan, setIdPesanan] = useState(0)
+  const [order, setOrder] = useState(dataMenu);
 
   const socketInitializer = async () => {
     await fetch('/api/socket')
@@ -22,15 +25,21 @@ export default function Home({dataMenu}) {
     socket.on('connect', () => {
       console.log('connected')
     })
+
+    socket.on('statusorder', (msg) => {
+      resetOrder()
+      getCurrentOrder(msg)
+    })
   }
 
   const notifyKitchen = async () => {
     socket.emit('notify-kitchen', 'new-order')
   }
 
-  const getCurrentOrder = async () => {
+  const getCurrentOrder = async (idMeja) => {
+    resetOrder()
     const data = {
-      idMeja: session.user.name.substring(6, session.user.name.length),
+      idMeja: idMeja
     }
 
     const JSONdata = JSON.stringify(data)
@@ -46,16 +55,18 @@ export default function Home({dataMenu}) {
     }
     const response = await fetch(endpoint, options)
     const dataJSON = await response.json()
-    console.log(dataJSON.message)
 
-    if(dataJSON.message.length > 0){
-      
+    if(dataJSON.message != "Failed"){
+      setIdPesanan(dataJSON.message[0].idPesanan)
+
       for(let i = 0; i < dataJSON.message.length; i++){
         setOrder((order) => [...order].map(o => {
-          if(o.idMenu === dataJSON.message[i].isiPesanan) {
+          if(o.idMenu === dataJSON.message[i].isiPesanan && dataJSON.message[i].status != 2) {
+            o.count = 0
             return {
               ...o,
               count: o.count + dataJSON.message[i].jumlah,
+              statusPesanan: dataJSON.message[0].statusPesanan
             }
           }
           else return o;
@@ -69,17 +80,18 @@ export default function Home({dataMenu}) {
 
   useEffect(() => {
     if(session){
-      getCurrentOrder()
+      const x = session.user.name.substring(6, session.user.name.length)
+      getCurrentOrder(x)
     }
   },[status])
-
-  const router = useRouter()
-
-  const [order, setOrder] = useState(dataMenu);
 
   const resetOrder = () =>{
     setOrder(dataMenu)
   } 
+
+  const resetX = () => {
+    setX(0)
+  }
 
   const addToOrder = (menu) => {
     if(isWaiting){
@@ -109,8 +121,6 @@ export default function Home({dataMenu}) {
     }))
   }
 
-  const learnMore = (menu) => {router.push(`/menu/${menu.idMenu}`)}
-
   if (status === "authenticated"){
     return (
       <>
@@ -119,12 +129,12 @@ export default function Home({dataMenu}) {
         <div className={styles.container}>
           <div className={styles.menucontainer}>
             {dataMenu.map((menu) => (
-              <MenuCard key={menu.idMenu} menu={menu} addToOrder={addToOrder} learnMore={learnMore} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
+              <MenuCard key={menu.idMenu} menu={menu} addToOrder={addToOrder} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
             ))}
           </div>
   
           {session.user.name.substring(0,5) == "Table" ? 
-          <OrderCard order={order} addToOrder={addToOrder} reduceOrder={reduceOrder} resetOrder={resetOrder} notifyKitchen={notifyKitchen} isWaiting={isWaiting} setIsWaiting={setIsWaiting} meja={session.user.name}></OrderCard>
+          <OrderCard order={order} addToOrder={addToOrder} reduceOrder={reduceOrder} resetOrder={resetOrder} notifyKitchen={notifyKitchen} isWaiting={isWaiting} setIsWaiting={setIsWaiting} meja={session.user.name} idPesanan={idPesanan} getCurrentOrder={getCurrentOrder}></OrderCard>
           : 
           <div>
             <h3>Hanya Untuk Pengunjung</h3>
@@ -151,6 +161,8 @@ export async function getServerSideProps(){
 
   for(let i = 0; i < dataMenu.length; i++){
     dataMenu[i].count = 0
+    dataMenu[i].statusPesanan = 0
+    dataMenu[i].status = 0
   }
 
   return{

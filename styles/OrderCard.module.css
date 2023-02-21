@@ -19,8 +19,19 @@
     align-items: center;
 }
 
+.orderlistfinished{
+    display: grid;
+    column-gap: 10px;
+    grid-template-columns: 6fr 1fr 1fr; 
+    align-items: center;
+}
+
 .orderlist button{
     width: 20px;
     display: flex;
     justify-content: center;
+}
+
+.cancelbtn{
+    background-color: orangered;
 }

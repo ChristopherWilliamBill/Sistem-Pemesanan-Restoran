@@ -1,6 +1,6 @@
 import styles from '../styles/MenuCard.module.css'
 
-export default function MenuCard({menu, addToOrder, learnMore}){
+export default function MenuCard({menu, addToOrder}){
 
     return(
         <div className={styles.menucard} onClick={() => addToOrder(menu)}>

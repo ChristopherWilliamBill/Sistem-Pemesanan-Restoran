@@ -23,7 +23,7 @@ export default async (req, res) => {
     res.status(200).send({ message: result.rows})
   }catch(err){
     console.log(err)
-    res.status(400).send({ message: 'Update Failed' })
+    res.status(400).send({ message: 'Failed' })
   }
 
   return

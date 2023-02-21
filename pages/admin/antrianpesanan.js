@@ -12,17 +12,18 @@ export default function AntrianPesanan({dataMenu, dataO}){
 
   const { data: session, status } = useSession()
 
-  const order = dataO.reduce((order, {idPesanan, isiPesanan, jumlah, status, jam, idMeja}) => {
+  const order = dataO.reduce((order, {idPesanan, isiPesanan, jumlah, statusPesanan, jam, idMeja, status}) => {
     if(!order[idPesanan -1]){
-      order[idPesanan -1] = {idPesanan: idPesanan, isiPesanan: [], jumlah: []}
+      order[idPesanan -1] = {idPesanan: idPesanan, isiPesanan: [], jumlah: [], status: []}
     }
     //order[idPesanan] ??= {idPesanan: idPesanan, isiPesanan: "", jumlah: []}; // ??= --> logical nullish assignment
 
     order[idPesanan -1].isiPesanan.push(isiPesanan)
     order[idPesanan -1].jumlah.push(jumlah)
-    order[idPesanan -1].status = status
+    order[idPesanan -1].statusPesanan = statusPesanan
     order[idPesanan -1].jam = jam
     order[idPesanan -1].idMeja = idMeja
+    order[idPesanan -1].status.push(status)
 
     return order;
   }, []);
@@ -40,14 +41,23 @@ export default function AntrianPesanan({dataMenu, dataO}){
 
     socket.on('send-orders', msg => {
       setDataOrder(msg)
+      console.log('nerima order')
+
     })
+  }
+
+  const notifyTable = async (msg) => {
+    socket.emit('handleorder', msg)
   }
 
   const notifyKitchen = async () => {
     socket.emit('notify-kitchen', 'new-order')
+    console.log('notifykithcen')
   }
 
   useEffect(() => {socketInitializer()}, [])
+
+  console.log(dataOrder)
 
   if (status === "authenticated") {
 
@@ -58,18 +68,18 @@ export default function AntrianPesanan({dataMenu, dataO}){
     return(
       <>
         <div className={styles.navbar}>
-          <button onClick={() => setTab("pesananbaru")}>Pesanan Baru</button>
-          <button onClick={() => setTab("diproses")}>Diproses</button>
+          <button onClick={() => setTab("pesananbaru")}>New Orders</button>
+          <button onClick={() => setTab("diproses")}>In The Kitchen</button>
         </div>
 
-        {tab == "pesananbaru" ? 
+        {tab === "pesananbaru" ? 
           <>
-            <h2 className={styles.category}>Pesanan Baru</h2>
+            <h2 className={styles.category}>New Orders</h2>
             <div className={styles.container}>
               {
-                dataOrder.filter(d => d.status == 1).length > 0 ?
-                  dataOrder.filter(d => d.status == 1).map(
-                    d => <PendingOrderCard d={d} dataMenu={dataMenu} status={1} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin}></PendingOrderCard>
+                dataOrder.filter(d => d.statusPesanan == 1).length > 0 ?
+                  dataOrder.filter(d => d.statusPesanan == 1).map(
+                    d => <PendingOrderCard d={d} dataMenu={dataMenu} status={1} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable}></PendingOrderCard>
                   )
                 : <p>No Order</p>
               }
@@ -77,12 +87,12 @@ export default function AntrianPesanan({dataMenu, dataO}){
           </>
           : 
           <>
-            <h2 className={styles.category}>Pesanan Diproses</h2>
+            <h2 className={styles.category}>In The Kitchen</h2>
             <div className={styles.container}>
               {
-                dataOrder.filter(d => d.status == 2).length > 0 ?
-                  dataOrder.filter(d => d.status == 2).map(
-                    d => <PendingOrderCard d={d} dataMenu={dataMenu} status={2} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin}></PendingOrderCard>
+                dataOrder.filter(d => d.statusPesanan == 2).length > 0 ?
+                  dataOrder.filter(d => d.statusPesanan == 2).map(
+                    d => <PendingOrderCard d={d} dataMenu={dataMenu} status={2} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable}></PendingOrderCard>
                   )
                 : <p>No Order</p>
               }
@@ -97,7 +107,8 @@ export default function AntrianPesanan({dataMenu, dataO}){
 export async function getServerSideProps(){
 
   const queryMenu = `SELECT * FROM "Menu"`
-  const queryOrder = `SELECT * FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan"`
+  //const queryOrder = `SELECT * FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan"`
+  const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status" FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan"`
 
   const resMenu = await conn.query(queryMenu)
   const dataMenu = resMenu.rows

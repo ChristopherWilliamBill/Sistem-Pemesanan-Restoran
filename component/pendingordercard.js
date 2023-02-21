@@ -1,7 +1,7 @@
 import styles from '../styles/PendingOrderCard.module.css'
 import { useState, useEffect } from 'react';
 
-export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, idAdmin}){
+export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, notifyTable, idAdmin}){
     const handleOrder = async (status) => {
         const data = {idPesanan: d.idPesanan, status: status, idAdmin:idAdmin}
         console.log(data)
@@ -21,6 +21,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, id
         const result = await response.json()
 
         notifyKitchen()
+        notifyTable(d.idMeja)
     }
 
     const date = new Date()
@@ -37,12 +38,12 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, id
     }
 
     function formatTime(t){
-        const x = t.split(':')
-        const ampm = t.substring(9,t.length)
+        const ampm = t.split(' ')
+        const x = ampm[0].split(':')
 
-        ampm == "PM" ? x[0] = parseInt(x[0]) + 12 : x[0] + 0
+        ampm == "PM" ? x[0] = parseInt(x[0]) + 12 : parseInt(x[0]) + 0
 
-        parseInt(x[0]) < 10 ? x[0] = parseInt(x[0]) + 12 : x[0] + 0
+        parseInt(x[0]) < 10 ? x[0] = parseInt(x[0]) + 12 : parseInt(x[0]) + 0
 
         const y = formatter(x[0]) + ":" + formatter(x[1]) + ":" + formatter(x[2])
 
@@ -50,8 +51,6 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, id
     }
 
     const [time, setTime] = useState(date.toLocaleTimeString());
-
-    console.log(time)
 
     useEffect(() => {
         const interval = setInterval(() => setTime(formatTime(new Date().toLocaleTimeString()), 1000));
@@ -67,24 +66,23 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, id
                 <p><b>Waktu menunggu: {toHMS(toSeconds(time) - toSeconds(d.jam.split(".")[0]))}</b></p>
             </div>
 
-
             <div className={styles.orderlistcontainer}>
-                {d.isiPesanan.map(
-                    (order,index) => 
-                    <div className={styles.orderlist}>
-                        <p>{dataMenu[order - 1].namaMenu}</p> 
-                        <p>x {d.jumlah[index]}</p>
-                    </div>
+                {d.isiPesanan.map((order, index) => 
+                    d.status[index] != 2 ? 
+                        <div key={index} className={styles.orderlist}>
+                            <p>{dataMenu[order - 1].namaMenu}</p> 
+                            <p>x {d.jumlah[index]}</p>
+                            {d.status[index] == 0 && d.statusPesanan == 2? <button>deliver</button>
+                            : null
+                            }
+                        </div>
+                    : null
                 )}
             </div>
 
             <div>
-                {status == 1 ? <button onClick={() => handleOrder(2)}>Accept</button> : <button onClick={() => handleOrder(3)}>Done</button>}    
+                {status == 1 ? <button className={styles.btnaccept} onClick={() => handleOrder(2)}>Accept</button> : <button className={styles.btnaccept} onClick={() => handleOrder(3)}>Done</button>}    
             </div>
-            
-
         </div>
     )
-    
-
 }
