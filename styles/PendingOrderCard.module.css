@@ -20,12 +20,12 @@
 }
 
 .orderlist{
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr;
 }
 
 .orderlistcontainer{
-    width: 80%;
+    width: 90%;
 }
 
 .btnaccept{

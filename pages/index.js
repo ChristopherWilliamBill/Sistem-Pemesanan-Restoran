@@ -26,10 +26,13 @@ export default function Home({dataMenu}) {
       console.log('connected')
     })
 
-    socket.on('statusorder', (msg) => {
-      resetOrder()
-      getCurrentOrder(msg)
-    })
+    if(session){
+      const statusorder = 'statusorder' + session.user.name.substring(6, session.user.name.length)
+      socket.on(statusorder, (msg) => {
+        resetOrder()
+        getCurrentOrder(msg)
+      })
+    }
   }
 
   const notifyKitchen = async () => {
@@ -62,11 +65,11 @@ export default function Home({dataMenu}) {
       for(let i = 0; i < dataJSON.message.length; i++){
         setOrder((order) => [...order].map(o => {
           if(o.idMenu === dataJSON.message[i].isiPesanan && dataJSON.message[i].status != 2) {
-            o.count = 0
             return {
               ...o,
-              count: o.count + dataJSON.message[i].jumlah,
-              statusPesanan: dataJSON.message[0].statusPesanan
+              count: dataJSON.message[i].jumlah,
+              statusPesanan: dataJSON.message[0].statusPesanan,
+              status: dataJSON.message[i].status
             }
           }
           else return o;
@@ -76,7 +79,7 @@ export default function Home({dataMenu}) {
     }
   }
 
-  useEffect(() => {socketInitializer()}, [])
+  useEffect(() => {socketInitializer()}, [status])
 
   useEffect(() => {
     if(session){
@@ -87,14 +90,12 @@ export default function Home({dataMenu}) {
 
   const resetOrder = () =>{
     setOrder(dataMenu)
+    setIdPesanan(0)
   } 
-
-  const resetX = () => {
-    setX(0)
-  }
 
   const addToOrder = (menu) => {
     if(isWaiting){
+      console.log(isWaiting)
       return
     }
 

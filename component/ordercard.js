@@ -37,6 +37,7 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
 
         if(result.message === "Order Success"){
             notifyKitchen()
+            getCurrentOrder(meja.substring(6, meja.length))
             setIsWaiting(true)
         }
 
@@ -44,9 +45,6 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
     }
 
     const cancelMenu = async (menu) => {
-        console.log(menu)
-        console.log(idPesanan)
-
         const data = {
             idPesanan: idPesanan,
             isiPesanan: menu.idMenu
@@ -63,11 +61,15 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
         }
         const response = await fetch(endpoint, options)
         const result = await response.json()
-        resetOrder()
+
         getCurrentOrder(meja.substring(6, meja.length))
         notifyKitchen()
 
         console.log(result)
+        if(result.message === "All menu cancelled"){
+            resetOrder()
+            setIsWaiting(false)
+        }
     }
 
     return(
@@ -75,7 +77,10 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
 
             { isWaiting ? 
                 <>
-                    <h3>Your order is being prepared.</h3> 
+                    {order.some(o => o.statusPesanan == 1 )? <h3>Waiting for comfirmation.</h3> : null}
+                    {order.some(o => o.statusPesanan == 2 )? <h3>Your order is being prepared.</h3> : null}
+                    {order.some(o => o.statusPesanan == 3 )? <h3>Enjoy your meals.</h3> : null}
+
                     <h5>Order ID: {idPesanan}</h5>
                     {order.reduce((i, o) => {return i + o.count}, 0) != 0 ?
                         <ul>
@@ -84,6 +89,8 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
                                     <p>{or.namaMenu}</p>
                                     <p>x {or.count}</p>
                                     {or.statusPesanan == 1 ? <button className={styles.cancelbtn} onClick={() => cancelMenu(or)}>cancel</button> : null}
+                                    {or.status == 0  && or.statusPesanan == 2 ? <p>waiting</p> : null}
+                                    {or.status == 1 ? <p>delivered</p> : null}
                                 </li>
                             )}
                         </ul>

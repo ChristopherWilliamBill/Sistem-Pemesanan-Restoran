@@ -3,11 +3,31 @@ import { useState, useEffect } from 'react';
 
 export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, notifyTable, idAdmin}){
     const handleOrder = async (status) => {
-        const data = {idPesanan: d.idPesanan, status: status, idAdmin:idAdmin}
+        const data = {idPesanan: d.idPesanan, status: status, idAdmin: idAdmin}
         console.log(data)
     
         const JSONdata = JSON.stringify(data)
         const endpoint = '../api/handleorder'
+    
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSONdata
+        }
+    
+        const response = await fetch(endpoint, options)
+        const result = await response.json()
+
+        notifyKitchen()
+        notifyTable(d.idMeja)
+    }
+
+    const deliverOneOrder = async (isiPesanan) => {
+        const data = {idPesanan: d.idPesanan, isiPesanan: isiPesanan, idAdmin: idAdmin}
+        const JSONdata = JSON.stringify(data)
+        const endpoint = '../api/deliveroneorder'
     
         const options = {
             method: 'PUT',
@@ -63,7 +83,8 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         <div className={styles.ordercard}> 
             <div className={styles.orderinfo}>
                 <p><b>Meja: {d.idMeja}</b></p>
-                <p><b>Waktu menunggu: {toHMS(toSeconds(time) - toSeconds(d.jam.split(".")[0]))}</b></p>
+                <p><b>ID: {d.idPesanan}</b></p>
+                {d.statusPesanan < 3 ? <p><b>Waktu menunggu: {toHMS(toSeconds(time) - toSeconds(d.jam.split(".")[0]))}</b></p> : null}
             </div>
 
             <div className={styles.orderlistcontainer}>
@@ -72,7 +93,10 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                         <div key={index} className={styles.orderlist}>
                             <p>{dataMenu[order - 1].namaMenu}</p> 
                             <p>x {d.jumlah[index]}</p>
-                            {d.status[index] == 0 && d.statusPesanan == 2? <button>deliver</button>
+                            {d.status[index] == 0 && d.statusPesanan == 2? <button onClick={() => deliverOneOrder(d.isiPesanan[index])}>deliver</button>
+                            : null
+                            }
+                            {d.status[index] == 1 && d.statusPesanan == 2? <p>delivered</p>
                             : null
                             }
                         </div>
@@ -81,7 +105,8 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
             </div>
 
             <div>
-                {status == 1 ? <button className={styles.btnaccept} onClick={() => handleOrder(2)}>Accept</button> : <button className={styles.btnaccept} onClick={() => handleOrder(3)}>Done</button>}    
+                {status == 1 ? <button className={styles.btnaccept} onClick={() => handleOrder(2)}>Accept</button> : null}
+                {status == 2 ? <button className={styles.btnaccept} onClick={() => handleOrder(3)}>Done</button> : null}    
             </div>
         </div>
     )

@@ -11,7 +11,6 @@ export default (req, res) => {
 
         io.on('connection', socket => {
             socket.on('notify-kitchen', async msg => {
-                console.log('NOTIFY KITCHEN DITERIMA')
                 const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status" FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan"`
 
                 try{
@@ -34,12 +33,8 @@ export default (req, res) => {
                     }, []);
 
                     order.filter(o => o != null)
-                    console.log("ORDER SOCKET:")
-                    console.log(order)
 
                     socket.broadcast.emit('send-orders', order)
-
-
                 }catch(err){
                     console.log(err)
                 }
@@ -47,15 +42,11 @@ export default (req, res) => {
 
             socket.on('handleorder', async msg => {
                 try{
-                    console.log('HANDLE')
-                    socket.broadcast.emit('statusorder', msg)
+                    const statusorder = 'statusorder' + msg
+                    socket.broadcast.emit(statusorder, msg)
                 }catch(err){
                     console.log(err)
                 }
-            })
-
-            socket.on('test', async msg => {
-                console.log(msg)
             })
         })
     }

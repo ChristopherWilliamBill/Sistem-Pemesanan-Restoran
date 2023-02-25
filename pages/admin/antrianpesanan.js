@@ -70,6 +70,7 @@ export default function AntrianPesanan({dataMenu, dataO}){
         <div className={styles.navbar}>
           <button onClick={() => setTab("pesananbaru")}>New Orders</button>
           <button onClick={() => setTab("diproses")}>In The Kitchen</button>
+          <button onClick={() => setTab("pesananselesai")}>Finished Orders</button>
         </div>
 
         {tab === "pesananbaru" ? 
@@ -85,7 +86,9 @@ export default function AntrianPesanan({dataMenu, dataO}){
               }
             </div>
           </>
-          : 
+          : null
+        }
+        {tab === "diproses" ?
           <>
             <h2 className={styles.category}>In The Kitchen</h2>
             <div className={styles.container}>
@@ -98,6 +101,23 @@ export default function AntrianPesanan({dataMenu, dataO}){
               }
             </div>
           </>
+          : null
+        }
+
+        {tab === "pesananselesai" ?
+          <>
+            <h2 className={styles.category}>Finished Orders</h2>
+            <div className={styles.container}>
+              {
+                dataOrder.filter(d => d.statusPesanan == 3).length > 0 ?
+                  dataOrder.filter(d => d.statusPesanan == 3).map(
+                    d => <PendingOrderCard d={d} dataMenu={dataMenu} status={3} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable}></PendingOrderCard>
+                  )
+                : <p>No Order</p>
+              }
+            </div>
+          </>
+          : null
         }
       </>
     )
