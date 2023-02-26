@@ -85,6 +85,7 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
                     {order.reduce((i, o) => {return i + o.count}, 0) != 0 ?
                         <ul>
                             {order.filter(o => o.count > 0).map(or => 
+                            <>
                                 <li key={or.id} className={styles.orderlistfinished}>
                                     <p>{or.namaMenu}</p>
                                     <p>x {or.count}</p>
@@ -92,6 +93,12 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
                                     {or.status == 0  && or.statusPesanan == 2 ? <p>waiting</p> : null}
                                     {or.status == 1 ? <p>delivered</p> : null}
                                 </li>
+                                {or.isiMenu.length > 0 ? 
+                                    <>
+                                        {or.isiMenu.map(o => <p>{order[o - 1].namaMenu}</p>)}
+                                    </>
+                                : null}
+                            </>
                             )}
                         </ul>
                     : <p style={{textAlign: "center"}}>Order your desired menu by clicking the menu card on the left.</p>}
@@ -104,12 +111,21 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
                     {order.reduce((i, o) => {return i + o.count}, 0) != 0 ?
                         <ul>
                             {order.filter(o => o.count > 0).map(or => 
-                                <li key={or.id} className={styles.orderlist}>
-                                    <p>{or.namaMenu}</p>
-                                    <p>x {or.count}</p>
-                                    <button onClick={() => addToOrder(or)}>+</button>
-                                    <button onClick={() => reduceOrder(or)}>-</button>
-                                </li>
+                                <>
+                                    <li key={or.id} className={styles.orderlist}>
+                                        <p>{or.namaMenu}</p>
+                                        <p>x {or.count}</p>
+                                        <button onClick={() => addToOrder(or)}>+</button>
+                                        <button onClick={() => reduceOrder(or)}>-</button>
+                                    </li>
+                                    {or.isiMenu.length > 0 ? 
+                                    <>
+                                        {or.isiMenu.map(o => <p>{order[o].namaMenu}</p>)}
+                                    </>
+                                    
+                                    : null}
+                                </>
+
                             )}
                         </ul>
                     : <p style={{textAlign: "center"}}>Order your desired menu by clicking the menu card on the left.</p>}

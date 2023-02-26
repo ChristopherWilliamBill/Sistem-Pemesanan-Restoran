@@ -15,7 +15,7 @@
 .orderlist{
     display: grid;
     column-gap: 10px;
-    grid-template-columns: 3fr .5fr .3fr .3fr;
+    grid-template-columns: 3fr 1fr .3fr .3fr;
     align-items: center;
 }
 

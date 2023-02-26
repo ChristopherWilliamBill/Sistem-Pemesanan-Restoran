@@ -90,16 +90,19 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
             <div className={styles.orderlistcontainer}>
                 {d.isiPesanan.map((order, index) => 
                     d.status[index] != 2 ? 
+                    <>
                         <div key={index} className={styles.orderlist}>
                             <p>{dataMenu[order - 1].namaMenu}</p> 
                             <p>x {d.jumlah[index]}</p>
-                            {d.status[index] == 0 && d.statusPesanan == 2? <button onClick={() => deliverOneOrder(d.isiPesanan[index])}>deliver</button>
-                            : null
-                            }
-                            {d.status[index] == 1 && d.statusPesanan == 2? <p>delivered</p>
-                            : null
-                            }
+                            {d.status[index] == 0 && d.statusPesanan == 2? <button onClick={() => deliverOneOrder(d.isiPesanan[index])}>deliver</button> : null}
+                            {d.status[index] == 1 && d.statusPesanan == 2? <p>delivered</p> : null}
                         </div>
+
+                        {d.isiPaket[index].length > 0 ? 
+                            d.isiPaket[index].map( isi => <p>{dataMenu[isi - 1].namaMenu}</p>)
+                        : null}
+                    </>
+
                     : null
                 )}
             </div>

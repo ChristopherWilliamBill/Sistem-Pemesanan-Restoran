@@ -14,7 +14,7 @@ export default function AntrianPesanan({dataMenu, dataO}){
 
   const order = dataO.reduce((order, {idPesanan, isiPesanan, jumlah, statusPesanan, jam, idMeja, status}) => {
     if(!order[idPesanan -1]){
-      order[idPesanan -1] = {idPesanan: idPesanan, isiPesanan: [], jumlah: [], status: []}
+      order[idPesanan -1] = {idPesanan: idPesanan, isiPesanan: [], jumlah: [], status: [], isiPaket: []}
     }
     //order[idPesanan] ??= {idPesanan: idPesanan, isiPesanan: "", jumlah: []}; // ??= --> logical nullish assignment
 
@@ -27,6 +27,15 @@ export default function AntrianPesanan({dataMenu, dataO}){
 
     return order;
   }, []);
+
+  //loop setiap order
+  order.map(o => {
+    o.isiPesanan.map( isi => { //lihat setiap isi pesanannya
+      dataMenu[isi - 1].isiMenu.length > 0 ? //kalau isi pesanannya punya isi menu lagi (artinya pesanan ini = paket)
+        o.isiPaket.push(dataMenu[isi - 1].isiMenu) //array isiPaket diisi array isiMenu (daftar menu dari paketnya)
+      : o.isiPaket.push(0) //kalau tidak, isi angka 0 (artinya bukan paket)
+    })
+  })
 
   const [dataOrder, setDataOrder] = useState(order)
   const [tab, setTab] = useState("pesananbaru")
@@ -67,6 +76,7 @@ export default function AntrianPesanan({dataMenu, dataO}){
   
     return(
       <>
+      {console.log(dataOrder)}
         <div className={styles.navbar}>
           <button onClick={() => setTab("pesananbaru")}>New Orders</button>
           <button onClick={() => setTab("diproses")}>In The Kitchen</button>
@@ -127,12 +137,24 @@ export default function AntrianPesanan({dataMenu, dataO}){
 export async function getServerSideProps(){
 
   const queryMenu = `SELECT * FROM "Menu"`
-  //const queryOrder = `SELECT * FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan"`
+  const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
   const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status" FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan"`
 
   const resMenu = await conn.query(queryMenu)
+  const resPaket = await conn.query(queryPaket)
+
   const dataMenu = resMenu.rows
+  const dataPaket = resPaket.rows
+
+  for(let i = 0; i < dataMenu.length; i++){
+    dataMenu[i].isiMenu = []
+  }
+
   dataMenu.sort((a,b) => a.idMenu - b.idMenu)
+
+  for(let i = 0; i < dataPaket.length; i++){
+    dataMenu[dataPaket[i].idMenu - 1].isiMenu.push(dataPaket[i].isiMenu)
+  }
 
   const resOrder = await conn.query(queryOrder)
   const dataO = resOrder.rows

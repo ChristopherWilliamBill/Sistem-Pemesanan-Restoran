@@ -108,6 +108,32 @@ export default function Home({dataMenu}) {
       }
       else return o;
     }))
+
+
+    //kalau menu berupa paket, masukin order satu-satu sesuai isi menu, else, langsung masukin menu ke order
+    // if(menu.isiMenu.length > 0){
+    //   for(let i = 0; i < menu.isiMenu.length; i++){
+    //     setOrder((order) => [...order].map(o => {
+    //       if(o.idMenu === menu.isiMenu[i]) {
+    //         return {
+    //           ...o,
+    //           count: o.count + 1,
+    //         }
+    //       }
+    //       else return o;
+    //     }))
+    //   }
+    // }else{
+    //   setOrder([...order].map(o => {
+    //     if(o.idMenu === menu.idMenu) {
+    //       return {
+    //         ...o,
+    //         count: o.count + 1,
+    //       }
+    //     }
+    //     else return o;
+    //   }))
+    // }
   }
 
   const reduceOrder = (menu) => {
@@ -156,15 +182,28 @@ export default function Home({dataMenu}) {
 
 export async function getServerSideProps(){
   const query = `SELECT * FROM "Menu"`
+  const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
+
   const res = await conn.query(query)
+  const resPaket = await conn.query(queryPaket)
+
   const dataMenu = res.rows
+  const dataPaket = resPaket.rows
+
   dataMenu.sort((a,b) => a.idMenu - b.idMenu)
 
   for(let i = 0; i < dataMenu.length; i++){
     dataMenu[i].count = 0
     dataMenu[i].statusPesanan = 0
     dataMenu[i].status = 0
+    dataMenu[i].isiMenu = []
   }
+
+  for(let i = 0; i < dataPaket.length; i++){
+    dataMenu[dataPaket[i].idMenu - 1].isiMenu.push(dataPaket[i].isiMenu)
+  }
+
+  console.log(dataMenu)
 
   return{
     props:{
