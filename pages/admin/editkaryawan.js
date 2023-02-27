@@ -16,13 +16,13 @@ export default function EditKaryawan({dataAdmin}){
                 <div className={styles.container}>
                     <div classname={styles.left}> 
                         <h3>Pilih karyawan yang mau diedit:</h3>
-                        <div className={styles.listcontainer}>
+                        <ul>
                             {dataAdmin.map(a => 
-                                <div className={styles.admincard} onClick={() => setSelectedAdmin(a)}>
-                                    <p>{a.username}</p>
-                                </div>
+                                <li className={styles.listitem} onClick={() => setSelectedAdmin(a)}>
+                                    {a.username}
+                                </li>
                             )}
-                        </div>
+                        </ul>
                     </div>
 
                     <div className={styles.right}>

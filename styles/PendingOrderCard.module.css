@@ -19,13 +19,27 @@
     position: relative;
 }
 
-.orderlist{
+.orderitem{
     display: grid;
     grid-template-columns: 3fr 1fr 1fr;
+    column-gap: 5em;
+}
+
+.orderlist{
+    position: absolute;
+    top: 0;
+}
+
+.isiPaket{
+    margin-left: 2em;
+    font-size: small;
 }
 
 .orderlistcontainer{
     width: 90%;
+    height: 200px;
+    position: relative;
+    overflow-y: auto;
 }
 
 .btnaccept{

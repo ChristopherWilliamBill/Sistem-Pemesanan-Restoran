@@ -13,11 +13,20 @@
     display: flex;
     justify-content: space-between;
     width: 30%;
-    
+}
+
+.listitem{
+    list-style-type: none;
+    padding: 1em;
+    background-color: aliceblue;
+    border-radius: 1em;
+    margin: 1em;
 }
 
 .container{
     display: flex;
+    justify-content: space-evenly;
+    width: 100%;
 }
 
 .left{

@@ -6,6 +6,24 @@
   display: flex;
 }
 
+.pengunjung{
+  text-align: center;
+}
+
+.containerpengunjung{
+  width: 20%;
+  display: flex;
+  justify-content: center;
+}
+
+.containerSignIn{
+  margin-top: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
 .menucontainer{
   width: 75%;
   margin: 20px;

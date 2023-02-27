@@ -5,21 +5,22 @@ import styles from '../../styles/RiwayatTransaksi.module.css'
 export default function RiwayatTransaksi({dataTransaksi}){
     return(
         <>
-          <table className={styles.table}>
-            <tr>
-              <th>Date</th>
-              <th>Total</th> 
-              <th>Meja</th>
-            </tr>
-            {dataTransaksi.map(d => 
+          <div className={styles.container}>
+            <table className={styles.table}>
               <tr>
-                <td>{d.tanggal}</td>
-                <td>{d.total}</td>
-                <td>{d.idMeja}</td>
+                <th>Date</th>
+                <th>Total</th> 
+                <th>Meja</th>
               </tr>
-            )}
-
-          </table>
+              {dataTransaksi.map(d => 
+                <tr>
+                  <td>{d.tanggal}</td>
+                  <td>{d.total}</td>
+                  <td>{d.idMeja}</td>
+                </tr>
+              )}
+            </table>
+          </div>
         </>
     )
 }

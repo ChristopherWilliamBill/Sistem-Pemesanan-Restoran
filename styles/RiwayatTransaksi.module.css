@@ -12,6 +12,11 @@
     text-align: left;
     padding: 1rem;
 }
+
+.container{
+    display: flex;
+    justify-content: center;
+}
   
 .table td{
     padding: 1rem;

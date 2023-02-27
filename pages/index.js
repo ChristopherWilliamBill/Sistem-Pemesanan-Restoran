@@ -163,8 +163,8 @@ export default function Home({dataMenu}) {
           {session.user.name.substring(0,5) == "Table" ? 
           <OrderCard order={order} addToOrder={addToOrder} reduceOrder={reduceOrder} resetOrder={resetOrder} notifyKitchen={notifyKitchen} isWaiting={isWaiting} setIsWaiting={setIsWaiting} meja={session.user.name} idPesanan={idPesanan} getCurrentOrder={getCurrentOrder}></OrderCard>
           : 
-          <div>
-            <h3>Hanya Untuk Pengunjung</h3>
+          <div className={styles.containerpengunjung}>
+            <h3 className={styles.pengunjung}>Hanya Untuk Pengunjung</h3>
           </div>}
         </div>
       </>
@@ -172,7 +172,7 @@ export default function Home({dataMenu}) {
   }
 
   return (
-    <div className={styles.container}>
+    <div className={styles.containerSignIn}>
       <h1>Please contact administrator.</h1>
       <button className={styles.button} onClick={signIn}>Sign In</button>
     </div>
