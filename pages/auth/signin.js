@@ -30,7 +30,7 @@ export default function SignIn() {
     return(
         <div className={styles.container}>
             <h2>Sign In</h2>
-            <form onSubmit={handleSubmit} className={styles.signinform}>
+            <div onSubmit={handleSubmit} className={styles.signinform}>
                 <label>
                     Username
                     <input type='text' value={username} onChange={({target}) => setUserName(target.value)}></input>
@@ -46,8 +46,8 @@ export default function SignIn() {
                     <input type='radio' value={"admin"} onChange={({target}) => setRole(target.value)} name="role"></input> Administrator
                 </label>
 
-                <input type='submit' className={styles.submitbtn}></input>
-            </form>
+                <button className={styles.submitbtn} onClick={handleSubmit}>Sign In</button>
+            </div>
         </div>
     )
 

@@ -79,8 +79,8 @@ export default function AntrianPesanan({dataMenu, dataO}){
       {console.log(dataOrder)}
         <div className={styles.navbar}>
           <button onClick={() => setTab("pesananbaru")}>New Orders</button>
-          <button onClick={() => setTab("diproses")}>In The Kitchen</button>
-          <button onClick={() => setTab("pesananselesai")}>Finished Orders</button>
+          <button onClick={() => setTab("diproses")}>In the Kitchen</button>
+          <button onClick={() => setTab("pembayaran")}>Waiting for Payment</button>
         </div>
 
         {tab === "pesananbaru" ? 
@@ -100,7 +100,7 @@ export default function AntrianPesanan({dataMenu, dataO}){
         }
         {tab === "diproses" ?
           <>
-            <h2 className={styles.category}>In The Kitchen</h2>
+            <h2 className={styles.category}>In the Kitchen</h2>
             <div className={styles.container}>
               {
                 dataOrder.filter(d => d.statusPesanan == 2).length > 0 ?
@@ -114,9 +114,9 @@ export default function AntrianPesanan({dataMenu, dataO}){
           : null
         }
 
-        {tab === "pesananselesai" ?
+        {tab === "pembayaran" ?
           <>
-            <h2 className={styles.category}>Finished Orders</h2>
+            <h2 className={styles.category}>Waiting for Payment</h2>
             <div className={styles.container}>
               {
                 dataOrder.filter(d => d.statusPesanan == 3).length > 0 ?

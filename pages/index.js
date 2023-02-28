@@ -59,7 +59,11 @@ export default function Home({dataMenu}) {
     const response = await fetch(endpoint, options)
     const dataJSON = await response.json()
 
-    if(dataJSON.message != "Failed"){
+    if(dataJSON.message[0].statusPesanan < 4){
+      resetOrder()
+    }
+
+    if(dataJSON.message != "Failed" && dataJSON.message[0].statusPesanan < 4){
       setIdPesanan(dataJSON.message[0].idPesanan)
 
       for(let i = 0; i < dataJSON.message.length; i++){
@@ -91,6 +95,7 @@ export default function Home({dataMenu}) {
   const resetOrder = () =>{
     setOrder(dataMenu)
     setIdPesanan(0)
+    setIsWaiting(false)
   } 
 
   const addToOrder = (menu) => {

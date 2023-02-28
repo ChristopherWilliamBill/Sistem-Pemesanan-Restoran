@@ -111,7 +111,9 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
 
             <div>
                 {status == 1 ? <button className={styles.btnaccept} onClick={() => handleOrder(2)}>Accept</button> : null}
-                {status == 2 ? <button className={styles.btnaccept} onClick={() => handleOrder(3)}>Done</button> : null}    
+                {status == 2 ? <button className={styles.btnaccept} onClick={() => handleOrder(3)}>Deliver All</button> : null}    
+                {status == 3 ? <button className={styles.btnaccept} onClick={() => handleOrder(4)}>Done</button> : null}    
+
             </div>
         </div>
     )
