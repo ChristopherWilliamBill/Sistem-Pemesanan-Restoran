@@ -2,7 +2,7 @@ import styles from "../styles/OrderCard.module.css"
 import { useState } from "react";
 import { useEffect } from "react";
 
-export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, notifyKitchen, isWaiting, setIsWaiting, meja, idPesanan, getCurrentOrder}){
+export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, notifyKitchen, isWaiting, setIsWaiting, meja, idPesanan, getCurrentOrder, setExtendOrder, extendOrder}){
     
     const handleSubmit = async (e) => {
 
@@ -10,8 +10,6 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
             alert("Order your desired menu by clicking the menu card on the left.")
             return
         }
-
-        e.preventDefault()
 
         const dataOrder = order.filter(o => o.count > 0)
 
@@ -65,10 +63,10 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
         getCurrentOrder(meja.substring(6, meja.length))
         notifyKitchen()
 
-        console.log(result)
         if(result.message === "All menu cancelled"){
             resetOrder()
             setIsWaiting(false)
+            setExtendOrder(false)
         }
     }
 
@@ -77,39 +75,35 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
 
             { isWaiting ? 
                 <>
-                    {order.some(o => o.statusPesanan == 1 )? <h3>Waiting for comfirmation.</h3> : null}
-                    {order.some(o => o.statusPesanan == 2 )? <h3>Your order is being prepared.</h3> : null}
-                    {order.some(o => o.statusPesanan == 3 )? <h3>Enjoy your meals.</h3> : null}
+                    {order.some(o => o.statusPesanan == 1 ) && <h3>Waiting for comfirmation.</h3>}
+                    {order.some(o => o.statusPesanan == 2 ) && <h3>Your order is being prepared.</h3>}
+                    {order.some(o => o.statusPesanan == 3 ) && <h3>Enjoy your meals.</h3>}
 
-                    <h5>Order ID: {idPesanan}</h5>
                     {order.reduce((i, o) => {return i + o.count}, 0) != 0 ?
-                        <ul>
+                        <ul className={styles.ul}>
                             {order.filter(o => o.count > 0).map(or => 
                             <>
                                 <li key={or.id} className={styles.orderlistfinished}>
                                     <p>{or.namaMenu}</p>
                                     <p>x {or.count}</p>
-                                    {or.statusPesanan == 1 ? <button className={styles.cancelbtn} onClick={() => cancelMenu(or)}>cancel</button> : null}
-                                    {or.status == 0  && or.statusPesanan == 2 ? <p>waiting</p> : null}
+                                    {or.statusPesanan == 1 ? <button className='btn-danger' onClick={() => cancelMenu(or)}>cancel</button> : null}
+                                    {or.status == 0 && or.statusPesanan == 2 ? <p>waiting</p> : null}
                                     {or.status == 1 ? <p>delivered</p> : null}
                                 </li>
-                                {or.isiMenu.length > 0 ? 
-                                    <>
-                                        {or.isiMenu.map(o => <p>{order[o - 1].namaMenu}</p>)}
-                                    </>
-                                : null}
+                                {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p>{order[o - 1].namaMenu}</p>)}</>}
                             </>
                             )}
                         </ul>
                     : <p style={{textAlign: "center"}}>Order your desired menu by clicking the menu card on the left.</p>}
-                    <h3>Total: IDR {order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}</h3>
-                    {/* <button onClick={() => {setIsWaiting(false); resetOrder()}}>Done</button> */}
+                    <h4>Total: IDR {order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}</h4>
+                    {!extendOrder && <button onClick={() => setExtendOrder(true)} className='btn-primary'>Add more order</button>}
                 </>
             : 
                 <>
-                    <h2>Your Order</h2>
+                    {!extendOrder ? <h3>Your Order</h3> : <h3>Additional Order</h3>}
+
                     {order.reduce((i, o) => {return i + o.count}, 0) != 0 ?
-                        <ul>
+                        <ul className={styles.ul}>
                             {order.filter(o => o.count > 0).map(or => 
                                 <>
                                     <li key={or.id} className={styles.orderlist}>
@@ -118,12 +112,7 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
                                         <button onClick={() => addToOrder(or)}>+</button>
                                         <button onClick={() => reduceOrder(or)}>-</button>
                                     </li>
-                                    {or.isiMenu.length > 0 ? 
-                                    <>
-                                        {or.isiMenu.map(o => <p>{order[o].namaMenu}</p>)}
-                                    </>
-                                    
-                                    : null}
+                                    {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p>{order[o].namaMenu}</p>)}</>}
                                 </>
 
                             )}
@@ -132,8 +121,8 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
 
                     {<h3>Total: IDR {order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}</h3>}
                     <div>
-                        <button onClick={resetOrder}>clear</button>
-                        <button onClick={handleSubmit}>make order</button>
+                        <button onClick={resetOrder} className='btn-danger'>clear</button>
+                        <button onClick={handleSubmit} className="btn-primary">make order</button>
                     </div>
                 </>
             }

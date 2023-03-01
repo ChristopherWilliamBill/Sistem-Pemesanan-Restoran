@@ -17,6 +17,8 @@ export default function Home({dataMenu}) {
   const [isWaiting, setIsWaiting] = useState(false);
   const [idPesanan, setIdPesanan] = useState(0)
   const [order, setOrder] = useState(dataMenu);
+  const [extendOrder, setExtendOrder] = useState(false)
+  const [orderTambahan, setOrderTambahan] = useState(dataMenu);
 
   const socketInitializer = async () => {
     await fetch('/api/socket')
@@ -100,7 +102,6 @@ export default function Home({dataMenu}) {
 
   const addToOrder = (menu) => {
     if(isWaiting){
-      console.log(isWaiting)
       return
     }
 
@@ -113,32 +114,18 @@ export default function Home({dataMenu}) {
       }
       else return o;
     }))
+  }
 
-
-    //kalau menu berupa paket, masukin order satu-satu sesuai isi menu, else, langsung masukin menu ke order
-    // if(menu.isiMenu.length > 0){
-    //   for(let i = 0; i < menu.isiMenu.length; i++){
-    //     setOrder((order) => [...order].map(o => {
-    //       if(o.idMenu === menu.isiMenu[i]) {
-    //         return {
-    //           ...o,
-    //           count: o.count + 1,
-    //         }
-    //       }
-    //       else return o;
-    //     }))
-    //   }
-    // }else{
-    //   setOrder([...order].map(o => {
-    //     if(o.idMenu === menu.idMenu) {
-    //       return {
-    //         ...o,
-    //         count: o.count + 1,
-    //       }
-    //     }
-    //     else return o;
-    //   }))
-    // }
+  const addToOrderTambahan = (menu) => {
+    setOrderTambahan([...orderTambahan].map(o => {
+      if(o.idMenu === menu.idMenu) {
+        return {
+          ...o,
+          count: o.count + 1,
+        }
+      }
+      else return o;
+    }))
   }
 
   const reduceOrder = (menu) => {
@@ -156,21 +143,31 @@ export default function Home({dataMenu}) {
   if (status === "authenticated"){
     return (
       <>
+      {console.log(orderTambahan)}
         <h1 className={styles.title}>Welcome {session.user.name} !</h1>
   
         <div className={styles.container}>
           <div className={styles.menucontainer}>
             {dataMenu.map((menu) => (
-              <MenuCard key={menu.idMenu} menu={menu} addToOrder={addToOrder} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
+              <MenuCard key={menu.idMenu} menu={menu} addToOrder={addToOrder} extendOrder={extendOrder} addToOrderTambahan={addToOrderTambahan} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
             ))}
           </div>
   
           {session.user.name.substring(0,5) == "Table" ? 
-          <OrderCard order={order} addToOrder={addToOrder} reduceOrder={reduceOrder} resetOrder={resetOrder} notifyKitchen={notifyKitchen} isWaiting={isWaiting} setIsWaiting={setIsWaiting} meja={session.user.name} idPesanan={idPesanan} getCurrentOrder={getCurrentOrder}></OrderCard>
+            <div className={styles.ordercontainer}>
+              <OrderCard order={order} addToOrder={addToOrder} reduceOrder={reduceOrder} resetOrder={resetOrder} notifyKitchen={notifyKitchen} isWaiting={isWaiting} setIsWaiting={setIsWaiting} meja={session.user.name} idPesanan={idPesanan} getCurrentOrder={getCurrentOrder} extendOrder={extendOrder} setExtendOrder={setExtendOrder}></OrderCard>
+
+
+              {/* {ADDTOORDER SAMA REDUCE ORDER BIKIN VERSI ADDITIONAL ORDERNYA} */}
+
+              
+              {extendOrder && <OrderCard extendOrder={extendOrder} order={orderTambahan} addToOrderTambahan={addToOrderTambahan} isWaiting={false} reduceOrder={reduceOrder}></OrderCard>}
+            </div>
           : 
-          <div className={styles.containerpengunjung}>
-            <h3 className={styles.pengunjung}>Hanya Untuk Pengunjung</h3>
-          </div>}
+            <div className={styles.containerpengunjung}>
+              <h3 className={styles.pengunjung}>Hanya Untuk Pengunjung</h3>
+            </div>
+          }
         </div>
       </>
     )
@@ -182,7 +179,6 @@ export default function Home({dataMenu}) {
       <button className={styles.button} onClick={signIn}>Sign In</button>
     </div>
   )
-
 }
 
 export async function getServerSideProps(){

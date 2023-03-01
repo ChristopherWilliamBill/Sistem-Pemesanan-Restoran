@@ -25,7 +25,7 @@
 }
 
 .menucontainer{
-  width: 75%;
+  width: 70%;
   margin: 20px;
   display: grid;
   grid-template-columns: auto auto auto;
@@ -58,4 +58,15 @@
   width: 15px;
   display: flex;
   justify-content: center;
+}
+
+.ordercontainer{
+  position: sticky;
+  top: 0;
+  width: 30%;
+  padding-right: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: fit-content;
 }

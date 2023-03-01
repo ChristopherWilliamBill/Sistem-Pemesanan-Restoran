@@ -10,3 +10,26 @@ body {
 * {
   box-sizing: border-box;
 }
+
+button:hover{
+  background-image: linear-gradient(rgb(0 0 0/40%) 0 0);
+  cursor: pointer;
+}
+
+.btn-primary{
+  background-color: #0275d8;
+  color: white;
+  padding: .5rem 1rem;
+  font-weight: bolder;
+  border: none;
+  border-radius: 10px;
+}
+
+.btn-danger{
+  background-color: #d9534f;
+  color: white;
+  padding: .5rem 1rem;
+  font-weight: bolder;
+  border: none;
+  border-radius: 10px;
+}
