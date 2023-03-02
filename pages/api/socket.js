@@ -12,7 +12,7 @@ export default (req, res) => {
         io.on('connection', socket => {
             socket.on('notify-kitchen', async msg => {
                 const queryMenu = `SELECT * FROM "Menu"`
-                const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status" FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan"`
+                const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status" , "TerdiriPesanan"."delivered" FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan"`
                 const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
 
                 try{
@@ -34,9 +34,11 @@ export default (req, res) => {
                       dataMenu[dataPaket[i].idMenu - 1].isiMenu.push(dataPaket[i].isiMenu)
                     }
 
-                    const order = dataOrder.reduce((order, {idPesanan, isiPesanan, jumlah, statusPesanan, jam, idMeja, status}) => {
+                    console.log(dataOrder)
+
+                    const order = dataOrder.reduce((order, {idPesanan, isiPesanan, jumlah, statusPesanan, jam, idMeja, status, delivered}) => {
                         if(!order[idPesanan -1]){
-                          order[idPesanan -1] = {idPesanan: idPesanan, isiPesanan: [], jumlah: [], status: [], isiPaket: []}
+                          order[idPesanan -1] = {idPesanan: idPesanan, isiPesanan: [], jumlah: [], status: [], isiPaket: [], delivered: []}
                         }
                     
                         order[idPesanan -1].isiPesanan.push(isiPesanan)
@@ -45,6 +47,7 @@ export default (req, res) => {
                         order[idPesanan -1].jam = jam
                         order[idPesanan -1].idMeja = idMeja
                         order[idPesanan -1].status.push(status)
+                        order[idPesanan -1].delivered.push(delivered)
                     
                         return order;
                     }, []);

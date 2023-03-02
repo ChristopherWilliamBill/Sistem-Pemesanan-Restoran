@@ -90,13 +90,29 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
             <div className={styles.orderlistcontainer}>
                 <div className={styles.orderlist}>
                 {d.isiPesanan.map((order, index) => 
-                    d.status[index] != 2 ? 
+                    d.status[index] != 4 ? 
                     <>
+        {console.log(d)}
+
+                    {
+                        // status: 1 => TerdiriPesanan baru
+                        // status: 2 => TerdiriPesanan delivered
+                        // status: 3 => TerdiriPesanan additional order
+                        // status: 4 => TerdiriPesanan cancelled order
+                    }
+
+                    {/* {KALAU STATUSPESANAN = 2 TAPI STATUS = 3 (additional order) ARTINYA PESANAN TAMBAHAN => KASIH WARNA MERAH} */}
+
+
+                    {/* BIKIN FITUR CANCEL ORDER PELANGGAN & MUNCUL NOTIFIKASI DI SISI PELANGGAN */}
+
                         <div key={index} className={styles.orderitem}>
-                            <p>{dataMenu[order - 1].namaMenu}</p> 
-                            <p>x {d.jumlah[index]}</p>
-                            {d.status[index] == 0 && d.statusPesanan == 2? <button onClick={() => deliverOneOrder(d.isiPesanan[index])}>deliver</button> : null}
-                            {d.status[index] == 1 && d.statusPesanan == 2? <p>delivered</p> : null}
+                            <p className={d.status[index] == 3 ? styles.additionalorder : null}>{dataMenu[order - 1].namaMenu}</p> 
+                            {d.statusPesanan == 1 && <p>x {d.jumlah[index]}</p>}
+                            <p>{d.delivered[index]}/{d.jumlah[index]}</p>
+                            {console.log(d)}
+                            {(d.delivered[index] != d.jumlah[index]) && d.statusPesanan == 2? <button onClick={() => deliverOneOrder(d.isiPesanan[index])}>deliver one</button> : null}
+                            {(d.delivered[index] == d.jumlah[index]) && d.statusPesanan == 2? <p>delivered</p> : null}
                         </div>
 
                         {d.isiPaket[index].length > 0 ? 

@@ -61,6 +61,8 @@ export default function Home({dataMenu}) {
     const response = await fetch(endpoint, options)
     const dataJSON = await response.json()
 
+    console.log(dataJSON.message)
+
     if(dataJSON.message[0].statusPesanan < 4){
       resetOrder()
     }
@@ -70,12 +72,13 @@ export default function Home({dataMenu}) {
 
       for(let i = 0; i < dataJSON.message.length; i++){
         setOrder((order) => [...order].map(o => {
-          if(o.idMenu === dataJSON.message[i].isiPesanan && dataJSON.message[i].status != 2) {
+          if(o.idMenu === dataJSON.message[i].isiPesanan && dataJSON.message[i].status != 4) {
             return {
               ...o,
               count: dataJSON.message[i].jumlah,
               statusPesanan: dataJSON.message[0].statusPesanan,
-              status: dataJSON.message[i].status
+              status: dataJSON.message[i].status,
+              delivered: dataJSON.message[i].delivered
             }
           }
           else return o;
@@ -98,6 +101,11 @@ export default function Home({dataMenu}) {
     setOrder(dataMenu)
     setIdPesanan(0)
     setIsWaiting(false)
+  } 
+
+  const resetOrderTambahan = () =>{
+    setOrderTambahan(dataMenu)
+    setExtendOrder(false)
   } 
 
   const addToOrder = (menu) => {
@@ -140,10 +148,21 @@ export default function Home({dataMenu}) {
     }))
   }
 
+  const reduceOrderTambahan = (menu) => {
+    setOrderTambahan([...orderTambahan].map(o => {
+      if(o.idMenu === menu.idMenu) {
+        return {
+          ...o,
+          count: o.count - 1,
+        }
+      }
+      else return o;
+    }))
+  }
+
   if (status === "authenticated"){
     return (
       <>
-      {console.log(orderTambahan)}
         <h1 className={styles.title}>Welcome {session.user.name} !</h1>
   
         <div className={styles.container}>
@@ -161,7 +180,7 @@ export default function Home({dataMenu}) {
               {/* {ADDTOORDER SAMA REDUCE ORDER BIKIN VERSI ADDITIONAL ORDERNYA} */}
 
               
-              {extendOrder && <OrderCard extendOrder={extendOrder} order={orderTambahan} addToOrderTambahan={addToOrderTambahan} isWaiting={false} reduceOrder={reduceOrder}></OrderCard>}
+              {extendOrder && <OrderCard extendOrder={extendOrder} resetOrder={resetOrderTambahan} order={orderTambahan} addToOrder={addToOrderTambahan} isWaiting={false} setIsWaiting={setIsWaiting} reduceOrder={reduceOrderTambahan} meja={session.user.name} idPesanan={idPesanan} notifyKitchen={notifyKitchen} getCurrentOrder={getCurrentOrder} setExtendOrder={setExtendOrder}></OrderCard>}
             </div>
           : 
             <div className={styles.containerpengunjung}>

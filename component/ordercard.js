@@ -4,9 +4,10 @@ import { useEffect } from "react";
 
 export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, notifyKitchen, isWaiting, setIsWaiting, meja, idPesanan, getCurrentOrder, setExtendOrder, extendOrder}){
     
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (tipe) => {
+        console.log(tipe)
 
-        if( order.reduce((i, o) => {return i + o.count}, 0) == 0 ){
+        if(order.reduce((i, o) => {return i + o.count}, 0) == 0){
             alert("Order your desired menu by clicking the menu card on the left.")
             return
         }
@@ -16,7 +17,9 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
         const idMeja = meja.substring(6, meja.length)
         const data = {
             idMeja: idMeja,
-            dataOrder: dataOrder
+            dataOrder: dataOrder,
+            tipe: tipe,
+            ...(idPesanan && {idPesanan: idPesanan})
         }
             
         const JSONdata = JSON.stringify(data)
@@ -35,8 +38,10 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
 
         if(result.message === "Order Success"){
             notifyKitchen()
+            resetOrder()
             getCurrentOrder(meja.substring(6, meja.length))
             setIsWaiting(true)
+            setExtendOrder(false)
         }
 
         alert(result.message)
@@ -72,6 +77,7 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
 
     return(
         <div className={styles.ordercontainer}>
+        {console.log(order)}
 
             { isWaiting ? 
                 <>
@@ -87,8 +93,7 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
                                     <p>{or.namaMenu}</p>
                                     <p>x {or.count}</p>
                                     {or.statusPesanan == 1 ? <button className='btn-danger' onClick={() => cancelMenu(or)}>cancel</button> : null}
-                                    {or.status == 0 && or.statusPesanan == 2 ? <p>waiting</p> : null}
-                                    {or.status == 1 ? <p>delivered</p> : null}
+                                    {or.statusPesanan == 2 ? <p>{or.delivered}/{or.count}</p> : null}
                                 </li>
                                 {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p>{order[o - 1].namaMenu}</p>)}</>}
                             </>
@@ -122,7 +127,7 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
                     {<h3>Total: IDR {order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}</h3>}
                     <div>
                         <button onClick={resetOrder} className='btn-danger'>clear</button>
-                        <button onClick={handleSubmit} className="btn-primary">make order</button>
+                        <button onClick={() => !extendOrder ? handleSubmit('new') : handleSubmit('additional')} className="btn-primary">make order</button>
                     </div>
                 </>
             }
