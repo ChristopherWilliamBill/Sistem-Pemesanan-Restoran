@@ -2,6 +2,9 @@ import styles from '../styles/PendingOrderCard.module.css'
 import { useState, useEffect } from 'react';
 
 export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, notifyTable, idAdmin}){
+
+    const [jumlahDeliver, setJumlahDeliver] = useState(new Array(d.isiPesanan.length).fill(0))
+
     const handleOrder = async (status) => {
         const data = {idPesanan: d.idPesanan, status: status, idAdmin: idAdmin}
         console.log(data)
@@ -24,10 +27,25 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         notifyTable(d.idMeja)
     }
 
-    const deliverOneOrder = async (isiPesanan) => {
-        const data = {idPesanan: d.idPesanan, isiPesanan: isiPesanan, idAdmin: idAdmin}
+    const handleChange = (jumlah, index, max) => {
+        const temp = jumlahDeliver.slice()
+
+        if(jumlah > max){
+            jumlah = max
+        }
+
+        if(!jumlah){
+            jumlah = 0
+        }
+
+        temp[index] = jumlah
+        setJumlahDeliver(temp)
+    }
+
+    const deliverOneOrder = async (isiPesanan, jumlah) => {
+        const data = {idPesanan: d.idPesanan, isiPesanan: isiPesanan, idAdmin: idAdmin, jumlah:jumlah}
         const JSONdata = JSON.stringify(data)
-        const endpoint = '../api/deliveroneorder'
+        const endpoint = '../api/deliverorder'
     
         const options = {
             method: 'PUT',
@@ -42,6 +60,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
 
         notifyKitchen()
         notifyTable(d.idMeja)
+        setJumlahDeliver(new Array(d.isiPesanan.length).fill(0))
     }
 
     const date = new Date()
@@ -92,8 +111,6 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                 {d.isiPesanan.map((order, index) => 
                     d.status[index] != 4 ? 
                     <>
-        {console.log(d)}
-
                     {
                         // status: 1 => TerdiriPesanan baru
                         // status: 2 => TerdiriPesanan delivered
@@ -109,9 +126,10 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                         <div key={index} className={styles.orderitem}>
                             <p className={d.status[index] == 3 ? styles.additionalorder : null}>{dataMenu[order - 1].namaMenu}</p> 
                             {d.statusPesanan == 1 && <p>x {d.jumlah[index]}</p>}
-                            <p>{d.delivered[index]}/{d.jumlah[index]}</p>
+                            {d.statusPesanan > 1 && <p>{d.delivered[index]}/{d.jumlah[index]}</p>}
                             {console.log(d)}
-                            {(d.delivered[index] != d.jumlah[index]) && d.statusPesanan == 2? <button onClick={() => deliverOneOrder(d.isiPesanan[index])}>deliver one</button> : null}
+                            {(d.statusPesanan == 2 && d.delivered[index] < d.jumlah[index]) && <input type='number' min="1" max={d.jumlah[index] - d.delivered[index]} className={styles.inputnumber} onChange={({target}) => handleChange(target.value, index, d.jumlah[index] - d.delivered[index])} value={jumlahDeliver[index]}></input>}
+                            {(d.delivered[index] != d.jumlah[index]) && d.statusPesanan == 2? <button onClick={() => deliverOneOrder(d.isiPesanan[index], jumlahDeliver[index])}>deliver</button> : null}
                             {(d.delivered[index] == d.jumlah[index]) && d.statusPesanan == 2? <p>delivered</p> : null}
                         </div>
 

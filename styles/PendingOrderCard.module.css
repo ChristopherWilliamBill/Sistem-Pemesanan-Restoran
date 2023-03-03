@@ -21,7 +21,8 @@
 
 .orderitem{
     display: grid;
-    grid-template-columns: 3fr 1fr 1fr;
+    grid-template-columns: 3fr 1fr 1fr 1fr;
+    align-items: center;
     column-gap: 3em;
 }
 
@@ -61,4 +62,8 @@
 
 .additionalorder{
     background-color: salmon;
+}
+
+.inputnumber{
+    width: 40px;
 }
