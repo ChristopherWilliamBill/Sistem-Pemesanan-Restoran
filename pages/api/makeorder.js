@@ -1,9 +1,17 @@
 import {conn} from '../../lib/pg.js';
+import { getToken } from "next-auth/jwt"
 
 export default async (req, res) => {
   if(req.method !== "POST"){
     res.status(405)
     return
+  }
+
+  const token = await getToken({ req })
+  if (token) {
+    console.log("JSON Web Token", JSON.stringify(token, null, 2))
+  } else {
+    res.status(401).send({message: "Not signed in"})
   }
 
   const request = req.body
@@ -12,7 +20,7 @@ export default async (req, res) => {
 
   const idMeja = parseInt(request.idMeja)
 
-  const queryPesanan = `INSERT INTO "Pesanan" ("idMeja", "jam", "statusPesanan", "selesai") VALUES (${idMeja}, current_timestamp, 1, 0) RETURNING "idPesanan"`
+  const queryPesanan = `INSERT INTO "Pesanan" ("idMeja", "jam", "statusPesanan", "selesai", "tanggal") VALUES (${idMeja}, current_timestamp, 1, 0, now()) RETURNING "idPesanan"`
 
   try{
     //JIKA PESANAN BARU, BUKAN PESANAN TAMBAHAN
@@ -67,7 +75,7 @@ export default async (req, res) => {
           let jumlah = request.dataOrder[i].count
 
           if(checkMultiple.filter(r => r.isiPesanan == request.dataOrder[i].idMenu).length > 0){
-            let queryUpdateTP = `UPDATE "TerdiriPesanan" SET "jumlah" = "jumlah" + ${jumlah} WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${idMenu}`
+            let queryUpdateTP = `UPDATE "TerdiriPesanan" SET "jumlah" = "jumlah" + ${jumlah}, "status" = 3 WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${idMenu}`
             let resultUpdateTP = await conn.query(queryUpdateTP)
           }else{ //JIKA TIDAK, INSERT BARU  
             let queryTerdiriPesanan = `INSERT INTO "TerdiriPesanan" ("idPesanan", "isiPesanan", "jumlah", "status", "delivered") VALUES (${request.idPesanan}, ${idMenu}, ${jumlah}, 3, 0)`
@@ -89,7 +97,7 @@ export default async (req, res) => {
           let jumlah = request.dataOrder[i].count
 
           if(checkMultiple.filter(r => r.isiPesanan == request.dataOrder[i].idMenu).length > 0){
-            let queryUpdateTP = `UPDATE "TerdiriPesanan" SET "jumlah" = "jumlah" + ${jumlah} WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${idMenu}`
+            let queryUpdateTP = `UPDATE "TerdiriPesanan" SET "jumlah" = "jumlah" + ${jumlah}, "status" = 3 WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${idMenu}`
             let resultUpdateTP = await conn.query(queryUpdateTP)
           }else{ //JIKA TIDAK, INSERT BARU  
             let queryTerdiriPesanan = `INSERT INTO "TerdiriPesanan" ("idPesanan", "isiPesanan", "jumlah", "status", "delivered") VALUES (${request.idPesanan}, ${idMenu}, ${jumlah}, 3, 0)`

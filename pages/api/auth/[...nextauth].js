@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProviders from "next-auth/providers/credentials"
 
-export default NextAuth({
+export const authOptions = {
     providers: [
         CredentialsProviders({
             name: "username and password",
@@ -61,4 +61,6 @@ export default NextAuth({
     pages: {
         signIn: '/auth/signin',
     }
-})
+}
+
+export default NextAuth(authOptions)

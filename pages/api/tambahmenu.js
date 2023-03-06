@@ -1,10 +1,18 @@
 import {conn} from '../../lib/pg.js';
+import { getToken } from "next-auth/jwt"
 
 export default async (req, res) => {
 
   if(req.method !== "POST"){
     res.status(405)
     return
+  }
+
+  const token = await getToken({ req })
+  if (token) {
+    console.log("JSON Web Token", JSON.stringify(token, null, 2))
+  } else {
+    res.status(401).send({message: "Not signed in"})
   }
 
   const request = JSON.parse(JSON.stringify(req.body))

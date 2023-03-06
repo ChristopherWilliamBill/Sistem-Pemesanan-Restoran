@@ -12,29 +12,29 @@ export default function Admin(){
   return(
     <div className={styles.container}>
       <div className={styles.card} onClick={() => router.push("admin/editmenu")}>
-        edit menu
+        Edit Menu
       </div>
 
       <div className={styles.card} onClick={() => router.push("admin/tambahmenu")}>
-        tambah menu
+        Add Menu
       </div>
 
       <div className={styles.card} onClick={() => router.push("admin/antrianpesanan")}>
-        antrian pesanan
+        Order Queue
       </div>
 
       <div className={styles.card} onClick={() => router.push("admin/riwayattransaksi")}>
-        histori transaksi
+        Transaction History
       </div>
 
       {session.role == "manager" ? 
         <>
           <div className={styles.card} onClick={() => router.push("admin/editkaryawan")}>
-            edit karyawan
+            Edit Employee
           </div>
 
           <div className={styles.card} onClick={() => router.push("admin/tambahkaryawan")}>
-            tambah karyawan
+            Add Employee
           </div>
         </>
       : null

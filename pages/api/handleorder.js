@@ -1,4 +1,5 @@
 import {conn} from '../../lib/pg.js';
+import { getToken } from "next-auth/jwt"
 
 export default async (req, res) => {
 
@@ -7,27 +8,39 @@ export default async (req, res) => {
     return
   }
 
+  const token = await getToken({ req })
+  if (token) {
+    console.log("JSON Web Token", JSON.stringify(token, null, 2))
+  } else {
+    res.status(401).send({message: "Not signed in"})
+  }
+
   const request = JSON.parse(JSON.stringify(req.body))
   console.log(request.idPesanan)
 
   let query = `UPDATE "Pesanan" SET "statusPesanan" = ${request.status} WHERE "idPesanan" = ${request.idPesanan}`
-  //const queryOrder = `SELECT * FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan"`
 
   if(request.status > 3){
     query = `UPDATE "Pesanan" SET "statusPesanan" = ${request.status}, "selesai" = 1 WHERE "idPesanan" = ${request.idPesanan}`
   }
 
-  const queryStatus = `UPDATE "TerdiriPesanan" SET "status" = 1 WHERE "idPesanan" = ${request.idPesanan}`
+  const queryGetIsi = `SELECT "isiPesanan", "jumlah" FROM "TerdiriPesanan" WHERE "idPesanan" = ${request.idPesanan}`
+
+
+  const queryStatus = `UPDATE "TerdiriPesanan" SET "status" = 2 WHERE "idPesanan" = ${request.idPesanan}`
 
   const queryKelola = `INSERT INTO "KelolaPesanan" ("idPesanan", "idAdmin", "aksi", "jam") VALUES (${request.idPesanan}, ${request.idAdmin}, ${request.status}, current_timestamp)`
-
-  //const queryPesanan = `INSERT INTO "Pesanan" ("idMeja", "jam", "status") VALUES (1, current_timestamp, 1) RETURNING "idPesanan"`
 
   try{
     const result = await conn.query(query)
     const resultKelola = await conn.query(queryKelola)
 
     if(request.status == 3){
+      const resultGetIsi = await conn.query(queryGetIsi)
+      for(let i = 0; i < resultGetIsi.rows.length; i++){
+        let queryDeliverAll = `UPDATE "TerdiriPesanan" SET "delivered" = ${resultGetIsi.rows[i].jumlah} WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${resultGetIsi.rows[i].isiPesanan}`
+        let resultDeliverAll = await conn.query(queryDeliverAll)
+      }
       const resultStatus = await conn.query(queryStatus)
     }
     

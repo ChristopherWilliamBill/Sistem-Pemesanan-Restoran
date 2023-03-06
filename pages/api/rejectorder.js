@@ -28,15 +28,22 @@ export default async (req, res) => {
   const query = `UPDATE "TerdiriPesanan" SET "status" = 2 WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${request.isiPesanan}`
   const queryFinish = `UPDATE "Pesanan" SET "statusPesanan" = 3 WHERE "idPesanan" = ${request.idPesanan}`
   const queryKelola = `INSERT INTO "KelolaPesanan" ("idPesanan", "idAdmin", "aksi", "jam") VALUES (${request.idPesanan}, ${request.idAdmin}, 3, current_timestamp)`
+  const queryReject = `UPDATE "TerdiriPesanan" SET "jumlah" = "jumlah" - ${request.jumlah} WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${request.isiPesanan} RETURNING "jumlah", "delivered", "idPesanan", "isiPesanan"`
+  const queryDelete = `DELETE FROM "TerdiriPesanan" WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${request.isiPesanan}`
 
   try{
-    //antar pesanan
-    const resultDeliver = await conn.query(queryDeliver)
-    console.log(resultDeliver.rows)
+    //reject pesanan
+    const resultReject = await conn.query(queryReject)
+    console.log(resultReject.rows)
 
     //kalau semua sudah diantar (jumlah pesanan == jumlah delivered), semua terdiripesanan jadi statusnya 2
-    if(resultDeliver.rows[0].jumlah == resultDeliver.rows[0].delivered){
+    if(resultReject.rows[0].jumlah == resultReject.rows[0].delivered){
       const result = await conn.query(query)
+    }
+
+    //kalau semua direject, hapus terdiripesanan
+    if(resultReject.rows[0].jumlah == 0){
+        const resultDelete = await conn.query(queryDelete)
     }
 
     //cek jika semua terdiripesanan statusnya 2

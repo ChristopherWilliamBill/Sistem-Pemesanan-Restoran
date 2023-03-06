@@ -61,8 +61,6 @@ export default function Home({dataMenu}) {
     const response = await fetch(endpoint, options)
     const dataJSON = await response.json()
 
-    console.log(dataJSON.message)
-
     if(dataJSON.message[0].statusPesanan < 4){
       resetOrder()
     }

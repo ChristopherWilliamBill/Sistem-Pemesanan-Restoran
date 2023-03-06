@@ -1,5 +1,6 @@
 import { Server } from 'Socket.IO'
 import {conn} from '../../lib/pg.js';
+import { getToken } from "next-auth/jwt"
 
 export default (req, res) => {
     if (res.socket.server.io) {
@@ -41,13 +42,13 @@ export default (req, res) => {
                           order[idPesanan -1] = {idPesanan: idPesanan, isiPesanan: [], jumlah: [], status: [], isiPaket: [], delivered: []}
                         }
                     
-                        order[idPesanan -1].isiPesanan.push(isiPesanan)
-                        order[idPesanan -1].jumlah.push(jumlah)
-                        order[idPesanan -1].statusPesanan = statusPesanan
-                        order[idPesanan -1].jam = jam
-                        order[idPesanan -1].idMeja = idMeja
-                        order[idPesanan -1].status.push(status)
-                        order[idPesanan -1].delivered.push(delivered)
+                        order[idPesanan - 1].isiPesanan.push(isiPesanan)
+                        order[idPesanan - 1].jumlah.push(jumlah)
+                        order[idPesanan - 1].statusPesanan = statusPesanan
+                        order[idPesanan - 1].jam = jam
+                        order[idPesanan - 1].idMeja = idMeja
+                        order[idPesanan - 1].status.push(status)
+                        order[idPesanan - 1].delivered.push(delivered)
                     
                         return order;
                     }, []);

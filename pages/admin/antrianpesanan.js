@@ -18,13 +18,13 @@ export default function AntrianPesanan({dataMenu, dataO}){
     }
     //order[idPesanan] ??= {idPesanan: idPesanan, isiPesanan: "", jumlah: []}; // ??= --> logical nullish assignment
 
-    order[idPesanan -1].isiPesanan.push(isiPesanan)
-    order[idPesanan -1].jumlah.push(jumlah)
-    order[idPesanan -1].statusPesanan = statusPesanan
-    order[idPesanan -1].jam = jam
-    order[idPesanan -1].idMeja = idMeja
-    order[idPesanan -1].status.push(status)
-    order[idPesanan -1].delivered.push(delivered)
+    order[idPesanan - 1].isiPesanan.push(isiPesanan)
+    order[idPesanan - 1].jumlah.push(jumlah)
+    order[idPesanan - 1].statusPesanan = statusPesanan
+    order[idPesanan - 1].jam = jam
+    order[idPesanan - 1].idMeja = idMeja
+    order[idPesanan - 1].status.push(status)
+    order[idPesanan - 1].delivered.push(delivered)
 
     return order;
   }, []);
@@ -51,8 +51,6 @@ export default function AntrianPesanan({dataMenu, dataO}){
 
     socket.on('send-orders', msg => {
       setDataOrder(msg)
-      console.log('nerima order')
-
     })
   }
 
@@ -62,12 +60,9 @@ export default function AntrianPesanan({dataMenu, dataO}){
 
   const notifyKitchen = async () => {
     socket.emit('notify-kitchen', 'new-order')
-    console.log('notifykithcen')
   }
 
   useEffect(() => {socketInitializer()}, [])
-
-  console.log(dataOrder)
 
   if (status === "authenticated") {
 
@@ -139,7 +134,7 @@ export async function getServerSideProps(){
 
   const queryMenu = `SELECT * FROM "Menu"`
   const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
-  const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status", "TerdiriPesanan"."delivered" FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan"`
+  const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status", "TerdiriPesanan"."delivered" FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" ORDER BY "TerdiriPesanan"."isiPesanan" ASC`
 
   const resMenu = await conn.query(queryMenu)
   const resPaket = await conn.query(queryPaket)
@@ -171,9 +166,9 @@ export async function getServerSideProps(){
 }
 
 AntrianPesanan.getLayout = function getLayout(page) {
-    return (
-      <Layout>
-        {page}
-      </Layout>
-    )
+  return (
+    <Layout>
+      {page}
+    </Layout>
+  )
 }
