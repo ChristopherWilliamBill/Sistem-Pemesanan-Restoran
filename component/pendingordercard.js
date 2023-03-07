@@ -1,8 +1,7 @@
 import styles from '../styles/PendingOrderCard.module.css'
 import { useState, useEffect } from 'react';
 
-export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, notifyTable, idAdmin}){
-
+export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, notifyTable, idAdmin, print, setPrint}){
     const [jumlahDeliver, setJumlahDeliver] = useState(new Array(d.isiPesanan.length).fill(0))
     const [jumlahReject, setJumlahReject] = useState(new Array(d.isiPesanan.length).fill(0))
 
@@ -100,6 +99,33 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         setJumlahReject(new Array(d.isiPesanan.length).fill(0))
     }
 
+    const printOrder = (status) => {
+        setPrint(status)
+        window.print()
+    }
+
+    const acceptAllOrder = async () => {
+        setPrint(2)
+        const data = {idPesanan: d.idPesanan, idAdmin: idAdmin}
+        const JSONdata = JSON.stringify(data)
+        const endpoint = '../api/acceptorder'
+    
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSONdata
+        }
+    
+        const response = await fetch(endpoint, options)
+        const result = await response.json()
+
+        notifyKitchen()
+        notifyTable(d.idMeja)
+        setJumlahDeliver(new Array(d.isiPesanan.length).fill(0))
+    }
+
     const date = new Date()
 
     function toSeconds(t) {
@@ -135,6 +161,13 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         };
     }, []);
 
+    useEffect(() => {
+        if(print == 2) {
+            window.print()
+            setPrint(1)
+        }
+    },[print])
+
     return(
         <div className={styles.ordercard}> 
             <div className={styles.orderinfo}>
@@ -143,10 +176,10 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                 {d.statusPesanan < 3 ? <p><b>Waiting Time: {toHMS(toSeconds(time) - toSeconds(d.jam.split(".")[0]))}</b></p> : null}
             </div>
 
-            <div className={styles.orderlistcontainer}>
+            <div className={`${styles.orderlistcontainer} ${print == 1 && styles.additionalorderprint}`}>
                 <div className={styles.orderlist}>
                 {d.isiPesanan.map((order, index) => 
-                    d.status[index] != 4 && 
+                    (d.status[index] != 4 && d.status[index] != 3) &&
                     <>
                         {
                             // status: 1 => TerdiriPesanan baru
@@ -190,9 +223,29 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
 
             <div>
                 {status == 1 && <button className={styles.btnaccept} onClick={() => handleOrder(2)}>Accept</button>}
-                {status == 2 && <button className={styles.btnaccept} onClick={() => handleOrder(3)}>Deliver All</button>}    
+                {status == 2 && <button className={styles.btnaccept} onClick={() => handleOrder(3)}>Deliver All</button>}   
+                {status == 2 && <button className={styles.btnaccept} onClick={() => printOrder(1)}>Print</button>}     
                 {status == 3 && <button className={styles.btnaccept} onClick={() => handleOrder(4)}>Done</button>}    
             </div>
+
+            {d.status.some( s => s == 3) && 
+                <div className={styles.additionalordercontainer}>
+                    <h4>Additional Order</h4>
+                    <div className={`${styles.orderlisttambahan} ${print == 2 && styles.additionalorderprint}`}>
+                        {d.isiPesanan.map((order, index) => (d.status[index] == 3) && 
+                            <div key={index} className={styles.orderitemtambahan}>
+                                <p className={d.status[index] == 3 && styles.additionalorder}>{dataMenu[order - 1].namaMenu}</p> 
+                                <p className={styles.orderjumlah}>x {d.jumlah[index]}</p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div>
+                        <button className={styles.btnaccept} onClick={acceptAllOrder}>Accept</button>
+                        <button className={styles.btnaccept} onClick={() => {setPrint(2)}}>Print</button>
+                    </div>
+                </div>
+            }
         </div>
     )
 }

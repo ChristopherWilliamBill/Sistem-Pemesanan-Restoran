@@ -14,16 +14,22 @@ export default (req, res) => {
             socket.on('notify-kitchen', async msg => {
                 const queryMenu = `SELECT * FROM "Menu"`
                 const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status" , "TerdiriPesanan"."delivered" FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan"`
+                const queryOrderTambahan = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "PesananTambahan"."isiPesanan", "PesananTambahan"."jumlah", "PesananTambahan"."status", "PesananTambahan"."delivered" FROM "Pesanan" INNER JOIN "PesananTambahan" ON "Pesanan"."idPesanan" = "PesananTambahan"."idPesanan" ORDER BY "PesananTambahan"."isiPesanan" ASC`
                 const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
 
                 try{
                     const resMenu = await conn.query(queryMenu)
                     const resPaket = await conn.query(queryPaket)
-                    const resOrder = await conn.query(queryOrder)
+                    const resOrderUtama = await conn.query(queryOrder)
+                    const resOrderTambahan = await conn.query(queryOrderTambahan)
 
-                    const dataOrder = resOrder.rows
+                    const dataOrderUtama = resOrderUtama.rows
+                    const dataOrderTambahan = resOrderTambahan.rows
+
                     const dataMenu = resMenu.rows
                     const dataPaket = resPaket.rows
+
+                    const dataOrder = dataOrderUtama.concat(dataOrderTambahan)
 
                     for(let i = 0; i < dataMenu.length; i++){
                         dataMenu[i].isiMenu = []
@@ -34,8 +40,6 @@ export default (req, res) => {
                     for(let i = 0; i < dataPaket.length; i++){
                       dataMenu[dataPaket[i].idMenu - 1].isiMenu.push(dataPaket[i].isiMenu)
                     }
-
-                    console.log(dataOrder)
 
                     const order = dataOrder.reduce((order, {idPesanan, isiPesanan, jumlah, statusPesanan, jam, idMeja, status, delivered}) => {
                         if(!order[idPesanan -1]){

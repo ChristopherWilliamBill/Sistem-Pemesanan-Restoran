@@ -40,6 +40,7 @@ export default function AntrianPesanan({dataMenu, dataO}){
 
   const [dataOrder, setDataOrder] = useState(order)
   const [tab, setTab] = useState("pesananbaru")
+  const [print, setPrint] = useState(1)
   
   const socketInitializer = async () => {
     await fetch('/api/socket')
@@ -86,7 +87,7 @@ export default function AntrianPesanan({dataMenu, dataO}){
               {
                 dataOrder.filter(d => d.statusPesanan == 1).length > 0 ?
                   dataOrder.filter(d => d.statusPesanan == 1).map(
-                    d => <PendingOrderCard d={d} dataMenu={dataMenu} status={1} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable}></PendingOrderCard>
+                    d => <PendingOrderCard d={d} dataMenu={dataMenu} status={1} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable} print={print} setPrint={setPrint}></PendingOrderCard>
                   )
                 : <p>No Order</p>
               }
@@ -101,7 +102,7 @@ export default function AntrianPesanan({dataMenu, dataO}){
               {
                 dataOrder.filter(d => d.statusPesanan == 2).length > 0 ?
                   dataOrder.filter(d => d.statusPesanan == 2).map(
-                    d => <PendingOrderCard d={d} dataMenu={dataMenu} status={2} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable}></PendingOrderCard>
+                    d => <PendingOrderCard d={d} dataMenu={dataMenu} status={2} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable} print={print} setPrint={setPrint}></PendingOrderCard>
                   )
                 : <p>No Order</p>
               }
@@ -117,7 +118,7 @@ export default function AntrianPesanan({dataMenu, dataO}){
               {
                 dataOrder.filter(d => d.statusPesanan == 3).length > 0 ?
                   dataOrder.filter(d => d.statusPesanan == 3).map(
-                    d => <PendingOrderCard d={d} dataMenu={dataMenu} status={3} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable}></PendingOrderCard>
+                    d => <PendingOrderCard d={d} dataMenu={dataMenu} status={3} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable} print={print} setPrint={setPrint}></PendingOrderCard>
                   )
                 : <p>No Order</p>
               }
@@ -135,6 +136,7 @@ export async function getServerSideProps(){
   const queryMenu = `SELECT * FROM "Menu"`
   const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
   const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status", "TerdiriPesanan"."delivered" FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" ORDER BY "TerdiriPesanan"."isiPesanan" ASC`
+  const queryOrderTambahan = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "PesananTambahan"."isiPesanan", "PesananTambahan"."jumlah", "PesananTambahan"."status", "PesananTambahan"."delivered" FROM "Pesanan" INNER JOIN "PesananTambahan" ON "Pesanan"."idPesanan" = "PesananTambahan"."idPesanan" ORDER BY "PesananTambahan"."isiPesanan" ASC`
 
   const resMenu = await conn.query(queryMenu)
   const resPaket = await conn.query(queryPaket)
@@ -153,9 +155,12 @@ export async function getServerSideProps(){
   }
 
   const resOrder = await conn.query(queryOrder)
-  const dataO = resOrder.rows
+  const resOrderTambahan = await conn.query(queryOrderTambahan)
 
-  console.log(dataO)
+  const dataOrder = resOrder.rows
+  const dataOrder2 = resOrderTambahan.rows
+
+  const dataO = dataOrder.concat(dataOrder2)
 
   return{
     props:{

@@ -69,14 +69,15 @@ export default function Home({dataMenu}) {
       setIdPesanan(dataJSON.message[0].idPesanan)
 
       for(let i = 0; i < dataJSON.message.length; i++){
+        console.log(dataJSON.message[i])
         setOrder((order) => [...order].map(o => {
           if(o.idMenu === dataJSON.message[i].isiPesanan && dataJSON.message[i].status != 4) {
             return {
               ...o,
-              count: dataJSON.message[i].jumlah,
+              count: o.count + dataJSON.message[i].jumlah,
               statusPesanan: dataJSON.message[0].statusPesanan,
               status: dataJSON.message[i].status,
-              delivered: dataJSON.message[i].delivered
+              delivered: o.delivered + dataJSON.message[i].delivered
             }
           }
           else return o;
@@ -212,6 +213,7 @@ export async function getServerSideProps(){
 
   for(let i = 0; i < dataMenu.length; i++){
     dataMenu[i].count = 0
+    dataMenu[i].delivered = 0
     dataMenu[i].statusPesanan = 0
     dataMenu[i].status = 0
     dataMenu[i].isiMenu = []

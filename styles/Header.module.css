@@ -26,3 +26,9 @@
 .container button:hover{
     background-color: gainsboro;
 }
+
+@media print {
+    .container{
+        visibility: hidden;
+    }
+}

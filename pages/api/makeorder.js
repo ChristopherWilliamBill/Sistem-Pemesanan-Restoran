@@ -66,7 +66,7 @@ export default async (req, res) => {
 
       //JIKA PESANAN UTAMA SUDAH DIACCEPT TAPI BELUM DIMASAK
       if(status == 2){   
-        const queryCheckMultiple = `SELECT "isiPesanan" FROM "TerdiriPesanan" WHERE "idPesanan" = ${request.idPesanan}`
+        const queryCheckMultiple = `SELECT "isiPesanan" FROM "PesananTambahan" WHERE "idPesanan" = ${request.idPesanan}`
         const resultCheckMultiple = await conn.query(queryCheckMultiple)
         const checkMultiple = resultCheckMultiple.rows  
 
@@ -74,11 +74,12 @@ export default async (req, res) => {
           let idMenu = request.dataOrder[i].idMenu
           let jumlah = request.dataOrder[i].count
 
+          //JIKA SUDAH ADA PESANAN TAMBAHAN YANG SAMA
           if(checkMultiple.filter(r => r.isiPesanan == request.dataOrder[i].idMenu).length > 0){
-            let queryUpdateTP = `UPDATE "TerdiriPesanan" SET "jumlah" = "jumlah" + ${jumlah}, "status" = 3 WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${idMenu}`
+            let queryUpdateTP = `UPDATE "PesananTambahan" SET "jumlah" = "jumlah" + ${jumlah}, "status" = 3 WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${idMenu}`
             let resultUpdateTP = await conn.query(queryUpdateTP)
           }else{ //JIKA TIDAK, INSERT BARU  
-            let queryTerdiriPesanan = `INSERT INTO "TerdiriPesanan" ("idPesanan", "isiPesanan", "jumlah", "status", "delivered") VALUES (${request.idPesanan}, ${idMenu}, ${jumlah}, 3, 0)`
+            let queryTerdiriPesanan = `INSERT INTO "PesananTambahan" ("idPesanan", "isiPesanan", "jumlah", "status", "delivered") VALUES (${request.idPesanan}, ${idMenu}, ${jumlah}, 3, 0)`
             let resultTerdiriPesanan = await conn.query(queryTerdiriPesanan)
           }
         }
@@ -86,7 +87,7 @@ export default async (req, res) => {
 
       //JIKA PESANAN UTAMA DIANTAR SEMUA (FINISHED ORDER) TAPI BELUM DIBAYAR
       if(status == 3){    
-        const queryCheckMultiple = `SELECT "isiPesanan" FROM "TerdiriPesanan" WHERE "idPesanan" = ${request.idPesanan}`
+        const queryCheckMultiple = `SELECT "isiPesanan" FROM "PesananTambahan" WHERE "idPesanan" = ${request.idPesanan}`
         const resultCheckMultiple = await conn.query(queryCheckMultiple)
         const checkMultiple = resultCheckMultiple.rows  
         const queryRevertStatus = `UPDATE "Pesanan" SET "statusPesanan" = 2 WHERE "idPesanan" = ${request.idPesanan}`
@@ -96,11 +97,12 @@ export default async (req, res) => {
           let idMenu = request.dataOrder[i].idMenu
           let jumlah = request.dataOrder[i].count
 
+          //JIKA SUDAH ADA PESANAN TAMBAHAN YANG SAMA
           if(checkMultiple.filter(r => r.isiPesanan == request.dataOrder[i].idMenu).length > 0){
-            let queryUpdateTP = `UPDATE "TerdiriPesanan" SET "jumlah" = "jumlah" + ${jumlah}, "status" = 3 WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${idMenu}`
+            let queryUpdateTP = `UPDATE "PesananTambahan" SET "jumlah" = "jumlah" + ${jumlah}, "status" = 3 WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${idMenu}`
             let resultUpdateTP = await conn.query(queryUpdateTP)
           }else{ //JIKA TIDAK, INSERT BARU  
-            let queryTerdiriPesanan = `INSERT INTO "TerdiriPesanan" ("idPesanan", "isiPesanan", "jumlah", "status", "delivered") VALUES (${request.idPesanan}, ${idMenu}, ${jumlah}, 3, 0)`
+            let queryTerdiriPesanan = `INSERT INTO "PesananTambahan" ("idPesanan", "isiPesanan", "jumlah", "status", "delivered") VALUES (${request.idPesanan}, ${idMenu}, ${jumlah}, 3, 0)`
             let resultTerdiriPesanan = await conn.query(queryTerdiriPesanan)
           }
         }

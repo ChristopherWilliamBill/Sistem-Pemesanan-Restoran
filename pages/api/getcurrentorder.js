@@ -26,9 +26,15 @@ export default async (req, res) => {
     const idPesanan = pesanan.rows[0].idPesanan
 
     const queryOrder = `SELECT * FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" WHERE "Pesanan"."idPesanan" = ${idPesanan}`
-    const result = await conn.query(queryOrder)
+    const queryOrderTambahan = `SELECT * FROM "Pesanan" INNER JOIN "PesananTambahan" ON "Pesanan"."idPesanan" = "PesananTambahan"."idPesanan" WHERE "Pesanan"."idPesanan" = ${idPesanan}`
 
-    res.status(200).send({ message: result.rows})
+    const resultOrder = await conn.query(queryOrder)
+    const resultTambahan = await conn.query(queryOrderTambahan)
+
+    const result = resultOrder.rows.concat(resultTambahan.rows)
+    console.log(result)
+
+    res.status(200).send({ message: result})
   }catch(err){
     console.log(err)
     res.status(400).send({ message: 'Failed' })
