@@ -13,11 +13,18 @@ export default function EditMenu({dataMenu}){
   if (status === "authenticated") {
     return(
       <div className={styles.container}>
-        <div className={styles.listmenu}>
-          { dataMenu.map((data) => <div key={data.id} className={styles.menucard} onClick={() => setSelectedMenu(data)}>{data.namaMenu}</div>)}
+        <div> 
+            <h3>Choose the menu to edit:</h3>
+            <div className={styles.listcontainer}>
+                {dataMenu.map(d => 
+                  <p className={styles.listitem} onClick={() => setSelectedMenu(d)}>
+                    {d.namaMenu}
+                  </p>
+                )}
+            </div>
         </div>
 
-        {selectedMenu == null ? <p>No menu selected</p> : <FormEditMenu dataMenu={selectedMenu} idAdmin={session.idAdmin}></FormEditMenu>}
+        {selectedMenu == null ? <p>No menu selected</p> : <FormEditMenu selectedMenu={selectedMenu} dataMenu={dataMenu} idAdmin={session.idAdmin}></FormEditMenu>}
       </div>
     )
   }
@@ -32,14 +39,30 @@ export default function EditMenu({dataMenu}){
 
 export async function getStaticProps(){
   const query = `SELECT * FROM "Menu"`
+  const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
+
   const res = await conn.query(query)
+  const resPaket = await conn.query(queryPaket)
+
   const dataMenu = res.rows
+  const dataPaket = resPaket.rows
+
+  dataMenu.sort((a,b) => a.idMenu - b.idMenu)
+
+  for(let i = 0; i < dataMenu.length; i++){
+    dataMenu[i].isiMenu = []
+  }
+
+  for(let i = 0; i < dataPaket.length; i++){
+    dataMenu[dataPaket[i].idMenu - 1].isiMenu.push(dataPaket[i].isiMenu)
+  }
+
   return{
     props:{
       dataMenu
     }
   }
-} 
+}
 
 EditMenu.getLayout = function getLayout(page) {
     return (

@@ -6,9 +6,9 @@
     font-size: 16px;
     font-weight: 700;
     padding: 20px;
-    text-align: center;
     text-align: left;
     border-radius: 10px;
+    width: 500px;
 }
 
 .tambahmenuform label{
@@ -22,4 +22,29 @@
     width: 30%;
     margin-top: 30px;
     margin-left: 35%;
+}
+
+.paketcontainer{
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
+.inputcontainer{
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    align-items: center;
+    padding: 1rem;
+}
+
+.inputpaketcontainer{
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    align-items: top;
+    padding: 1rem;
+}
+
+.paketlist{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
