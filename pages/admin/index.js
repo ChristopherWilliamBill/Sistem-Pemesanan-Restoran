@@ -15,17 +15,6 @@ export default function Admin(){
         Edit Menu
       </div>
 
-      <div className={styles.card} onClick={() => router.push("admin/tambahmenu")}>
-        Add Menu
-      </div>
-
-      <div className={styles.card} onClick={() => router.push("admin/antrianpesanan")}>
-        Order Queue
-      </div>
-
-      <div className={styles.card} onClick={() => router.push("admin/riwayattransaksi")}>
-        Transaction History
-      </div>
 
       {session.role == "manager" ? 
         <>
@@ -39,6 +28,19 @@ export default function Admin(){
         </>
       : null
       }
+
+      <div className={styles.card} onClick={() => router.push("admin/tambahmenu")}>
+        Add Menu
+      </div>
+
+      <div className={styles.card} onClick={() => router.push("admin/antrianpesanan")}>
+        Order Queue
+      </div>
+
+      <div className={styles.card} onClick={() => router.push("admin/riwayattransaksi")}>
+        Transaction History
+      </div>
+
     </div>
   )
 }

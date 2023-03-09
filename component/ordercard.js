@@ -95,7 +95,7 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
                                     {or.statusPesanan == 1 ? <button className='btn-danger' onClick={() => cancelMenu(or)}>cancel</button> : null}
                                     {or.statusPesanan == 2 ? <p>{or.delivered}/{or.count}</p> : null}
                                 </li>
-                                {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p>{order[o - 1].namaMenu}</p>)}</>}
+                                {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p>{order[o.isiMenu - 1].namaMenu} x {o.jumlah}</p>)}</>}
                             </>
                             )}
                         </ul>
@@ -117,7 +117,7 @@ export default function OrderCard({order, addToOrder, reduceOrder, resetOrder, n
                                         <button onClick={() => addToOrder(or)}>+</button>
                                         <button onClick={() => reduceOrder(or)}>-</button>
                                     </li>
-                                    {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p>{order[o].namaMenu}</p>)}</>}
+                                    {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p>{order[o.isiMenu - 1].namaMenu} x {o.jumlah}</p>)}</>}
                                 </>
 
                             )}

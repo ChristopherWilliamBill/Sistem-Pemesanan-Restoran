@@ -201,7 +201,7 @@ export default function Home({dataMenu}) {
 
 export async function getServerSideProps(){
   const query = `SELECT * FROM "Menu"`
-  const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
+  const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu", "TerdiriMenu"."jumlah" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
 
   const res = await conn.query(query)
   const resPaket = await conn.query(queryPaket)
@@ -220,11 +220,9 @@ export async function getServerSideProps(){
   }
 
   for(let i = 0; i < dataPaket.length; i++){
-    dataMenu[dataPaket[i].idMenu - 1].isiMenu.push(dataPaket[i].isiMenu)
+    dataMenu[dataPaket[i].idMenu - 1].isiMenu.push({isiMenu: dataPaket[i].isiMenu, jumlah: dataPaket[i].jumlah})
   }
-
-  console.log(dataMenu)
-
+  
   return{
     props:{
       dataMenu
