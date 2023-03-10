@@ -50,8 +50,8 @@ export default function AntrianPesanan({dataMenu, dataO}){
       console.log('connected')
     })
 
-    socket.on('send-orders', msg => {
-      setDataOrder(msg)
+    socket.on('sendorders', (msg) => {
+      setDataOrder(order)
     })
   }
 

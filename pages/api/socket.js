@@ -67,7 +67,7 @@ export default (req, res) => {
 
                     order.filter(o => o != null)
 
-                    socket.broadcast.emit('send-orders', order)
+                    socket.emit('sendorders', order)
                 }catch(err){
                     console.log(err)
                 }
