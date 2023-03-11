@@ -1,0 +1,21 @@
+.orderlistfinished{
+    display: grid;
+    column-gap: 10px;
+    grid-template-columns: 6fr 1fr 4fr; 
+    align-items: center;
+    border-bottom: 1px solid black;
+}
+
+.orderlistfinished input{
+    width: 100%;
+}
+
+.aksicontainer{
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
+
+.aksicontainer input{
+    width: 30%;
+}

@@ -1,10 +1,10 @@
 import styles from '../styles/MenuCard.module.css'
 
-export default function MenuCard({menu, addToOrder, addToOrderTambahan, extendOrder}){
+export default function MenuCard({menu, addToOrder, addToInputOrderTambahan, extendOrder}){
 
     const handleOrder = (menu) => {
         if(extendOrder){
-            addToOrderTambahan(menu)
+            addToInputOrderTambahan(menu)
         }else{
             addToOrder(menu)
         }

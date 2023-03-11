@@ -17,13 +17,8 @@ export default async (req, res) => {
 
   const request = JSON.parse(JSON.stringify(req.body))
 
-  if(request.jumlah < 1){
-    res.status(422)
-  }
-
   const queryDelete = `DELETE FROM "PesananTambahan" WHERE "idPesanan" = ${request.idPesanan} RETURNING *`
   const queryCheckMultiple = `SELECT "isiPesanan" FROM "TerdiriPesanan" WHERE "idPesanan" = ${request.idPesanan}`
-
 
   try{
     const resultCheck = await conn.query(queryCheckMultiple)
@@ -39,7 +34,7 @@ export default async (req, res) => {
             let queryUpdateTP = `UPDATE "TerdiriPesanan" SET "jumlah" = "jumlah" + ${jumlah} WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${idMenu}`
             let resultUpdateTP = await conn.query(queryUpdateTP)
         }else{ //JIKA TIDAK, INSERT BARU
-            let queryTerdiriPesanan = `INSERT INTO "TerdiriPesanan" ("idPesanan", "isiPesanan", "jumlah", "status", "delivered") VALUES (${request.idPesanan}, ${idMenu}, ${jumlah}, 1, 0)`
+            let queryTerdiriPesanan = `INSERT INTO "TerdiriPesanan" ("idPesanan", "isiPesanan", "jumlah", "status", "delivered", "requestcancel") VALUES (${request.idPesanan}, ${idMenu}, ${jumlah}, 1, 0, 0)`
             let resultTerdiriPesanan = await conn.query(queryTerdiriPesanan)
         }
     }

@@ -60,7 +60,6 @@ export default function FormEditMenu({selectedMenu, dataMenu, idAdmin}){
             harga: harga,
             idMenu: selectedMenu.idMenu,
             idAdmin: idAdmin,
-            addPaket: addPaket,
             deletedPaket: deletedPaket
         }
     

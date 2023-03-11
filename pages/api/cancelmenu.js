@@ -17,18 +17,26 @@ export default async (req, res) => {
 
   const request = JSON.parse(JSON.stringify(req.body))
 
-  const query = `UPDATE "TerdiriPesanan" SET "status" = 4 WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${request.isiPesanan}`
-  const queryCheck = `SELECT "TerdiriPesanan"."status" FROM "TerdiriPesanan" INNER JOIN "Pesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" WHERE "Pesanan"."idPesanan" = ${request.idPesanan} AND "Pesanan"."statusPesanan" = 1`
+  const queryDecrease = `UPDATE "TerdiriPesanan" SET "jumlah" = "jumlah" - ${request.jumlah} WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${request.isiPesanan} RETURNING "jumlah"`
+  const queryDelete = `DELETE FROM "TerdiriPesanan" WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${request.isiPesanan}`
+  const queryCheck = `SELECT * FROM "TerdiriPesanan" WHERE "idPesanan" = ${request.idPesanan}`
+
+  //const query = `UPDATE "TerdiriPesanan" SET "status" = 4 WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${request.isiPesanan}`
+  //const queryCheck = `SELECT "TerdiriPesanan"."status" FROM "TerdiriPesanan" INNER JOIN "Pesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" WHERE "Pesanan"."idPesanan" = ${request.idPesanan} AND "Pesanan"."statusPesanan" = 1`
   const queryCancelAll = `UPDATE "Pesanan" SET "statusPesanan" = 5, "selesai" = 1 WHERE "idPesanan" = ${request.idPesanan}`
 
-
   try{
-    const result = await conn.query(query)
+    const resultDecrease = await conn.query(queryDecrease)
+    console.log(resultDecrease.rows[0])
+    if(resultDecrease.rows[0].jumlah == 0){
+      const resultDelete = await conn.query(queryDelete)
+    }
+
     const resultCheck = await conn.query(queryCheck)
     console.log(resultCheck.rows)
 
-    if(resultCheck.rows.every(r => r.status == 2)){
-      const resultCancel = await conn.query(queryCancelAll)
+    if(resultCheck.rows.length == 0){
+      const resultCancelAll = await conn.query(queryCancelAll)
       res.status(200).json({ message: 'All menu cancelled' })
     }
 

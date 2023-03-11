@@ -8,27 +8,23 @@
     flex-shrink: 0;
     align-items: center;
     height: auto;
-    max-height: 48vh;
+    max-height: 64vh;
     padding: .5rem;
     box-shadow: 0 4px 8px 0 rgba(203, 156, 156, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .ul{
-    padding: 0;
+    padding: .5rem;
+    margin: 0;
     overflow-y: scroll;
+    width: 100%;
 }
 
 .orderlist{
     display: grid;
     column-gap: 10px;
     grid-template-columns: 3fr 1fr .3fr .3fr;
-    align-items: center;
-}
-
-.orderlistfinished{
-    display: grid;
-    column-gap: 10px;
-    grid-template-columns: 6fr 1fr 1fr; 
     align-items: center;
 }
 
@@ -44,3 +40,4 @@
     border: none;
     color: white;
 }
+

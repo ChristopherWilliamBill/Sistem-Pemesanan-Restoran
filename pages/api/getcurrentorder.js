@@ -31,8 +31,12 @@ export default async (req, res) => {
     const resultOrder = await conn.query(queryOrder)
     const resultTambahan = await conn.query(queryOrderTambahan)
 
-    const result = resultOrder.rows.concat(resultTambahan.rows)
+    const result = {
+      orderUtama: resultOrder.rows,
+      orderTambahan: resultTambahan.rows
+    }
     console.log(result)
+    //const result = resultOrder.rows.concat(resultTambahan.rows)
 
     res.status(200).send({ message: result})
   }catch(err){

@@ -17,7 +17,7 @@
     justify-content: center;
     gap: 3rem;
     background-color: aliceblue;
-    padding: 1rem;
+    padding: .7rem;
 }
 
 .navbar button{
@@ -25,16 +25,17 @@
     border-radius: .5rem;
     border: none;
     color: black;
-    padding: 1rem;
+    padding: .5rem;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    width: 200px;
-    font-size: 13px;
+    width: 175px;
+    font-size: 15px;
 }
 
-.navbar button:hover{
-    background-color: lightblue;
+.selected{
+    background-color: #5ba4e5 !important;
+    font-weight: bold;
 }
 
 @media print{
@@ -44,7 +45,15 @@
     }
 
     .container{
+        display: block;
+    }
+
+    .printarea{
         visibility: visible;
         display: block;
+    }
+
+    .dontprint{
+        display: none;
     }
 }

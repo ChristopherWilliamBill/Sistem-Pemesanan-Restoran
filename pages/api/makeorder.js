@@ -16,8 +16,6 @@ export default async (req, res) => {
 
   const request = req.body
 
-  console.log(request)
-
   const idMeja = parseInt(request.idMeja)
 
   const queryPesanan = `INSERT INTO "Pesanan" ("idMeja", "jam", "statusPesanan", "selesai", "tanggal") VALUES (${idMeja}, current_timestamp, 1, 0, now()) RETURNING "idPesanan"`
@@ -32,7 +30,7 @@ export default async (req, res) => {
         let idMenu = request.dataOrder[i].idMenu
         let jumlah = request.dataOrder[i].count
     
-        let queryTerdiriPesanan = `INSERT INTO "TerdiriPesanan" ("idPesanan", "isiPesanan", "jumlah", "status", "delivered") VALUES (${currentOrder}, ${idMenu}, ${jumlah}, 1, 0)`
+        let queryTerdiriPesanan = `INSERT INTO "TerdiriPesanan" ("idPesanan", "isiPesanan", "jumlah", "status", "delivered", "requestcancel") VALUES (${currentOrder}, ${idMenu}, ${jumlah}, 1, 0, 0)`
         let resultTerdiriPesanan = await conn.query(queryTerdiriPesanan)
       }
     }
@@ -58,7 +56,7 @@ export default async (req, res) => {
             let queryUpdateTP = `UPDATE "TerdiriPesanan" SET "jumlah" = "jumlah" + ${jumlah} WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${idMenu}`
             let resultUpdateTP = await conn.query(queryUpdateTP)
           }else{ //JIKA TIDAK, INSERT BARU
-            let queryTerdiriPesanan = `INSERT INTO "TerdiriPesanan" ("idPesanan", "isiPesanan", "jumlah", "status", "delivered") VALUES (${request.idPesanan}, ${idMenu}, ${jumlah}, 1, 0)`
+            let queryTerdiriPesanan = `INSERT INTO "TerdiriPesanan" ("idPesanan", "isiPesanan", "jumlah", "status", "delivered", "requestcancel") VALUES (${request.idPesanan}, ${idMenu}, ${jumlah}, 1, 0, 0)`
             let resultTerdiriPesanan = await conn.query(queryTerdiriPesanan)
           }
         }

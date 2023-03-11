@@ -20,7 +20,7 @@ export default function RiwayatTransaksi({dataTransaksi}){
                   <td>{d.tanggal}</td>
                   <td>{d.jam.split('.')[0]}</td>
                   <td>{d.idPesanan}</td>
-                  <td>{d.idPesanan}</td>
+                  <td>{d.isiPesanan}</td>
                   <td>{d.idMeja}</td>
                   <td>{d.statusPesanan == 4 ? 'done' : 'cancelled'}</td>
 

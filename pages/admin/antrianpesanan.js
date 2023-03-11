@@ -12,9 +12,9 @@ export default function AntrianPesanan({dataMenu, dataO}){
 
   const { data: session, status } = useSession()
 
-  const order = dataO.reduce((order, {idPesanan, isiPesanan, jumlah, statusPesanan, jam, idMeja, status, delivered}) => {
+  const order = dataO.reduce((order, {idPesanan, isiPesanan, jumlah, statusPesanan, jam, idMeja, status, delivered, requestcancel}) => {
     if(!order[idPesanan -1]){
-      order[idPesanan -1] = {idPesanan: idPesanan, isiPesanan: [], jumlah: [], status: [], isiPaket: [], delivered: []}
+      order[idPesanan -1] = {idPesanan: idPesanan, isiPesanan: [], jumlah: [], status: [], isiPaket: [], delivered: [], requestcancel: []}
     }
     //order[idPesanan] ??= {idPesanan: idPesanan, isiPesanan: "", jumlah: []}; // ??= --> logical nullish assignment
 
@@ -25,12 +25,15 @@ export default function AntrianPesanan({dataMenu, dataO}){
     order[idPesanan - 1].idMeja = idMeja
     order[idPesanan - 1].status.push(status)
     order[idPesanan - 1].delivered.push(delivered)
+    order[idPesanan - 1].requestcancel.push(requestcancel)
 
     return order;
   }, []);
 
-  //loop setiap order
-  order.map(o => {
+  console.log(order)
+
+  //loop setiap order yang sudah difilter (bukan order yang dicancel)
+  order.filter(or => or.status[0] != null).map(o => { 
     o.isiPesanan.map( isi => { //lihat setiap isi pesanannya
       dataMenu[isi - 1].isiMenu.length > 0 ? //kalau isi pesanannya punya isi menu lagi (artinya pesanan ini = paket)
         o.isiPaket.push(dataMenu[isi - 1].isiMenu) //array isiPaket diisi array isiMenu (daftar menu dari paketnya)
@@ -39,9 +42,15 @@ export default function AntrianPesanan({dataMenu, dataO}){
   })
 
   const [dataOrder, setDataOrder] = useState(order)
-  const [tab, setTab] = useState("pesananbaru")
-  const [print, setPrint] = useState(1)
-  
+  const [tab, setTab] = useState("neworders")
+  const [print, setPrint] = useState(new Array(dataOrder.filter(d => d.statusPesanan == 2).length).fill(0))
+
+  const printOrder = (index) => {
+    let temp = print.slice()
+    temp[index] = 1
+    setPrint(temp)
+  }  
+
   const socketInitializer = async () => {
     await fetch('/api/socket')
     socket = io()
@@ -51,7 +60,7 @@ export default function AntrianPesanan({dataMenu, dataO}){
     })
 
     socket.on('sendorders', (msg) => {
-      setDataOrder(order)
+      setDataOrder(msg)
     })
   }
 
@@ -60,10 +69,18 @@ export default function AntrianPesanan({dataMenu, dataO}){
   }
 
   const notifyKitchen = async () => {
-    socket.emit('notify-kitchen', 'new-order')
+    socket.emit('notify-kitchen', 'kitchen')
   }
 
   useEffect(() => {socketInitializer()}, [])
+  useEffect(() => setPrint(new Array(dataOrder.filter(d => d.statusPesanan == 2).length).fill(0)), [dataOrder])
+  useEffect(() => {
+    if(!print.every(p => p == 0)){
+      window.print()
+      setPrint(new Array(dataOrder.filter(d => d.statusPesanan == 2).length).fill(0))
+    }
+  }, [print])
+
 
   if (status === "authenticated") {
 
@@ -73,47 +90,44 @@ export default function AntrianPesanan({dataMenu, dataO}){
   
     return(
       <>
-      {console.log(dataOrder)}
         <div className={styles.navbar}>
-          <button onClick={() => setTab("pesananbaru")}>New Orders</button>
-          <button onClick={() => setTab("diproses")}>In the Kitchen</button>
-          <button onClick={() => setTab("pembayaran")}>Waiting for Payment</button>
+          <button onClick={() => setTab("neworders")} className={tab === "neworders" && styles.selected}>New Orders</button>
+          <button onClick={() => setTab("kitchen")} className={tab === "kitchen" && styles.selected}>In the Kitchen</button>
+          <button onClick={() => setTab("payment")} className={tab === "payment" && styles.selected}>Waiting for Payment</button>
         </div>
 
-        {tab === "pesananbaru" ? 
+        {tab === "neworders" && 
           <>
-            <h2 className={styles.category}>New Orders</h2>
             <div className={styles.container}>
               {
                 dataOrder.filter(d => d.statusPesanan == 1).length > 0 ?
                   dataOrder.filter(d => d.statusPesanan == 1).map(
-                    d => <PendingOrderCard d={d} dataMenu={dataMenu} status={1} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable} print={print} setPrint={setPrint}></PendingOrderCard>
+                    (d, index) => (<PendingOrderCard d={d} dataMenu={dataMenu} status={1} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable} index={index} setPrint={setPrint}></PendingOrderCard>)
                   )
                 : <p>No Order</p>
               }
             </div>
           </>
-          : null
         }
-        {tab === "diproses" ?
+        {tab === "kitchen" &&
           <>
-            <h2 className={styles.category}>In the Kitchen</h2>
             <div className={styles.container}>
               {
                 dataOrder.filter(d => d.statusPesanan == 2).length > 0 ?
                   dataOrder.filter(d => d.statusPesanan == 2).map(
-                    d => <PendingOrderCard d={d} dataMenu={dataMenu} status={2} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable} print={print} setPrint={setPrint}></PendingOrderCard>
+                    (d,index) =>  
+                      <div className={print[index] == 1 ? styles.printarea : styles.dontprint}>
+                        <PendingOrderCard d={d} dataMenu={dataMenu} status={2} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable} index={index} setPrint={setPrint} printOrder={printOrder}></PendingOrderCard>
+                      </div>
                   )
                 : <p>No Order</p>
               }
             </div>
           </>
-          : null
         }
 
-        {tab === "pembayaran" ?
+        {tab === "payment" &&
           <>
-            <h2 className={styles.category}>Waiting for Payment</h2>
             <div className={styles.container}>
               {
                 dataOrder.filter(d => d.statusPesanan == 3).length > 0 ?
@@ -124,7 +138,6 @@ export default function AntrianPesanan({dataMenu, dataO}){
               }
             </div>
           </>
-          : null
         }
       </>
     )
@@ -135,7 +148,7 @@ export async function getServerSideProps(){
 
   const queryMenu = `SELECT * FROM "Menu"`
   const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
-  const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status", "TerdiriPesanan"."delivered" FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" ORDER BY "TerdiriPesanan"."isiPesanan" ASC`
+  const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status", "TerdiriPesanan"."delivered", "TerdiriPesanan"."requestcancel" FROM "Pesanan" LEFT JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" ORDER BY "TerdiriPesanan"."isiPesanan" ASC`
   const queryOrderTambahan = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "PesananTambahan"."isiPesanan", "PesananTambahan"."jumlah", "PesananTambahan"."status", "PesananTambahan"."delivered" FROM "Pesanan" INNER JOIN "PesananTambahan" ON "Pesanan"."idPesanan" = "PesananTambahan"."idPesanan" ORDER BY "PesananTambahan"."isiPesanan" ASC`
 
   const resMenu = await conn.query(queryMenu)
