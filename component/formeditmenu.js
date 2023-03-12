@@ -4,6 +4,7 @@ import Router, { useRouter } from "next/router";
 
 export default function FormEditMenu({selectedMenu, dataMenu, idAdmin}){
     const router = useRouter()
+    console.log(selectedMenu)
 
     const [namaMenu, setNamaMenu] = useState("")
     const [deskripsi, setDeskripsi] = useState("")
@@ -52,6 +53,27 @@ export default function FormEditMenu({selectedMenu, dataMenu, idAdmin}){
         // }
         
     }, [paket])
+
+    const menuActivation = async (action) => {
+        const data = { idMenu: selectedMenu.idMenu, action: action, idAdmin: idAdmin }
+
+        const JSONdata = JSON.stringify(data)
+    
+        const endpoint = '../api/menuactivation'
+    
+        const options = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSONdata
+        }
+    
+        const response = await fetch(endpoint, options)
+        const result = await response.json()
+        alert(result.message)
+        router.push('../')
+    } 
 
     const handleSubmit = async () => {
         const data = {
@@ -194,9 +216,9 @@ export default function FormEditMenu({selectedMenu, dataMenu, idAdmin}){
 
                 <div className={styles.finishbutton}>
                     <button className={'btn-primary'} onClick={handleSubmit}>Submit</button>
-                    <button className={'btn-danger'}>Deactivate Menu</button>
+                    {selectedMenu.aktif === 1 && <button className={'btn-danger'} onClick={() => menuActivation(0)}>Deactivate Menu</button>}
+                    {selectedMenu.aktif === 0 && <button className={'btn-primary'} onClick={() => menuActivation(1)}>Activate Menu</button>}
                 </div>
-
             </div>
         </div>
     )

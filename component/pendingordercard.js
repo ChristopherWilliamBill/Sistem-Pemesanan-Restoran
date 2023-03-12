@@ -6,6 +6,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
     const [jumlahReject, setJumlahReject] = useState(new Array(d.isiPesanan.length).fill(0))
     const [jumlahAdditionalReject, setJumlahAdditionalReject] = useState(new Array(d.isiPesanan.length).fill(0))
     const [printAdditional, setPrintAdditional] = useState(0)
+    const [total, setTotal] = useState(0)
 
     const handleOrder = async (status) => {
         const data = {idPesanan: d.idPesanan, status: status, idAdmin: idAdmin}
@@ -14,6 +15,26 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
 
         const options = {
             method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSONdata
+        }
+    
+        const response = await fetch(endpoint, options)
+        const result = await response.json()
+
+        notifyKitchen()
+        notifyTable(d.idMeja)
+    }
+
+    const finishOrder = async () => {
+        const data = {idPesanan: d.idPesanan, idMeja: d.idMeja, idAdmin: idAdmin, total: total}
+        const JSONdata = JSON.stringify(data)
+        const endpoint = '../api/inserttransaksi'
+
+        const options = {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -87,8 +108,6 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
             isiPesanan: isiPesanan,
             jumlah: jumlah
         }
-
-        console.log(data)
 
         const JSONdata = JSON.stringify(data)
         const endpoint = '../api/cancelmenu'
@@ -203,8 +222,8 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         setJumlahAdditionalReject(new Array(d.isiPesanan.length).fill(0))
     }
 
-    const handleRequestCancel = async (aksi) => {
-        const data = {aksi: aksi}
+    const handleRequestCancel = async (aksi, idPesanan, isiPesanan) => {
+        const data = {aksi: aksi, idPesanan: idPesanan, isiPesanan: isiPesanan}
         const JSONdata = JSON.stringify(data)
         const endpoint = '../api/handlerequestcancel'
 
@@ -223,20 +242,28 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         notifyTable(d.idMeja)
     }
 
+    const calculateTotal = () => {
+        let total = 0
+        for(let i = 0; i < d.isiPesanan.length; i++){
+            total += (dataMenu[d.isiPesanan[i] - 1].harga * d.jumlah[i])
+        }
+        return total
+    }
+
     const date = new Date()
 
-    function toSeconds(t) {
+    const toSeconds = (t) => {
         let x = t.split(':');
         return (x[0] * 3600) + (x[1] * 60) + (x[2] * 1)
     }
 
-    function formatter(n){return (n < 10 ? '0' : '') + n}
+    const formatter = (n) => {return (n < 10 ? '0' : '') + n}
 
-    function toHMS(secs) {
+    const toHMS = (secs) => {
         return formatter(parseInt(secs/3600)) + 'h:' + formatter(parseInt(secs%3600/60)) + 'm:' + formatter(parseInt(secs%60)) + "s"
     }
 
-    function formatTime(t){
+    const formatTime = (t) => {
         const ampm = t.split(' ')
         const x = ampm[0].split(':')
 
@@ -257,13 +284,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
     }, []);
 
     useEffect(() => {
-        if(print == 2) {
-            window.print()
-            setPrint(1)
-        }
-    },[print])
-
-    useEffect(() => {
+        setTotal(Math.ceil(calculateTotal() * 1.15))
         setJumlahDeliver(new Array(d.isiPesanan.length).fill(0))
         setJumlahReject(new Array(d.isiPesanan.length).fill(0))
         setJumlahAdditionalReject(new Array(d.isiPesanan.length).fill(0))
@@ -303,6 +324,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                             <p className={d.status[index] == 3 && styles.additionalorder}>{dataMenu[order - 1].namaMenu}</p> {/* nama menu */}
                             {d.statusPesanan == 1 && <p className={styles.orderjumlah}>x {d.jumlah[index]}</p>} {/* jumlah (x 3) */}
                             {d.statusPesanan > 1 && <p className={styles.orderjumlah}>{d.delivered[index]}/{d.jumlah[index]}</p>} {/* delivered (1/3) */}
+                            {d.statusPesanan === 3 && <p className={styles.harga}>Rp {dataMenu[order - 1].harga.toLocaleString()}</p>}
 
                             {d.requestcancel[index] == 0 &&
                                 <div className={styles.orderaction}>
@@ -332,8 +354,8 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                             <div className={styles.requestcancel}>
                                 <p>Cancellation requested </p>
                                 <p> x {d.requestcancel[index]}</p>
-                                <button onClick={() => handleRequestCancel('approve')}>Approve</button>
-                                <button onClick={() => handleRequestCancel('reject')}>Reject</button>
+                                <button onClick={() => handleRequestCancel('approve', d.idPesanan, d.isiPesanan[index])}>Approve</button>
+                                <button onClick={() => handleRequestCancel('reject', d.idPesanan, d.isiPesanan[index])}>Reject</button>
                             </div>
                         }
 
@@ -345,11 +367,14 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                 </div>
             </div>
 
+            {d.statusPesanan === 3 && <p>Total: Rp {calculateTotal().toLocaleString()}</p>}
+            {d.statusPesanan === 3 && <h4>Total with tax and service (15%): Rp {total.toLocaleString()}</h4>}
+
             <div>
                 {status == 1 && <button className={styles.btnaccept} onClick={() => handleOrder(2)}>Accept</button>}
                 {status == 2 && <button className={styles.btnaccept} onClick={() => handleOrder(3)}>Deliver All</button>}   
                 {status == 2 && <button className={styles.btnaccept} onClick={() => printOrder(index)}>Print</button>}     
-                {status == 3 && <button className={styles.btnaccept} onClick={() => handleOrder(4)}>Done</button>}    
+                {status == 3 && <button className={styles.btnaccept} onClick={() => {handleOrder(4); finishOrder()}}>Done</button>}    
             </div>
 
             {/* ADDITIONAL ORDER */}

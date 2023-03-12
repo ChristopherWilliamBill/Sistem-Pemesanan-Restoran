@@ -9,7 +9,6 @@ export default function EditMenu({dataMenu}){
   const [selectedMenu, setSelectedMenu] = useState(null);
 
   const { data: session, status } = useSession()
-
   if (status === "authenticated") {
     return(
       <div className={styles.container}>
@@ -65,9 +64,9 @@ export async function getStaticProps(){
 }
 
 EditMenu.getLayout = function getLayout(page) {
-    return (
-      <Layout>
-        {page}
-      </Layout>
-    )
+  return (
+    <Layout>
+      {page}
+    </Layout>
+  )
 }

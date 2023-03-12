@@ -23,6 +23,12 @@ export default async (req, res) => {
   try{
     const pesanan = await conn.query(query)
     const menu = await conn.query(queryMenu)
+
+    if(pesanan.rows.length === 0){
+      res.status(400).send({ message: 'Failed'})
+      return
+    }
+
     const idPesanan = pesanan.rows[0].idPesanan
 
     const queryOrder = `SELECT * FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" WHERE "Pesanan"."idPesanan" = ${idPesanan}`
@@ -43,7 +49,5 @@ export default async (req, res) => {
     console.log(err)
     res.status(400).send({ message: 'Failed' })
   }
-
   return
-
 }

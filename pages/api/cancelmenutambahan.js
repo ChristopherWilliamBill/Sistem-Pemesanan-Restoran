@@ -19,11 +19,18 @@ export default async (req, res) => {
 
     const queryDecrease = `UPDATE "PesananTambahan" SET "jumlah" = "jumlah" - ${request.jumlah} WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${request.isiPesanan} RETURNING "jumlah"`
     const queryDelete = `DELETE FROM "PesananTambahan" WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${request.isiPesanan}`
+    const queryCheck = `SELECT "status" FROM "TerdiriPesanan" WHERE "idPesanan" = ${request.idPesanan}`
+    const queryFinish = `UPDATE "Pesanan" SET "statusPesanan" = 3 WHERE "idPesanan" = ${request.idPesanan}`
 
     try{
         const resultDecrease = await conn.query(queryDecrease)
         if(resultDecrease.rows[0].jumlah == 0){
             const resultDelete = await conn.query(queryDelete)
+        }
+
+        const resultCheck = await conn.query(queryCheck)
+        if(resultCheck.rows.every(r => r.status === 2)){
+            const resultFinish = await conn.query(queryFinish)
         }
         
         res.status(200).json({ message: 'Update Success' })

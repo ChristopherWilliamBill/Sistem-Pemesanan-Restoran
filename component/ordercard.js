@@ -45,6 +45,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
     }
 
     const requestCancel = async (menu, jumlah) => {
+        if(jumlah === 0){ return }
         const data = {
             idPesanan: idPesanan,
             isiPesanan: menu.idMenu,
@@ -69,6 +70,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
     }
 
     const cancelMenu = async (menu, jumlah) => {
+        if(jumlah === 0){ return }
         const data = {
             idPesanan: idPesanan,
             isiPesanan: menu.idMenu,
@@ -99,6 +101,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
     }
 
     const cancelAdditional = async (menu, jumlah) => {
+        if(jumlah === 0){ return }
         const data = {
             idPesanan: idPesanan,
             isiPesanan: menu.idMenu,

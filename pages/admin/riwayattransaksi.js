@@ -9,21 +9,16 @@ export default function RiwayatTransaksi({dataTransaksi}){
             <table className={styles.table}>
               <tr>
                 <th>Date</th>
-                <th>Time</th>
                 <th>ORDER ID</th>
                 <th>Total</th> 
                 <th>Table</th>
-                <th>Status</th>
               </tr>
               {dataTransaksi.map(d => 
                 <tr>
                   <td>{d.tanggal}</td>
-                  <td>{d.jam.split('.')[0]}</td>
                   <td>{d.idPesanan}</td>
-                  <td>{d.isiPesanan}</td>
+                  <td>Rp {d.total.toLocaleString()}</td>
                   <td>{d.idMeja}</td>
-                  <td>{d.statusPesanan == 4 ? 'done' : 'cancelled'}</td>
-
                 </tr>
               )}
             </table>
@@ -33,7 +28,8 @@ export default function RiwayatTransaksi({dataTransaksi}){
 }
 
 export async function getStaticProps(){
-  const query = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."idMeja", "Pesanan"."tanggal", "Pesanan"."jam", "Menu"."harga", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah" FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" INNER JOIN "Menu" ON "Menu"."idMenu" = "TerdiriPesanan"."isiPesanan" WHERE "Pesanan"."selesai" = 1`
+  //const query = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."idMeja", "Pesanan"."tanggal", "Pesanan"."jam", "Menu"."harga", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah" FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" INNER JOIN "Menu" ON "Menu"."idMenu" = "TerdiriPesanan"."isiPesanan" WHERE "Pesanan"."selesai" = 1`
+  const query = `SELECT * FROM "Transaksi" INNER JOIN "TerdiriTransaksi" ON "Transaksi"."idTransaksi" = "TerdiriTransaksi"."idTransaksi"`
   const result = await conn.query(query)
   const dataTransaksi = result.rows
 

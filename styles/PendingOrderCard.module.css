@@ -86,6 +86,10 @@
     grid-area: b;
 }
 
+.harga{
+    grid-area: d;
+}
+
 .orderaction{
     display: flex;
     grid-area: d;

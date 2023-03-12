@@ -25,23 +25,30 @@ export default async (req, res) => {
   }
 
   const queryGetIsi = `SELECT "isiPesanan", "jumlah" FROM "TerdiriPesanan" WHERE "idPesanan" = ${request.idPesanan}`
-
-
   const queryStatus = `UPDATE "TerdiriPesanan" SET "status" = 2 WHERE "idPesanan" = ${request.idPesanan}`
-
   const queryKelola = `INSERT INTO "KelolaPesanan" ("idPesanan", "idAdmin", "aksi", "jam") VALUES (${request.idPesanan}, ${request.idAdmin}, ${request.status}, current_timestamp)`
+  const queryCheckAdditional = `SELECT * FROM "PesananTambahan" WHERE "idPesanan" = ${request.idPesanan}`
 
   try{
-    const result = await conn.query(query)
+    if(request.status !== 3) {
+      const result = await conn.query(query)
+    }
+
     const resultKelola = await conn.query(queryKelola)
 
-    if(request.status == 3){
+    if(request.status === 3){
       const resultGetIsi = await conn.query(queryGetIsi)
       for(let i = 0; i < resultGetIsi.rows.length; i++){
         let queryDeliverAll = `UPDATE "TerdiriPesanan" SET "delivered" = ${resultGetIsi.rows[i].jumlah} WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${resultGetIsi.rows[i].isiPesanan}`
         let resultDeliverAll = await conn.query(queryDeliverAll)
       }
       const resultStatus = await conn.query(queryStatus)
+
+      const resultCheckAdditional = await conn.query(queryCheckAdditional)
+      //jika tidak ada pesanan tambahan
+      if(resultCheckAdditional.rows.length === 0){
+        const resultStatus3 = await conn.query(query)
+      }
     }
     
     res.status(200).json({ mesage: 'Success'})

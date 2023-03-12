@@ -20,7 +20,12 @@ export default function SignIn() {
             redirect: false
         }).then(({ok, error}) => {
             if(ok){
-                router.push('../')
+                if(role === "meja"){
+                    router.push('../')
+                }
+                if(role === "admin"){
+                    router.push('../admin')
+                }
             }else{
                 alert("Username or password invalid")
             }

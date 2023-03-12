@@ -45,6 +45,10 @@ export default function Home({dataMenu}) {
   }
 
   const getCurrentOrder = async (idMeja) => {
+    if(session.role !== "meja"){
+      return
+    }
+
     resetOrder()
     const data = { idMeja: idMeja}
     const JSONdata = JSON.stringify(data)
@@ -58,11 +62,8 @@ export default function Home({dataMenu}) {
     const response = await fetch(endpoint, options)
     const dataJSON = await response.json()
 
-    if(dataJSON.message.orderUtama[0].statusPesanan < 4){
-      resetOrder()
-    }
-
     if(dataJSON.message != "Failed" && dataJSON.message.orderUtama[0].statusPesanan < 4){
+      resetOrder()
       setIdPesanan(dataJSON.message.orderUtama[0].idPesanan)
 
       setJumlahCancel(new Array(dataJSON.message.orderUtama.length).fill(0))
@@ -183,20 +184,20 @@ export default function Home({dataMenu}) {
         <h1 className={styles.title}>Welcome {session.user.name} !</h1>
         <div className={styles.container}>
           <div className={styles.menucontainer}>
-            {dataMenu.map((menu) => (
+            {dataMenu.filter(d => d.aktif === 1).map((menu) => (
               <MenuCard key={menu.idMenu} menu={menu} addToOrder={addToOrder} extendOrder={extendOrder} addToInputOrderTambahan={addToInputOrderTambahan} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
             ))}
           </div>
   
-          {session.user.name.substring(0,5) == "Table" ? 
+          {session.user.name.substring(0,5) === "Table" ? 
             <div className={styles.ordercontainer}>
               <OrderCard order={order} orderTambahan={orderTambahan} addToOrder={addToOrder} reduceOrder={reduceOrder} resetOrder={resetOrder} notifyKitchen={notifyKitchen} isWaiting={isWaiting} setIsWaiting={setIsWaiting} meja={session.user.name} idPesanan={idPesanan} getCurrentOrder={getCurrentOrder} extendOrder={extendOrder} setExtendOrder={setExtendOrder} jumlahCancel={jumlahCancel} setJumlahCancel={setJumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} setJumlahCancelAdditional={setJumlahCancelAdditional}></OrderCard>
-
               {extendOrder && <OrderCard extendOrder={extendOrder} resetOrder={resetInputOrderTambahan} order={inputOrderTambahan} addToOrder={addToInputOrderTambahan} isWaiting={false} setIsWaiting={setIsWaiting} reduceOrder={reduceInputOrderTambahan} meja={session.user.name} idPesanan={idPesanan} notifyKitchen={notifyKitchen} getCurrentOrder={getCurrentOrder} setExtendOrder={setExtendOrder} jumlahCancel={jumlahCancel} setJumlahCancel={setJumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} setJumlahCancelAdditional={setJumlahCancelAdditional}></OrderCard>}
             </div>
           : 
             <div className={styles.containerpengunjung}>
-              <h3 className={styles.pengunjung}>Hanya Untuk Pengunjung</h3>
+              <h3 className={styles.pengunjung}>Only for customer</h3>
+              <button className='btn-primary' onClick={() => router.push('./admin')}>To Admin</button>
             </div>
           }
         </div>
