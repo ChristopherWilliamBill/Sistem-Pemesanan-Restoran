@@ -4,16 +4,36 @@
     justify-content: center;
     align-items: center;
     box-shadow: 0 4px 8px 0 rgba(203, 156, 156, 0.2);
-    padding: 20px;
+    padding: .5rem;
     border-radius: 10px;
-    border: 1px solid rgba(0,0,0, 0.2)
+    border: 1px solid rgba(0,0,0, 0.2);
+    text-align: left;
+    background-color: white;
 }
 
 .menucard p{
-    text-align: center;
+    width: 100%;
+    height: 1rem;
+    text-align: left;
+}
+
+.menucard h3{
+    text-align: left;
+    width: 100%;
+    padding: 0;
+    margin-top: .7rem;
+    margin-bottom: 0;
 }
 
 .menucard:hover{
     background-color: beige;
     cursor: pointer;
+}
+
+.imagecontainer{
+    position: relative;
+    display: flex;
+    border-radius: .5rem;
+    overflow: hidden;
+    background-color: red;
 }
