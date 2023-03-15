@@ -13,7 +13,8 @@ export default function Home({dataMenu}) {
   const router = useRouter()
 
   const { data: session, status } = useSession()
-
+  const [showNotification, setShowNotification] = useState(false);
+  const [notification, setNotification] = useState([]);
   const [isWaiting, setIsWaiting] = useState(false);
   const [idPesanan, setIdPesanan] = useState(0)
   const [order, setOrder] = useState(dataMenu);
@@ -22,6 +23,7 @@ export default function Home({dataMenu}) {
   const [orderTambahan, setOrderTambahan] = useState(dataMenu);
   const [jumlahCancel, setJumlahCancel] = useState([])
   const [jumlahCancelAdditional, setJumlahCancelAdditional] = useState([])
+  const [audio, setAudio] = useState(null)
 
   const socketInitializer = async () => {
     await fetch('/api/socket')
@@ -34,8 +36,13 @@ export default function Home({dataMenu}) {
     if(session){
       const statusorder = 'statusorder' + session.user.name.substring(6, session.user.name.length)
       socket.on(statusorder, (msg) => {
-        resetOrder()
-        getCurrentOrder(msg)
+        getCurrentOrder(msg.idMeja)
+        if(msg.message === 'Order finished.'){
+          setNotification([])
+        }else{
+          setNotification(notification => [...notification, msg.message])
+        }
+        audio.play()
       })
     }
   }
@@ -63,7 +70,6 @@ export default function Home({dataMenu}) {
     const dataJSON = await response.json()
 
     if(dataJSON.message != "Failed" && dataJSON.message.orderUtama[0].statusPesanan < 4){
-      resetOrder()
       setIdPesanan(dataJSON.message.orderUtama[0].idPesanan)
 
       setJumlahCancel(new Array(dataJSON.message.orderUtama.length).fill(0))
@@ -106,6 +112,7 @@ export default function Home({dataMenu}) {
   }
 
   useEffect(() => {socketInitializer()}, [status])
+  useEffect(() => setAudio(new Audio('/notification.mp3')),[])
 
   useEffect(() => {
     if(session){
@@ -182,7 +189,16 @@ export default function Home({dataMenu}) {
     return (
       <>
         <h1 className={styles.title}>Welcome {session.user.name} !</h1>
-        <div className={styles.container}>
+        <button className={styles.notifbutton} onClick={() => setShowNotification(!showNotification)}>
+          Notification
+        </button>
+
+        {showNotification && <div className={styles.notification}>
+            {notification.map(n => <p>{n}</p>)}
+            {notification.length === 0 && <p>No notification</p>}
+        </div>}
+
+        <div className={styles.container} onClick={() => setShowNotification(false)}>
           <div className={styles.menucontainer}>
             {dataMenu.filter(d => d.aktif === 1).map((menu) => (
               <MenuCard key={menu.idMenu} menu={menu} addToOrder={addToOrder} extendOrder={extendOrder} addToInputOrderTambahan={addToInputOrderTambahan} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>

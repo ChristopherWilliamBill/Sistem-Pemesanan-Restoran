@@ -135,6 +135,10 @@
         box-shadow: none;
     }
 
+    .orderlistcontainer{
+        overflow-y: visible;
+    }
+
     .additionalordercontainer{
         border: none;
     }

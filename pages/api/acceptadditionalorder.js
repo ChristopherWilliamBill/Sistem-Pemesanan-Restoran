@@ -31,7 +31,7 @@ export default async (req, res) => {
 
         //JIKA PESANAN TAMBAHAN MENUNYA SUDAH ADA DI ORDER UTAMA, UPDATE JUMLAHNYA SAJA
         if(checkMultiple.filter(r => r.isiPesanan == idMenu).length > 0){
-            let queryUpdateTP = `UPDATE "TerdiriPesanan" SET "jumlah" = "jumlah" + ${jumlah} WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${idMenu}`
+            let queryUpdateTP = `UPDATE "TerdiriPesanan" SET "status" = 1, "jumlah" = "jumlah" + ${jumlah} WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${idMenu}`
             let resultUpdateTP = await conn.query(queryUpdateTP)
         }else{ //JIKA TIDAK, INSERT BARU
             let queryTerdiriPesanan = `INSERT INTO "TerdiriPesanan" ("idPesanan", "isiPesanan", "jumlah", "status", "delivered", "requestcancel") VALUES (${request.idPesanan}, ${idMenu}, ${jumlah}, 1, 0, 0)`

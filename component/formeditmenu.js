@@ -4,13 +4,11 @@ import Router, { useRouter } from "next/router";
 
 export default function FormEditMenu({selectedMenu, dataMenu, idAdmin}){
     const router = useRouter()
-    console.log(selectedMenu)
 
     const [namaMenu, setNamaMenu] = useState("")
     const [deskripsi, setDeskripsi] = useState("")
     const [harga, setHarga] = useState(0)
     const [paket, setPaket] = useState([])
-    //const [addPaket, setAddPaket] = useState([])
     const [deletedPaket, setDeletedPaket] = useState([])
     const [selectedPaket, setSelectedPaket] = useState(0)
 
@@ -20,16 +18,13 @@ export default function FormEditMenu({selectedMenu, dataMenu, idAdmin}){
             setHarga(selectedMenu.harga)
             setPaket(selectedMenu.isiMenu)
             setDeskripsi(selectedMenu.deskripsiMenu)
-            //setAddPaket([])
             setDeletedPaket([])
-
             //deskripsi untuk menu paket adalah list nama isi paketnya
         }
     }, [selectedMenu]) //ketika selectedMenu berubah, callback akan dieksekusi (mengupdate state menjadi menu yang sedang dipilih di parent)
 
     useEffect(() => {
         let d = ""
-        
         if(paket.length > 0){
             for(let i = 0; i < paket.length; i++){
                 d += `${paket[i].jumlah} x ${dataMenu[paket[i].isiMenu - 1].namaMenu}, `
@@ -38,34 +33,27 @@ export default function FormEditMenu({selectedMenu, dataMenu, idAdmin}){
             d = d.substring(0, d.length - 2)
             setDeskripsi(d)
         }else{
-            setDeskripsi(selectedMenu.deskripsiMenu)
+            if(selectedMenu) {
+                setDeskripsi(selectedMenu.deskripsiMenu)
+            }else{
+                setDeskripsi('')
+            }
         }
 
         if(paket.length == 0 && deletedPaket.length > 0){
             setDeskripsi('-')
         }
-
-        // if(addPaket.length > 0){
-        //     console.log(addPaket)
-        //     for(let i = 0; i < addPaket.length; i++){
-        //         d += `${dataMenu[addPaket[i].isiMenu - 1].namaMenu}, `
-        //     }
-        // }
-        
     }, [paket])
 
     const menuActivation = async (action) => {
         const data = { idMenu: selectedMenu.idMenu, action: action, idAdmin: idAdmin }
-
         const JSONdata = JSON.stringify(data)
-    
         const endpoint = '../api/menuactivation'
-    
         const options = {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
         body: JSONdata
         }
     
@@ -82,19 +70,41 @@ export default function FormEditMenu({selectedMenu, dataMenu, idAdmin}){
             harga: harga,
             idMenu: selectedMenu.idMenu,
             idAdmin: idAdmin,
-            deletedPaket: deletedPaket
+            deletedPaket: deletedPaket,
+            paket: paket
+        }    
+        const JSONdata = JSON.stringify(data)
+        const endpoint = '../api/editmenu'
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        body: JSONdata
         }
     
+        const response = await fetch(endpoint, options)
+        const result = await response.json()
+        alert(result.message)
+        router.push('../')
+    }
+
+    const handleSubmitNew = async () => {
+        const data = {
+            namaMenu: namaMenu,
+            deskripsiMenu: deskripsi,
+            harga: harga,
+            idAdmin: idAdmin,
+            paket: paket
+        }    
         const JSONdata = JSON.stringify(data)
-    
-        const endpoint = '../api/editmenu'
-    
+        const endpoint = '../api/tambahmenu'
         const options = {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSONdata
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSONdata
         }
     
         const response = await fetch(endpoint, options)
@@ -109,8 +119,12 @@ export default function FormEditMenu({selectedMenu, dataMenu, idAdmin}){
     }
 
     const removePaket = (index, id) => {
-        if(!deletedPaket.includes(id)){
-            setDeletedPaket(deletedPaket => [...deletedPaket, id])
+        if(selectedMenu){
+            if(!deletedPaket.includes(id)){ //supaya deletedPaket isinya tidak ada yg double
+                if(selectedMenu.isiMenu.some(s => s.isiMenu === id)){ //yang akan dikirim ke server untuk dihapus hanya isimenu yang sudah terdaftar di database
+                    setDeletedPaket(deletedPaket => [...deletedPaket, id])
+                }
+            }
         }
         setPaket(paket => paket.filter((p, i) => i !== index))
     }
@@ -118,10 +132,6 @@ export default function FormEditMenu({selectedMenu, dataMenu, idAdmin}){
     const checkPaket = (id) => {
         return !paket.some(p => p.isiMenu == id)
     }
-
-    // const removeAddPaket = (index, id) => {
-    //     setAddPaket(paket => paket.filter((p, i) => i !== index))
-    // }
 
     const handleJumlahPaket = (jumlah, isiMenu, index) => {
         if(jumlah == 0){
@@ -141,17 +151,17 @@ export default function FormEditMenu({selectedMenu, dataMenu, idAdmin}){
 
     return(
         <div>
-            <h3>Updated menu data: </h3>
+            {selectedMenu ? <h3>Updated menu data: </h3> : <h3>Add menu: </h3>}
             <div className={styles.tambahmenuform}>
                 <div className={styles.inputcontainer}>
                     <p>Name</p>
-                    <input type='text' placeholder={selectedMenu.namaMenu} value={namaMenu} onChange={({target}) => setNamaMenu(target.value)} name="namaMenu" required></input>
+                        <input type='text' placeholder={selectedMenu && selectedMenu.namaMenu} value={namaMenu} onChange={({target}) => setNamaMenu(target.value)} name="namaMenu" required></input> 
                 </div>
 
-                {paket.length == 0 && deletedPaket.length == 0 ?
+                {paket.length === 0 && deletedPaket.length === 0 ?
                     <div className={styles.inputcontainer}>
                         <p>Description</p>
-                        <input type='text' placeholder={selectedMenu.deskripsiMenu} value={deskripsi} onChange={({target}) => setDeskripsi(target.value)} name="deskripsi" required></input>
+                        <input type='text' placeholder={selectedMenu && selectedMenu.deskripsiMenu} value={deskripsi} onChange={({target}) => setDeskripsi(target.value)} name="deskripsi" required></input>
                     </div>
                     :
                     <div className={styles.inputcontainer}>
@@ -162,10 +172,10 @@ export default function FormEditMenu({selectedMenu, dataMenu, idAdmin}){
 
                 <div className={styles.inputcontainer}>
                     <p>Price</p>
-                    <input type='number' placeholder={selectedMenu.harga} value={harga} onChange={({target}) => setHarga(target.value)} name="harga" required></input>
+                    <input type='number' placeholder={selectedMenu && selectedMenu.harga} value={harga} onChange={({target}) => setHarga(target.value)} name="harga" required></input>
                 </div>
 
-                {(paket.length > 0 || deletedPaket.length > 0) &&
+                {(paket.length > 0 || deletedPaket.length > 0 || !selectedMenu) &&
                     <div className={styles.inputpaketcontainer}>
                         <p>Packet</p>
                         <div className={styles.paketcontainer}>
@@ -179,31 +189,10 @@ export default function FormEditMenu({selectedMenu, dataMenu, idAdmin}){
                                 </div>
                             )}
 
-                            {/* {addPaket.length > 0 && <p className={styles.pembatas}>Additional menu</p>}
-
-                            {addPaket.map((p, index) => 
-                                <div className={styles.paketlist}>
-                                    <p>{dataMenu[p.isiMenu - 1].namaMenu}</p> 
-                                    <div className={styles.jumlahpaket}>
-                                        <input type='number' min="0" value={p.jumlah}></input>
-                                        <button onClick={() => removeAddPaket(index, p)}>x</button> 
-                                    </div>
-                                </div>
-                            )}
-
-                            {deletedPaket.length > 0 && <p className={styles.pembatas}>Removed menu</p>}
-
-                            {deletedPaket.map( p => 
-                                <div className={styles.paketlist}>
-                                    <p><del>{dataMenu[p.isiMenu - 1].namaMenu}</del></p> 
-                                </div>
-                            )} */}
-
                             <div className={styles.paketlist}>
-                                <p>Add more</p>
+                                <p>Add more: </p>
                                 <select onChange={handleChange} value={selectedPaket}>
                                     <option value={0}> select menu </option>
-
                                     {/* yang dapat menjadi option isi paket hanyalah menu yang bukan berupa paket dan belum ditambahkan jadi isi paketnya*/}
                                     {dataMenu.filter(d => checkPaket(d.idMenu)).filter(d => d.isiMenu.length == 0).map(d => 
                                         <option value={d.idMenu}>{d.namaMenu}</option>
@@ -215,10 +204,15 @@ export default function FormEditMenu({selectedMenu, dataMenu, idAdmin}){
                 }
 
                 <div className={styles.finishbutton}>
-                    <button className={'btn-primary'} onClick={handleSubmit}>Submit</button>
-                    {selectedMenu.aktif === 1 && <button className={'btn-danger'} onClick={() => menuActivation(0)}>Deactivate Menu</button>}
-                    {selectedMenu.aktif === 0 && <button className={'btn-primary'} onClick={() => menuActivation(1)}>Activate Menu</button>}
+                    {selectedMenu? 
+                        <>
+                            <button className={'btn-primary'} onClick={handleSubmit}>Submit</button>
+                            {selectedMenu.aktif === 1 && <button className={'btn-danger'} onClick={() => menuActivation(0)}>Deactivate Menu</button>}
+                            {selectedMenu.aktif === 0 && <button className={'btn-primary'} onClick={() => menuActivation(1)}>Activate Menu</button>}
+                        </>
+                    : <button className={'btn-primary'} onClick={handleSubmitNew}>Submit</button>}
                 </div>
+                
             </div>
         </div>
     )

@@ -163,7 +163,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                             {order.filter(o => o.count > 0).map((or, index) => 
                             <>
                                 <OrderItem or={or} jumlahCancel={jumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} index={index} handleChange={handleChange} handleChangeAdditional={handleChangeAdditional}cancelMenu={cancelMenu} requestCancel={requestCancel} cancelAdditional={cancelAdditional}></OrderItem>
-                                {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p>{order[o.isiMenu - 1].namaMenu} x {o.jumlah}</p>)}</>}
+                                {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p>{order[o.isiMenu - 1].namaMenu} x {o.jumlah * or.count}</p>)}</>}
                             </>
                             )}
                         </ul>
@@ -176,7 +176,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                             {orderTambahan.filter(ot => ot.count > 0).map((or, index) => 
                                 <>
                                     <OrderItem or={or} jumlahCancel={jumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} index={index} handleChange={handleChange} handleChangeAdditional={handleChangeAdditional}cancelMenu={cancelMenu} requestCancel={requestCancel} cancelAdditional={cancelAdditional}></OrderItem>
-                                    {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p>{order[o.isiMenu - 1].namaMenu} x {o.jumlah}</p>)}</>}
+                                    {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p>{order[o.isiMenu - 1].namaMenu} x {o.jumlah * or.count}</p>)}</>}
                                 </>
                             )}
                             </ul>
@@ -200,7 +200,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                                         <button onClick={() => addToOrder(or)}>+</button>
                                         <button onClick={() => reduceOrder(or)}>-</button>
                                     </li>
-                                    {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p>{order[o.isiMenu - 1].namaMenu} x {o.jumlah}</p>)}</>}
+                                    {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p>{order[o.isiMenu - 1].namaMenu} x {o.jumlah * or.count}</p>)}</>}
                                 </>
                             )}
                         </ul>

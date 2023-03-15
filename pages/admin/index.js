@@ -41,6 +41,10 @@ export default function Admin(){
         Transaction History
       </div>
 
+      <div className={styles.card} onClick={() => router.push("admin/riwayattransaksi")}>
+        Add Table
+      </div>
+
     </div>
   )
 }

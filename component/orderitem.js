@@ -12,8 +12,9 @@ export default function OrderItem({or, jumlahCancel, jumlahCancelAdditional, ind
                 <button className='btn-danger' onClick={() => cancelMenu(or, jumlahCancel[index])}>cancel</button>
             </div>}
 
-            {(or.statusPesanan > 1) && <p>{or.delivered}/{or.count}</p>} 
+            {(or.statusPesanan < 3 && or.statusPesanan > 1) && <p>{or.delivered}/{or.count}</p>} 
             {(or.statusPesanan == 2 && or.count == or.delivered) && <p>delivered</p>}
+            {or.statusPesanan == 3 && <p>delivered</p>}
             {(or.statusPesanan == 2 && or.count != or.delivered) && 
                 <div className={styles.aksicontainer}>
                     {/* <button className='btn-danger' onClick={() => requestCancel(or, jumlahCancelAdditional[index])}>cancel</button> */}

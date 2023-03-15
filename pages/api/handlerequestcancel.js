@@ -11,6 +11,7 @@ export default async (req, res) => {
     const token = await getToken({ req })
     if (token) {
         console.log("JSON Web Token", JSON.stringify(token, null, 2))
+        console.log(req)
     } else {
         res.status(401).send({message: "Not signed in"})
     }

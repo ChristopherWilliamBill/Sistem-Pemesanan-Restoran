@@ -12,27 +12,28 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         const data = {idPesanan: d.idPesanan, status: status, idAdmin: idAdmin}
         const JSONdata = JSON.stringify(data)
         const endpoint = '../api/handleorder'
-
         const options = {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json', },
             body: JSONdata
         }
     
         const response = await fetch(endpoint, options)
         const result = await response.json()
 
+        let message = ''
+        if(status === 2){ message = "Order accepted." }
+        if(status === 3){ message = "All order delivered." }
+        if(status === 4){ message = "Order finished." }
+
         notifyKitchen()
-        notifyTable(d.idMeja)
+        notifyTable({idMeja: d.idMeja, message: message})
     }
 
     const finishOrder = async () => {
         const data = {idPesanan: d.idPesanan, idMeja: d.idMeja, idAdmin: idAdmin, total: total}
         const JSONdata = JSON.stringify(data)
         const endpoint = '../api/inserttransaksi'
-
         const options = {
             method: 'POST',
             headers: {
@@ -45,37 +46,29 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         const result = await response.json()
 
         notifyKitchen()
-        notifyTable(d.idMeja)
+        notifyTable({idMeja: d.idMeja, message: "Order finished."})
     }
 
     const handleChangeDeliver = (jumlah, index, max) => {
         const temp = jumlahDeliver.slice()
-
         if(jumlah > max){ jumlah = max}
         if(!jumlah){ jumlah = 0 }
-
         temp[index] = jumlah
         setJumlahDeliver(temp)
     }
 
     const handleChangeReject = (jumlah, index, max) => {
         const temp = jumlahReject.slice()
-
         if(jumlah > max){ jumlah = max }
-
         if(!jumlah){ jumlah = 0 }
-
         temp[index] = jumlah
         setJumlahReject(temp)
     }
 
     const handleChangeAdditionalReject = (jumlah, index, max) => {
         const temp = jumlahAdditionalReject.slice()
-
         if(jumlah > max){ jumlah = max }
-
         if(!jumlah){ jumlah = 0 }
-
         temp[index] = jumlah
         setJumlahAdditionalReject(temp)
     }
@@ -95,9 +88,10 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
     
         const response = await fetch(endpoint, options)
         const result = await response.json()
+        let message = `${dataMenu[isiPesanan - 1].namaMenu} x ${jumlah} delivered`
 
         notifyKitchen()
-        notifyTable(d.idMeja)
+        notifyTable({idMeja: d.idMeja, message: message})
         setJumlahDeliver(new Array(d.isiPesanan.length).fill(0))
         setJumlahReject(new Array(d.isiPesanan.length).fill(0))
     }
@@ -121,9 +115,10 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         }
         const response = await fetch(endpoint, options)
         const result = await response.json()
+        let message = `${dataMenu[isiPesanan - 1].namaMenu} x ${jumlah} rejected`
 
         notifyKitchen()
-        notifyTable(d.idMeja)
+        notifyTable({idMeja: d.idMeja, message: message})
         setJumlahReject(new Array(d.isiPesanan.length).fill(0))
         setJumlahDeliver(new Array(d.isiPesanan.length).fill(0))
     }
@@ -147,9 +142,10 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         }
         const response = await fetch(endpoint, options)
         const result = await response.json()
+        const message = `Additional order ${dataMenu[isiPesanan - 1].namaMenu} x ${jumlah} rejected`
 
         notifyKitchen()
-        notifyTable(d.idMeja)
+        notifyTable({idMeja: d.idMeja, message: message})
         setJumlahAdditionalReject(new Array(d.isiPesanan.length).fill(0))
     }
 
@@ -168,9 +164,10 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
     
         const response = await fetch(endpoint, options)
         const result = await response.json()
+        const message = `${dataMenu[isiPesanan - 1].namaMenu} x ${jumlah} rejected`
 
         notifyKitchen()
-        notifyTable(d.idMeja)
+        notifyTable({idMeja: d.idMeja, message: message})
         setJumlahReject(new Array(d.isiPesanan.length).fill(0))
         setJumlahDeliver(new Array(d.isiPesanan.length).fill(0))
     }
@@ -193,7 +190,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         const result = await response.json()
 
         notifyKitchen()
-        notifyTable(d.idMeja)
+        notifyTable({idMeja: d.idMeja, message: "All additional order accepted."})
         setJumlahDeliver(new Array(d.isiPesanan.length).fill(0))
         setJumlahReject(new Array(d.isiPesanan.length).fill(0))
         setJumlahAdditionalReject(new Array(d.isiPesanan.length).fill(0))
@@ -216,7 +213,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         const result = await response.json()
 
         notifyKitchen()
-        notifyTable(d.idMeja)
+        notifyTable({idMeja: d.idMeja, message: "All additional order rejected."})
         setJumlahDeliver(new Array(d.isiPesanan.length).fill(0))
         setJumlahReject(new Array(d.isiPesanan.length).fill(0))
         setJumlahAdditionalReject(new Array(d.isiPesanan.length).fill(0))
@@ -238,8 +235,12 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         const response = await fetch(endpoint, options)
         const result = await response.json()
 
+        let message = ''
+        if(aksi === 'reject') { message = `${dataMenu[isiPesanan - 1].namaMenu} cancellation request rejected`}
+        if(aksi === 'approve') { message = `${dataMenu[isiPesanan - 1].namaMenu} cancellation request approved`}
+
         notifyKitchen()
-        notifyTable(d.idMeja)
+        notifyTable({idMeja: d.idMeja, message: message})
     }
 
     const calculateTotal = () => {
@@ -313,11 +314,20 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                     (d.status[index] != 4 && d.status[index] != 3) &&
                     <>
                         {
-                            // status: 1 => TerdiriPesanan baru
-                            // status: 2 => TerdiriPesanan delivered
+                            // status: 1 => TerdiriPesanan baru (ongoing)
+                            // status: 2 => TerdiriPesanan delivered semua
                             // status: 3 => TerdiriPesanan additional order
                             // status: 4 => TerdiriPesanan cancelled order
                             // status: 5 => TerdiriPesanan asking to be cancelled order
+                        }
+
+                        {
+                            // statusPesanan 1: pesanan baru
+                            // statusPesanan 2: pesanan diproses
+                            // statusPesanan 3: pesanan menunggu pembayaran
+                            // statusPesanan 4: pesanan sudah dibayar / selesai
+                            // statusPesanan 5: pesanan dibatalkan
+                            // YANG DICATET DI TABEL: KELOLAPESANAN CUMA 2 DAN 4
                         }
 
                         <div key={index} className={styles.orderitem}>

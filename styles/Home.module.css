@@ -10,6 +10,49 @@
   margin: 0;
 }
 
+.notifbutton{
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: aliceblue;
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  z-index: 2;
+}
+
+.notificationcontainer:hover{
+  background-color: antiquewhite;
+}
+
+.notification{
+  position: absolute;
+  left: 0;
+  top: 7%;
+  background-color: aliceblue;
+  margin: 1rem;
+  padding: .5rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  z-index: 2;
+  width: 350px;
+  animation: growDown 200ms ease-in-out forwards;
+  transform-origin: top center;
+}
+
+@keyframes growDown {
+  0% {
+    transform: scaleY(0)
+  }
+  80% {
+    transform: scaleY(1.1)
+  }
+  100% {
+    transform: scaleY(1)
+  }
+}
+
 .pengunjung{
   text-align: center;
 }
