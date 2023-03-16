@@ -1,7 +1,7 @@
 import styles from "../styles/OrderCard.module.css"
 import OrderItem from './orderitem';
 
-export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder, resetOrder, notifyKitchen, isWaiting, setIsWaiting, meja, idPesanan, getCurrentOrder, setExtendOrder, extendOrder, jumlahCancel, setJumlahCancel, jumlahCancelAdditional, setJumlahCancelAdditional}){
+export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder, resetOrder, notifyKitchen, isWaiting, setIsWaiting, meja, idPesanan, getCurrentOrder, setExtendOrder, extendOrder, jumlahCancel, setJumlahCancel, jumlahCancelAdditional, setJumlahCancelAdditional, uuid}){
     
     const handleSubmit = async (tipe) => {
         if(order.reduce((i, o) => {return i + o.count}, 0) == 0){
@@ -157,6 +157,8 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                     {order.some(o => o.statusPesanan == 1 ) && <h3>Waiting for comfirmation.</h3>}
                     {order.some(o => o.statusPesanan == 2 ) && <h3>Your order is being prepared.</h3>}
                     {order.some(o => o.statusPesanan == 3 ) && <h3>Enjoy your meals.</h3>}
+                    
+                    <p className={styles.uuid}>Order ID: {uuid}</p>
                     
                     {order.reduce((i, o) => {return i + o.count}, 0) != 0 ? //cek jumlah count > 0 (ada pesanan)
                         <ul className={styles.ul}>

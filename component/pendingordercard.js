@@ -304,10 +304,11 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         <div className={styles.ordercard}> 
             <div className={styles.orderinfo}>
                 <p><b>Table: {d.idMeja}</b></p>
-                <p><b>ID: {d.idPesanan}</b></p>
                 {d.statusPesanan < 3 ? <p><b>Waiting Time: {toHMS(toSeconds(time) - toSeconds(d.jam.split(".")[0]))}</b></p> : null}
             </div>
-            
+
+            <p className={styles.uuid}>ID: {d.uuid}</p>
+
             <div className={printAdditional === 0 ? styles.orderlistcontainer : styles.dontprint}>
                 <div className={styles.orderlist}>
                 {d.isiPesanan.map((order, index) => 

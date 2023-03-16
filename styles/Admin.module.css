@@ -1,11 +1,9 @@
 .container{
-    display: grid;
-    grid-template-columns: auto auto auto;
-    padding-top: 10%;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    column-gap: 50px;
-    row-gap: 20px;
+    padding: 1rem;
 }
 
 .card{
@@ -13,15 +11,40 @@
     justify-content: center;
     align-items: center;
     box-shadow: 0 4px 8px 0 rgba(203, 156, 156, 0.2);
-    padding: 50px;
-    border-radius: 10px;
-    height: 25%;
-    width: 250px;
-    border: 1px solid rgba(0,0,0, 0.2)
-
+    padding: 1rem;
+    border-radius: .5rem;
+    border: 1px solid rgba(0,0,0, 0.2);
+    margin-top: .5rem;
+    width: 300px;
+    height: 100px;
 }
 
+.section{
+    display: flex;
+    flex-direction: column;
+    margin-top: .5rem;
+    padding: 1rem;
+}
+
+.section h3{
+    margin: .5rem;
+}
+
+.aksi{
+    display: flex;
+    justify-content: space-evenly;
+    width: 80%;
+    margin-top: 5rem;
+}
 
 .card:hover{
     background-color: antiquewhite;
+}
+
+.orderq{
+    width: 100%;
+    background-color: antiquewhite;
+    border: 1px solid rgba(0,0,0, 0.2);
+    text-align: center;
+    border-radius: .5rem;
 }

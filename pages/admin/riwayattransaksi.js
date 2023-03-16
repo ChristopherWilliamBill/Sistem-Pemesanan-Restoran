@@ -4,7 +4,7 @@ import styles from '../../styles/RiwayatTransaksi.module.css'
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, dataAdmin}){
+export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, dataAdminFinish, dataAdminAccept}){
 
     const [fromDate, setFromDate] = useState()
     const [toDate, setToDate] = useState()
@@ -38,7 +38,6 @@ export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, da
     return(
         <>
           <div className={styles.container}>
-            {console.log(showIsi)}
             <h1>Transaction History</h1>
             {dataTransaksi.length > 0 ?
               <>
@@ -49,7 +48,7 @@ export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, da
                 <table className={styles.table}>
                   <tr className={styles.header}>
                     <th>Date</th>
-                    <th>ORDER ID</th>
+                    <th>Order ID</th>
                     <th>Total</th> 
                     <th>Table</th>
                   </tr>
@@ -58,7 +57,7 @@ export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, da
                     <>
                       <tr className={styles.trtransaksi} onClick={() => handleClick(d.idTransaksi)}>
                         <td>{new Date(d.tanggal).toString().slice(0,15)}</td>
-                        <td>{d.idPesanan}</td>
+                        <td>{d.uuid}</td>
                         <td>Rp {d.total.toLocaleString()}</td>
                         <td>{d.idMeja}</td>
                       </tr>
@@ -68,8 +67,8 @@ export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, da
                           <tr>
                             <th className={styles.isimenu}>Menu</th>
                             <th className={styles.isimenu}>Amount</th>
-                            <th className={styles.isimenu}>Handled by: {dataAdmin[dataAdmin.findIndex(da => da.idTransaksi == d.idTransaksi)].username}</th>
-                            <th className={styles.isimenu}>On: {dataOrder[dataOrder.findIndex(dataO => dataO.idPesanan === d.idPesanan)].jam.split('.')[0]}</th>
+                            <th className={styles.isimenu}></th>
+                            <th className={styles.isimenu}></th>
                           </tr>
 
                         {dataOrder.filter(dataO => dataO.idPesanan === d.idPesanan).map( d => 
@@ -80,10 +79,24 @@ export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, da
                             <td className={styles.isimenu}></td>
                           </tr>
                         )}
+
+                          <tr>
+                            <th className={styles.isimenu}>Accepted by: {dataAdminAccept[dataAdminAccept.findIndex(da => da.idTransaksi == d.idTransaksi)].username}</th>
+                            <th className={styles.isimenu}>At: {dataAdminAccept[dataAdminAccept.findIndex(da => da.idTransaksi == d.idTransaksi)].jam.split('.')[0]}</th>
+                            <th className={styles.isimenu}>Finished by: {dataAdminFinish[dataAdminFinish.findIndex(da => da.idTransaksi == d.idTransaksi)].username}</th>
+                            <th className={styles.isimenu}>At: {dataAdminFinish[dataAdminFinish.findIndex(da => da.idTransaksi == d.idTransaksi)].jam.split('.')[0]}</th>
+                          </tr>
                         </>
                       }
                     </>
                   )}
+                  <tr>
+                    <td className={styles.total} colSpan={4}>
+                      Total: Rp {dataTransaksi.filter(
+                      data => new Date(data.tanggal).toLocaleDateString('en-CA') >= fromDate && new Date(data.tanggal).toLocaleDateString('en-CA') <= toDate)
+                      .reduce((total, i) => total + i.total, 0).toLocaleString()}
+                    </td>
+                  </tr>
                 </table>
               </>
             : <p>No transaction yet</p>}
@@ -94,10 +107,11 @@ export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, da
 
 export async function getServerSideProps(){
   // terurut berdasarkan id dan tanggal
-  const query = `SELECT * FROM "Transaksi" INNER JOIN "TerdiriTransaksi" ON "Transaksi"."idTransaksi" = "TerdiriTransaksi"."idTransaksi" ORDER BY "Transaksi"."idTransaksi", "Transaksi"."tanggal"`
+  const query = `SELECT "Transaksi"."idTransaksi", "Transaksi"."total", "Transaksi"."tanggal", "Transaksi"."idMeja", "Pesanan"."uuid", "Pesanan"."idPesanan" FROM "Transaksi" INNER JOIN "TerdiriTransaksi" ON "Transaksi"."idTransaksi" = "TerdiriTransaksi"."idTransaksi" INNER JOIN "Pesanan" ON "Pesanan"."idPesanan" = "TerdiriTransaksi"."idTransaksi" ORDER BY "Transaksi"."idTransaksi", "Transaksi"."tanggal"`
   const queryOrder = `SELECT * FROM "TerdiriPesanan" INNER JOIN "Pesanan" ON "TerdiriPesanan"."idPesanan" = "Pesanan"."idPesanan"`
   const queryMenu = `SELECT * FROM "Menu" ORDER BY "idMenu"`
-  const queryAdmin = `SELECT * FROM "KelolaPesanan" INNER JOIN "TerdiriTransaksi" ON "KelolaPesanan"."idPesanan" = "TerdiriTransaksi"."idPesanan" INNER JOIN "Admin" ON "Admin"."idAdmin" = "KelolaPesanan"."idAdmin" WHERE "aksi" = 4`
+  const queryAdminAccept = `SELECT * FROM "KelolaPesanan" INNER JOIN "TerdiriTransaksi" ON "KelolaPesanan"."idPesanan" = "TerdiriTransaksi"."idPesanan" INNER JOIN "Admin" ON "Admin"."idAdmin" = "KelolaPesanan"."idAdmin" WHERE "aksi" = 2`
+  const queryAdminFinish = `SELECT * FROM "KelolaPesanan" INNER JOIN "TerdiriTransaksi" ON "KelolaPesanan"."idPesanan" = "TerdiriTransaksi"."idPesanan" INNER JOIN "Admin" ON "Admin"."idAdmin" = "KelolaPesanan"."idAdmin" WHERE "aksi" = 4`
 
   const result = await conn.query(query)
   const dataTransaksi = result.rows
@@ -105,8 +119,10 @@ export async function getServerSideProps(){
   const dataOrder = resultOrder.rows
   const resultMenu = await conn.query(queryMenu)
   const dataMenu = resultMenu.rows
-  const resultAdmin = await conn.query(queryAdmin)
-  const dataAdmin = resultAdmin.rows
+  const resultAdminAccept = await conn.query(queryAdminAccept)
+  const dataAdminAccept = resultAdminAccept.rows
+  const resultAdminFinish = await conn.query(queryAdminFinish)
+  const dataAdminFinish = resultAdminFinish.rows
 
   dataOrder.map(d => d.tanggal = d.tanggal.toString())
 
@@ -118,7 +134,8 @@ export async function getServerSideProps(){
       dataTransaksi,
       dataOrder,
       dataMenu,
-      dataAdmin
+      dataAdminFinish,
+      dataAdminAccept
     }
   }
 }

@@ -18,7 +18,7 @@ export default async (req, res) => {
   const request = JSON.parse(JSON.stringify(req.body))
   console.log(request)
 
-  const query = `INSERT INTO "Menu" ("namaMenu", "deskripsiMenu", "harga", "idAdmin", "aktif") VALUES ('${request.namaMenu}', '${request.deskripsiMenu}', ${request.harga}, '${request.idAdmin}', 1) RETURNING "idMenu"`
+  const query = `INSERT INTO "Menu" ("namaMenu", "deskripsiMenu", "harga", "idAdmin", "aktif", "gambar") VALUES ('${request.namaMenu}', '${request.deskripsiMenu}', ${request.harga}, '${request.idAdmin}', 1, NULL) RETURNING "idMenu"`
 
   try{
     const result = await conn.query(query)

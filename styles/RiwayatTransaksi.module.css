@@ -2,7 +2,6 @@
     border-collapse: collapse;
     margin: 25px 0;
     font-size: 0.9em;
-    min-width: 400px;
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
     border: 1px solid black;
 }
@@ -40,11 +39,15 @@
   
 .trtransaksi{
     background-color: aquamarine;
-    font-weight: bold;
 }
 
 .isimenu{
     background-color: aliceblue;
     text-align: left;
     border: none !important;
+}
+
+.total{
+    background-color: #EEEEEE;
+    font-weight: bold;
 }

@@ -12,9 +12,9 @@ export default function AntrianPesanan({dataMenu, dataO}){
 
   const { data: session, status } = useSession()
 
-  const order = dataO.reduce((order, {idPesanan, isiPesanan, jumlah, statusPesanan, jam, idMeja, status, delivered, requestcancel}) => {
+  const order = dataO.reduce((order, {idPesanan, uuid, isiPesanan, jumlah, statusPesanan, jam, idMeja, status, delivered, requestcancel}) => {
     if(!order[idPesanan -1]){
-      order[idPesanan -1] = {idPesanan: idPesanan, isiPesanan: [], jumlah: [], status: [], isiPaket: [], delivered: [], requestcancel: []}
+      order[idPesanan -1] = {idPesanan: idPesanan, uuid: uuid, isiPesanan: [], jumlah: [], status: [], isiPaket: [], delivered: [], requestcancel: []}
     }
     //order[idPesanan] ??= {idPesanan: idPesanan, isiPesanan: "", jumlah: []}; // ??= --> logical nullish assignment
 
@@ -147,7 +147,7 @@ export async function getServerSideProps(){
   const queryMenu = `SELECT * FROM "Menu"`
   const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
   //queryOrder terurut berdasarkan status, kemudian jumlah
-  const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status", "TerdiriPesanan"."delivered", "TerdiriPesanan"."requestcancel" FROM "Pesanan" LEFT JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" ORDER BY "TerdiriPesanan"."status", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."isiPesanan"`
+  const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."uuid", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status", "TerdiriPesanan"."delivered", "TerdiriPesanan"."requestcancel" FROM "Pesanan" LEFT JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" ORDER BY "TerdiriPesanan"."status", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."isiPesanan"`
   const queryOrderTambahan = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "PesananTambahan"."isiPesanan", "PesananTambahan"."jumlah", "PesananTambahan"."status", "PesananTambahan"."delivered" FROM "Pesanan" INNER JOIN "PesananTambahan" ON "Pesanan"."idPesanan" = "PesananTambahan"."idPesanan" ORDER BY "PesananTambahan"."isiPesanan" ASC`
 
   const resMenu = await conn.query(queryMenu)

@@ -28,6 +28,8 @@ export default async (req, res) => {
     const queryDelete = `DELETE FROM "TerdiriPesanan" WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${request.isiPesanan}`
     const queryCheck = `SELECT "status" FROM "TerdiriPesanan" WHERE "idPesanan" = ${request.idPesanan}`
     const queryFinish = `UPDATE "Pesanan" SET "statusPesanan" = 3 WHERE "idPesanan" = ${request.idPesanan}`
+    const queryCheckIsi = `SELECT * FROM "TerdiriPesanan" WHERE "idPesanan" = ${request.idPesanan}`
+    const querySetCancel = `UPDATE "Pesanan" SET "statusPesanan" = 5, "selesai" = 1 WHERE "idPesanan" = ${request.idPesanan}`
 
     try{
         if(request.aksi === 'approve'){
@@ -38,6 +40,12 @@ export default async (req, res) => {
             // jika semua dicancel (jumlah === 0), maka delete
             if(jumlah === 0){
                 const resultDelete = await conn.query(queryDelete)
+                const resultCheckIsi = await conn.query(queryCheckIsi) //jika tidak ada lagi terdiripesanan
+                if(resultCheckIsi.rows.length === 0){
+                  const resultSetCancel = await conn.query(querySetCancel) //set status pesanan = 5 (dicancel)
+                  res.status(200).json({ message: 'Update Success' })
+                  return
+                }
             }
         }
 

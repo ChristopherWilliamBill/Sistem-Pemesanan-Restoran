@@ -15,7 +15,7 @@ export default function MenuCard({menu, addToOrder, addToInputOrderTambahan, ext
         <div className={styles.menucard} onClick={() => handleOrder(menu)}>
             <div className={styles.imagecontainer}>
                 <Image 
-                    src="/v1678895940/3ayamgoreng_l0ynmq.jpg"
+                    src={menu.gambar}
                     width={600}
                     height={400}
                     

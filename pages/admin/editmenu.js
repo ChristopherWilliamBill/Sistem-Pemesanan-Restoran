@@ -2,7 +2,7 @@ import Layout from '../../component/layout'
 import React, { useState } from 'react';
 import {conn} from '../../lib/pg.js';
 import styles from '../../styles/EditMenu.module.css';
-import FormEditMenu from '../../component/formeditmenu';
+import FormMenu from '../../component/formmenu';
 import { useSession } from 'next-auth/react';
 
 export default function EditMenu({dataMenu}){
@@ -23,7 +23,7 @@ export default function EditMenu({dataMenu}){
             </div>
         </div>
 
-        {selectedMenu == null ? <p>No menu selected</p> : <FormEditMenu selectedMenu={selectedMenu} dataMenu={dataMenu} idAdmin={session.idAdmin}></FormEditMenu>}
+        {selectedMenu == null ? <p>No menu selected</p> : <FormMenu selectedMenu={selectedMenu} dataMenu={dataMenu} idAdmin={session.idAdmin}></FormMenu>}
       </div>
     )
   }

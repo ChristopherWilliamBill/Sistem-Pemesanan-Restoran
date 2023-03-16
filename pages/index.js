@@ -17,6 +17,7 @@ export default function Home({dataMenu}) {
   const [notification, setNotification] = useState([]);
   const [isWaiting, setIsWaiting] = useState(false);
   const [idPesanan, setIdPesanan] = useState(0)
+  const [uuid, setUuid] = useState('')
   const [order, setOrder] = useState(dataMenu);
   const [extendOrder, setExtendOrder] = useState(false)
   const [inputOrderTambahan, setInputOrderTambahan] = useState(dataMenu);
@@ -71,6 +72,7 @@ export default function Home({dataMenu}) {
 
     if(dataJSON.message != "Failed" && dataJSON.message.orderUtama[0].statusPesanan < 4){
       setIdPesanan(dataJSON.message.orderUtama[0].idPesanan)
+      setUuid(dataJSON.message.orderUtama[0].uuid)
 
       setJumlahCancel(new Array(dataJSON.message.orderUtama.length).fill(0))
       setJumlahCancelAdditional(new Array(dataJSON.message.orderTambahan.length).fill(0))
@@ -207,8 +209,8 @@ export default function Home({dataMenu}) {
   
           {session.user.name.substring(0,5) === "Table" ? 
             <div className={styles.ordercontainer}>
-              <OrderCard order={order} orderTambahan={orderTambahan} addToOrder={addToOrder} reduceOrder={reduceOrder} resetOrder={resetOrder} notifyKitchen={notifyKitchen} isWaiting={isWaiting} setIsWaiting={setIsWaiting} meja={session.user.name} idPesanan={idPesanan} getCurrentOrder={getCurrentOrder} extendOrder={extendOrder} setExtendOrder={setExtendOrder} jumlahCancel={jumlahCancel} setJumlahCancel={setJumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} setJumlahCancelAdditional={setJumlahCancelAdditional}></OrderCard>
-              {extendOrder && <OrderCard extendOrder={extendOrder} resetOrder={resetInputOrderTambahan} order={inputOrderTambahan} addToOrder={addToInputOrderTambahan} isWaiting={false} setIsWaiting={setIsWaiting} reduceOrder={reduceInputOrderTambahan} meja={session.user.name} idPesanan={idPesanan} notifyKitchen={notifyKitchen} getCurrentOrder={getCurrentOrder} setExtendOrder={setExtendOrder} jumlahCancel={jumlahCancel} setJumlahCancel={setJumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} setJumlahCancelAdditional={setJumlahCancelAdditional}></OrderCard>}
+              <OrderCard order={order} orderTambahan={orderTambahan} addToOrder={addToOrder} reduceOrder={reduceOrder} resetOrder={resetOrder} notifyKitchen={notifyKitchen} isWaiting={isWaiting} setIsWaiting={setIsWaiting} meja={session.user.name} idPesanan={idPesanan} getCurrentOrder={getCurrentOrder} extendOrder={extendOrder} setExtendOrder={setExtendOrder} jumlahCancel={jumlahCancel} setJumlahCancel={setJumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} setJumlahCancelAdditional={setJumlahCancelAdditional} uuid={uuid}></OrderCard>
+              {extendOrder && <OrderCard extendOrder={extendOrder} resetOrder={resetInputOrderTambahan} order={inputOrderTambahan} addToOrder={addToInputOrderTambahan} isWaiting={false} setIsWaiting={setIsWaiting} reduceOrder={reduceInputOrderTambahan} meja={session.user.name} idPesanan={idPesanan} notifyKitchen={notifyKitchen} getCurrentOrder={getCurrentOrder} setExtendOrder={setExtendOrder} jumlahCancel={jumlahCancel} setJumlahCancel={setJumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} setJumlahCancelAdditional={setJumlahCancelAdditional} uuid={uuid}></OrderCard>}
             </div>
           : 
             <div className={styles.containerpengunjung}>

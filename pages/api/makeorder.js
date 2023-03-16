@@ -18,7 +18,7 @@ export default async (req, res) => {
 
   const idMeja = parseInt(request.idMeja)
 
-  const queryPesanan = `INSERT INTO "Pesanan" ("idMeja", "jam", "statusPesanan", "selesai", "tanggal") VALUES (${idMeja}, current_timestamp, 1, 0, now()) RETURNING "idPesanan"`
+  const queryPesanan = `INSERT INTO "Pesanan" ("idMeja", "jam", "statusPesanan", "selesai", "tanggal", "uuid") VALUES (${idMeja}, current_timestamp, 1, 0, now(), gen_random_uuid()) RETURNING "idPesanan"`
 
   try{
     //JIKA PESANAN BARU, BUKAN PESANAN TAMBAHAN

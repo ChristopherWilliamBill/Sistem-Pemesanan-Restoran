@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
 import styles from "../styles/FormMenu.module.css"
 import Router, { useRouter } from "next/router";
+import Image from "next/image";
 
-export default function FormEditMenu({selectedMenu, dataMenu, idAdmin}){
+export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     const router = useRouter()
-
     const [namaMenu, setNamaMenu] = useState("")
     const [deskripsi, setDeskripsi] = useState("")
     const [harga, setHarga] = useState(0)
     const [paket, setPaket] = useState([])
     const [deletedPaket, setDeletedPaket] = useState([])
     const [selectedPaket, setSelectedPaket] = useState(0)
+    const [imageSrc, setImageSrc] = useState();
 
     useEffect(() => {
         if (selectedMenu) {
@@ -113,6 +114,10 @@ export default function FormEditMenu({selectedMenu, dataMenu, idAdmin}){
         router.push('../')
     }
 
+    const handleImage = (v) => {
+        setImageSrc(v)
+    }
+
     const handleChange = (e) => {
         setPaket(paket => [...paket, {isiMenu: parseInt(e.target.value), jumlah: 1}])
         setSelectedPaket(0)
@@ -155,13 +160,13 @@ export default function FormEditMenu({selectedMenu, dataMenu, idAdmin}){
             <div className={styles.tambahmenuform}>
                 <div className={styles.inputcontainer}>
                     <p>Name</p>
-                        <input type='text' placeholder={selectedMenu && selectedMenu.namaMenu} value={namaMenu} onChange={({target}) => setNamaMenu(target.value)} name="namaMenu" required></input> 
+                    <input type='text' placeholder={selectedMenu ? selectedMenu.namaMenu : 'Menu name'} value={namaMenu} onChange={({target}) => setNamaMenu(target.value)} name="namaMenu" required></input> 
                 </div>
 
                 {paket.length === 0 && deletedPaket.length === 0 ?
                     <div className={styles.inputcontainer}>
                         <p>Description</p>
-                        <input type='text' placeholder={selectedMenu && selectedMenu.deskripsiMenu} value={deskripsi} onChange={({target}) => setDeskripsi(target.value)} name="deskripsi" required></input>
+                        <input type='text' placeholder={selectedMenu ? selectedMenu.deskripsiMenu : 'Menu description'} value={deskripsi} onChange={({target}) => setDeskripsi(target.value)} name="deskripsi" required></input>
                     </div>
                     :
                     <div className={styles.inputcontainer}>
@@ -202,6 +207,14 @@ export default function FormEditMenu({selectedMenu, dataMenu, idAdmin}){
                         </div>
                     </div>
                 }
+
+                <div className={styles.inputcontainer}>
+                    <p>Picture</p>
+                    <input type="file" name="gambarmenu" onChange={({target}) => handleImage(target.files[0])}></input>
+                </div>
+
+                {(!imageSrc && selectedMenu) && <Image className={styles.image} width={600} height={400} src={selectedMenu.gambar}></Image>}
+                {imageSrc && <img className={styles.image} src={URL.createObjectURL(imageSrc)}></img>}
 
                 <div className={styles.finishbutton}>
                     {selectedMenu? 

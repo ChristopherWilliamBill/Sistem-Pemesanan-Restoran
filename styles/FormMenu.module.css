@@ -73,3 +73,9 @@
 .finishbutton button{
     margin-top: .5rem;
 }
+
+.image{
+    width: 200px;
+    height: auto;
+    border-radius: .5rem;
+}
