@@ -4,7 +4,7 @@ import { getToken } from "next-auth/jwt"
 export default async (req, res) => {
 
   if(req.method !== "POST"){
-    res.status(405).send({ message: "method not supported"})
+    res.status(405).send({ message: 'Method not allowed'})
     return
   }
 
@@ -13,6 +13,7 @@ export default async (req, res) => {
     console.log("JSON Web Token", JSON.stringify(token, null, 2))
   } else {
     res.status(401).send({message: "Not signed in"})
+    return
   }
 
   const idMeja = req.body.idMeja

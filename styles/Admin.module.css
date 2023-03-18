@@ -3,7 +3,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
+    background-color: var(--color1);
+    height: 92vh;
 }
 
 .card{
@@ -17,6 +18,7 @@
     margin-top: .5rem;
     width: 300px;
     height: 100px;
+    background-color: var(--color2);
 }
 
 .section{
@@ -34,11 +36,11 @@
     display: flex;
     justify-content: space-evenly;
     width: 80%;
-    margin-top: 5rem;
 }
 
 .card:hover{
-    background-color: antiquewhite;
+    background-color: var(--color3);
+    color: var(--color1);
 }
 
 .orderq{

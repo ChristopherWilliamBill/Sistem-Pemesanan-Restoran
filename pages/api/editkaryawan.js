@@ -4,7 +4,7 @@ import { getToken } from "next-auth/jwt"
 export default async (req, res) => {
 
   if(req.method !== "PUT"){
-    res.status(405)
+    res.status(405).send({ message: 'Method not allowed'})
     return
   }
 
@@ -13,13 +13,14 @@ export default async (req, res) => {
     console.log("JSON Web Token", JSON.stringify(token, null, 2))
   } else {
     res.status(401).send({message: "Not signed in"})
+    return
   }
 
   const request = JSON.parse(JSON.stringify(req.body))
 
   console.log(request)
 
-  const query = `UPDATE "Admin" SET "username" = '${request.username}', "password" = '${request.password}' WHERE "idAdmin" = ${request.idAdmin}`
+  const query = `UPDATE "Admin" SET "username" = '${request.username}', "password" = '${request.password}', "role" = '${request.role}' WHERE "idAdmin" = ${request.idAdmin}`
 
   try{
     const result = await conn.query(query)

@@ -4,7 +4,7 @@ import { getToken } from "next-auth/jwt"
 export default async (req, res) => {
 
   if(req.method !== "PUT"){
-    res.status(405)
+    res.status(405).send({ message: 'Method not allowed'})
     return
   }
 
@@ -13,13 +13,19 @@ export default async (req, res) => {
     console.log("JSON Web Token", JSON.stringify(token, null, 2))
   } else {
     res.status(401).send({message: "Not signed in"})
+    return
   }
 
   const request = JSON.parse(JSON.stringify(req.body))
-
   console.log(request)
 
-  const query = `UPDATE "Menu" SET "namaMenu" = '${request.namaMenu}', "deskripsiMenu" = '${request.deskripsiMenu}', "harga" = ${request.harga}, "idAdmin" = ${request.idAdmin} WHERE "idMenu" = ${request.idMenu}`
+  let query = ''
+  if(!request.image){
+    query = `UPDATE "Menu" SET "namaMenu" = '${request.namaMenu}', "deskripsiMenu" = '${request.deskripsiMenu}', "harga" = ${request.harga}, "idAdmin" = ${request.idAdmin} WHERE "idMenu" = ${request.idMenu}`
+  }else{
+    const imageUrl = request.image.substring(49, request.image.length)
+    query = `UPDATE "Menu" SET "namaMenu" = '${request.namaMenu}', "deskripsiMenu" = '${request.deskripsiMenu}', "harga" = ${request.harga}, "idAdmin" = ${request.idAdmin}, "gambar" = '${imageUrl}' WHERE "idMenu" = ${request.idMenu}`
+  }
   const queryCheckIsiPaket = `SELECT * FROM "TerdiriMenu" WHERE "idMenu" = ${request.idMenu}`
   const queryCheck = `SELECT DISTINCT "idMenu" FROM "TerdiriMenu"`
   const queryJumlahPaket = `SELECT COUNT(*) FROM "TerdiriMenu" WHERE "idMenu" = ${request.idMenu}`
@@ -45,7 +51,6 @@ export default async (req, res) => {
     }
 
     const resultIsiPaket = await conn.query(queryCheckIsiPaket)
-    console.log(resultIsiPaket)
     let queryAdd = ''
     if(request.paket.length > 0){
       for(let i = 0; i < request.paket.length; i++){

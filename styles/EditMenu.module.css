@@ -1,22 +1,26 @@
 .container{
-    display: flex;
-    justify-content: space-evenly;
-
+    background-color: var(--color1);
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    height: 92vh;
 }
 
-.listcontainer{
-    height: 500px;
-    overflow-y: scroll;
+.listcontainer{ 
+    max-height: 92vh;
+    overflow: scroll;
+    width: 80%;
+    margin: 1rem;
 }
 
 .listitem{
     list-style-type: none;
-    padding: 1em;
-    background-color: aliceblue;
-    border-radius: 1em;
-    margin: 1em;
+    padding: 1rem;
+    background-color: var(--color2);
+    border-radius: 1rem;
+    margin: .5em;
 }
 
 .listitem:hover{
-    background-color: antiquewhite;
+    background-color: var(--color3);
+    color: var(--color1)
 }

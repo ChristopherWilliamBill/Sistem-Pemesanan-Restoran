@@ -24,7 +24,7 @@ export default function Home({dataMenu}) {
   const [orderTambahan, setOrderTambahan] = useState(dataMenu);
   const [jumlahCancel, setJumlahCancel] = useState([])
   const [jumlahCancelAdditional, setJumlahCancelAdditional] = useState([])
-  const [audio, setAudio] = useState(null)
+  const [audio, setAudio] = useState()
 
   const socketInitializer = async () => {
     await fetch('/api/socket')
@@ -43,7 +43,9 @@ export default function Home({dataMenu}) {
         }else{
           setNotification(notification => [...notification, msg.message])
         }
-        audio.play()
+        if(audio){
+          audio.play()
+        }
       })
     }
   }
@@ -226,7 +228,7 @@ export default function Home({dataMenu}) {
   return (
     <div className={styles.containerSignIn}>
       <h1>Please contact administrator.</h1>
-      <button className={styles.button} onClick={signIn}>Sign In</button>
+      <button className='btn-primary' onClick={signIn}>Sign In</button>
     </div>
   )
 }

@@ -9,10 +9,10 @@ export default function Header({admin}){
     return(
         <>
             <div className={styles.container}>
-                <p>Signed In As <b>{admin}</b></p>
+                <p>Signed in as <b>{admin}</b></p>
                 <div>
-                    <button onClick={() => router.push("../admin")}>Home</button>
-                    <button onClick={() => signOut()}>Sign Out</button>
+                    <button onClick={() => router.push("../admin")} className='btn-primary'>Home</button>
+                    <button onClick={() => signOut()} className='btn-danger'>Sign Out</button>
                 </div>
             </div>
         </>

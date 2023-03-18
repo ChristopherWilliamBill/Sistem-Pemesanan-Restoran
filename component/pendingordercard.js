@@ -302,9 +302,12 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
 
     return(
         <div className={styles.ordercard}> 
+            {d.statusPesanan === 3 && <h1 className={styles.printinfo}>Thank You!</h1>}
+
             <div className={styles.orderinfo}>
-                <p><b>Table: {d.idMeja}</b></p>
-                {d.statusPesanan < 3 ? <p><b>Waiting Time: {toHMS(toSeconds(time) - toSeconds(d.jam.split(".")[0]))}</b></p> : null}
+                <p className={styles.printinfo}>{new Date().toString().slice(0,25)}</p>
+                <p className={styles.table}><b>Table: {d.idMeja}</b></p>
+                {d.statusPesanan < 3 ? <p className={styles.waitingtime}><b>Waiting Time: {toHMS(toSeconds(time) - toSeconds(d.jam.split(".")[0]))}</b></p> : null}
             </div>
 
             <p className={styles.uuid}>ID: {d.uuid}</p>
@@ -353,8 +356,8 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                                     <div className={styles.orderbutton}> 
                                         {(d.delivered[index] != d.jumlah[index]) && d.statusPesanan == 2 && 
                                         <>
-                                            <button onClick={() => deliverOneOrder(d.isiPesanan[index], jumlahDeliver[index])}>deliver</button>
-                                            <button onClick={() => rejectOneOrder(d.isiPesanan[index], jumlahReject[index])}>reject</button>
+                                            <button className='btn-primary' onClick={() => deliverOneOrder(d.isiPesanan[index], jumlahDeliver[index])}>deliver</button>
+                                            <button className='btn-danger' onClick={() => rejectOneOrder(d.isiPesanan[index], jumlahReject[index])}>reject</button>
                                         </>}
                                     </div>
                                 </div>
@@ -365,8 +368,8 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                             <div className={styles.requestcancel}>
                                 <p>Cancellation requested </p>
                                 <p> x {d.requestcancel[index]}</p>
-                                <button onClick={() => handleRequestCancel('approve', d.idPesanan, d.isiPesanan[index])}>Approve</button>
-                                <button onClick={() => handleRequestCancel('reject', d.idPesanan, d.isiPesanan[index])}>Reject</button>
+                                <button className='btn-primary' onClick={() => handleRequestCancel('approve', d.idPesanan, d.isiPesanan[index])}>Approve</button>
+                                <button className='btn-danger' onClick={() => handleRequestCancel('reject', d.idPesanan, d.isiPesanan[index])}>Reject</button>
                             </div>
                         }
 
@@ -378,14 +381,32 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                 </div>
             </div>
 
-            {d.statusPesanan === 3 && <p>Total: Rp {calculateTotal().toLocaleString()}</p>}
-            {d.statusPesanan === 3 && <h4>Total with tax and service (15%): Rp {total.toLocaleString()}</h4>}
+            {d.statusPesanan === 3 && 
+            <div className={styles.total}>
+                <label>
+                    <p>Subtotal: </p> 
+                    <p>Rp {calculateTotal().toLocaleString()}</p>
+                </label>
+                <label>
+                    <p>Tax: </p> 
+                    <p>Rp {(calculateTotal() * .1).toLocaleString()}</p>
+                </label>
+                <label>
+                    <p>Services: </p> 
+                    <p>Rp {(calculateTotal() * .05).toLocaleString()}</p>
+                </label>
+                <label>
+                    <h4>Total: </h4> 
+                    <h4>Rp {total.toLocaleString()}</h4>
+                </label>
+            </div>
+            }
 
-            <div>
-                {status == 1 && <button className={styles.btnaccept} onClick={() => handleOrder(2)}>Accept</button>}
-                {status == 2 && <button className={styles.btnaccept} onClick={() => handleOrder(3)}>Deliver All</button>}   
-                {status == 2 && <button className={styles.btnaccept} onClick={() => printOrder(index)}>Print</button>}     
-                {status == 3 && <button className={styles.btnaccept} onClick={() => {handleOrder(4); finishOrder()}}>Done</button>}    
+            <div className={styles.btn}>
+                {status === 1 && <button className='btn-primary' onClick={() => handleOrder(2)}>Accept</button>}
+                {status === 2 && <button className='btn-primary' onClick={() => handleOrder(3)}>Deliver All</button>}   
+                {status >= 2 && <button className='btn-primary' onClick={() => printOrder(index)}>Print</button>}     
+                {status === 3 && <button className='btn-primary' onClick={() => {handleOrder(4); finishOrder()}}>Done</button>}    
             </div>
 
             {/* ADDITIONAL ORDER */}
@@ -400,16 +421,16 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                                     <p className={styles.orderjumlah}>x {d.jumlah[index]}</p>
                                     <div className={styles.orderaction}>
                                         <input type='number' min="0" className={styles.inputnumber} onChange={({target}) => handleChangeAdditionalReject(target.value, index, d.jumlah[index] - d.delivered[index])} value={jumlahAdditionalReject[index]}></input>
-                                        <button onClick={() => {cancelMenuTambahan(d.isiPesanan[index], jumlahAdditionalReject[index])}}>reject</button>
+                                        <button className='btn-danger' onClick={() => {cancelMenuTambahan(d.isiPesanan[index], jumlahAdditionalReject[index])}}>reject</button>
                                     </div>
                                 </div>
                             )}
                         </div>
 
                         <div>
-                            <button className={styles.btnaccept} onClick={acceptAdditionalOrder}>Accept All</button>
-                            <button className={styles.btnaccept} onClick={rejectAdditionalOrder}>Reject All</button>
-                            <button className={styles.btnaccept} onClick={() => setPrintAdditional(1)}>Print</button>
+                            <button className='btn-primary' onClick={acceptAdditionalOrder}>Accept All</button>
+                            <button className='btn-primary' onClick={() => setPrintAdditional(1)}>Print</button>
+                            <button className='btn-danger' onClick={rejectAdditionalOrder}>Reject All</button>
                         </div>
                     </div>
                 </div>

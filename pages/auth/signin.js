@@ -9,7 +9,7 @@ export default function SignIn() {
 
     const [username, setUserName] = useState('')
     const [password, setPassword] = useState('')
-    const [role, setRole] = useState('')
+    const [role, setRole] = useState('meja')
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -34,26 +34,26 @@ export default function SignIn() {
 
     return(
         <div className={styles.container}>
-            <h2>Sign In</h2>
-            <div onSubmit={handleSubmit} className={styles.signinform}>
-                <label>
-                    Username
-                    <input type='text' value={username} onChange={({target}) => setUserName(target.value)}></input>
-                </label>
+            <div className={styles.signinform}>
+                <h2>Sign In</h2>
+                <div className={styles.switch}>
+                    <input type="radio" id="radiomeja" name="switch" value={"meja"} onChange={({target}) => setRole(target.value)} defaultChecked/>
+                    <label htmlFor="radiomeja">Table</label>
+                    <input type="radio" id="radioadmin" name="switch" value={"admin"} onChange={({target}) => setRole(target.value)}/>
+                    <label htmlFor="radioadmin">Admin</label>
+                </div>
+                <div>
+                    <label>Username</label>
+                    <input className={styles.input} required type='text' value={username} onChange={({target}) => setUserName(target.value)}></input>
+                </div>
 
-                <label>
-                    Password
-                    <input type='password' value={password} onChange={({target}) => setPassword(target.value)}></input>
-                </label>
+                <div>
+                    <label>Password</label>
+                    <input className={styles.input} required type='password' value={password} onChange={({target}) => setPassword(target.value)}></input>
+                </div>
 
-                <label>
-                    <input type='radio' value={"meja"} onChange={({target}) => setRole(target.value)} name="role"></input> Table
-                    <input type='radio' value={"admin"} onChange={({target}) => setRole(target.value)} name="role"></input> Administrator
-                </label>
-
-                <button className={styles.submitbtn} onClick={handleSubmit}>Sign In</button>
+                <button className='btn-primary' onClick={handleSubmit}>Sign In</button>
             </div>
         </div>
     )
-
 }

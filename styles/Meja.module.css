@@ -1,6 +1,7 @@
 .container{
-    display: flex;
-    margin-top: 5%;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    column-gap: 3rem;
     margin-left: 25%;
     width: 50%;
 }
@@ -13,6 +14,11 @@
     text-align: left;
 }
 
+.containerexisting button{
+    margin: .5rem;
+    padding: 1rem;
+}
+
 .list{
     display: flex;
     justify-content: space-between;
@@ -20,30 +26,29 @@
     padding: 1rem;
     margin: .5rem;
     border-radius: .5rem;
-    background-color: antiquewhite;
+    background-color: var(--color2);
     width: 300px;
+    height: 4rem;
 }
-
-
 
 .selected{
     margin: .5rem;
     padding: 1rem;
     border-radius: .5rem;
-    background-color: salmon;
+    background-color: var(--color3);
+    color: var(--color1);
     border: 1px solid black;
-    width: 100%;
+    width: 300px;
 }
 
 .newmeja{
-    margin-left: 15%;
-    background-color: antiquewhite;
+    color: var(--color1);
+    background-color: var(--color3);
     padding: 1rem;
-    width: 41%;
     height: fit-content;
     border-radius: 1rem;
+    margin-top: 4rem;
 }
-
 
 .input{
     display: flex;

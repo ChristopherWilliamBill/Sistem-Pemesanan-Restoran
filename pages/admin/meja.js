@@ -51,7 +51,7 @@ export default function Meja({dataMeja, dataOrder}){
 
                     {username && 
                         <div className={styles.newmeja}>
-                            <h4>{username}</h4>
+                            <h3>Editing: {username}</h3>
                             <label className={styles.input}>
                                 <p>Set password:</p>
                                 <input type="text" value={password} placeholder={password} onChange={({target}) => setPassword(target.value)}></input>

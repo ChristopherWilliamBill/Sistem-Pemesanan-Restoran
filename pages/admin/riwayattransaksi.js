@@ -63,7 +63,7 @@ export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, da
                       </tr>
 
                       {showIsi[showIsi.findIndex(s => s.idTransaksi === d.idTransaksi)].show && 
-                        <>
+                        <td colspan={4} className={styles.animasi}>
                           <tr>
                             <th className={styles.isimenu}>Menu</th>
                             <th className={styles.isimenu}>Amount</th>
@@ -86,7 +86,7 @@ export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, da
                             <th className={styles.isimenu}>Finished by: {dataAdminFinish[dataAdminFinish.findIndex(da => da.idTransaksi == d.idTransaksi)].username}</th>
                             <th className={styles.isimenu}>At: {dataAdminFinish[dataAdminFinish.findIndex(da => da.idTransaksi == d.idTransaksi)].jam.split('.')[0]}</th>
                           </tr>
-                        </>
+                        </td>
                       }
                     </>
                   )}
@@ -107,7 +107,7 @@ export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, da
 
 export async function getServerSideProps(){
   // terurut berdasarkan id dan tanggal
-  const query = `SELECT "Transaksi"."idTransaksi", "Transaksi"."total", "Transaksi"."tanggal", "Transaksi"."idMeja", "Pesanan"."uuid", "Pesanan"."idPesanan" FROM "Transaksi" INNER JOIN "TerdiriTransaksi" ON "Transaksi"."idTransaksi" = "TerdiriTransaksi"."idTransaksi" INNER JOIN "Pesanan" ON "Pesanan"."idPesanan" = "TerdiriTransaksi"."idTransaksi" ORDER BY "Transaksi"."idTransaksi", "Transaksi"."tanggal"`
+  const query = `SELECT "Transaksi"."idTransaksi", "Transaksi"."total", "Transaksi"."tanggal", "Transaksi"."idMeja", "Pesanan"."uuid", "Pesanan"."idPesanan" FROM "Transaksi" INNER JOIN "TerdiriTransaksi" ON "Transaksi"."idTransaksi" = "TerdiriTransaksi"."idTransaksi" INNER JOIN "Pesanan" ON "Pesanan"."idPesanan" = "TerdiriTransaksi"."idPesanan" WHERE "Pesanan"."statusPesanan" = 4 ORDER BY "Transaksi"."idTransaksi", "Transaksi"."tanggal"`
   const queryOrder = `SELECT * FROM "TerdiriPesanan" INNER JOIN "Pesanan" ON "TerdiriPesanan"."idPesanan" = "Pesanan"."idPesanan"`
   const queryMenu = `SELECT * FROM "Menu" ORDER BY "idMenu"`
   const queryAdminAccept = `SELECT * FROM "KelolaPesanan" INNER JOIN "TerdiriTransaksi" ON "KelolaPesanan"."idPesanan" = "TerdiriTransaksi"."idPesanan" INNER JOIN "Admin" ON "Admin"."idAdmin" = "KelolaPesanan"."idAdmin" WHERE "aksi" = 2`

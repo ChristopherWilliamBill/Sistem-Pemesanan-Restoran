@@ -14,9 +14,7 @@ export const authOptions = {
                     method: "POST",
                     body: JSON.stringify(credentials)
                 })
-
                 const hasil = await res.json();
-                console.log(hasil)
                 
                 if(res.ok && hasil){
                     console.log("NEXTAUTH: ", hasil[0])
@@ -34,7 +32,6 @@ export const authOptions = {
     callbacks: {
         jwt: async({token, user}) => {
             if(user){
-                token.id = user.id
                 token.idAdmin = user.idAdmin
                 token.role = user.role
             }
@@ -42,8 +39,9 @@ export const authOptions = {
             return token
         },
         session: ({token, session, user}) => {
+            // If you want to make something available you added to the token (like access_token and user.id from above) via the jwt() callback, 
+            // you have to explicitly forward it here to make it available to the client.
             if(token){
-                session.id = token.id
                 session.idAdmin = token.idAdmin
                 session.role = token.role
             }
@@ -52,6 +50,7 @@ export const authOptions = {
         }
     },
     session: {
+        strategy: 'jwt',
         maxAge: 60 * 60 * 12
     },
     jwt: {

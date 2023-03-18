@@ -3,7 +3,7 @@ import Layout from '../../component/layout'
 import { useSession } from 'next-auth/react';
 import {conn} from '../../lib/pg.js';
 import { useState } from 'react';
-import FormEditKaryawan from '../../component/formeditkaryawan';
+import FormKaryawan from '../../component/formkaryawan';
 
 export default function EditKaryawan({dataAdmin}){
     const [selectedAdmin, setSelectedAdmin] = useState(null);
@@ -12,27 +12,21 @@ export default function EditKaryawan({dataAdmin}){
 
     return(
         <>
-            {session.role == "manager" ? 
+            {session.role === "manager" ? 
                 <div className={styles.container}>
-                    <div classname={styles.left}> 
-                        <h3>Pilih karyawan yang mau diedit:</h3>
-                        <ul>
-                            {dataAdmin.map(a => 
-                                <li className={styles.listitem} onClick={() => setSelectedAdmin(a)}>
-                                    {a.username}
-                                </li>
-                            )}
-                        </ul>
+                    <div classname={styles.listcontainer}> 
+                        <h3>Choose admin to edit:</h3>
+                        {dataAdmin.map(a => 
+                            <p className={styles.listitem} onClick={() => setSelectedAdmin(a)}>
+                                {a.username}
+                            </p>
+                        )}
                     </div>
 
-                    <div className={styles.right}>
-                        {selectedAdmin == null ? 
-                            <p>No admin selected</p> 
-                        : <FormEditKaryawan dataAdmin={selectedAdmin}></FormEditKaryawan>}
-                    </div>
+                    {selectedAdmin == null ? <p>No admin selected</p> : <FormKaryawan dataAdmin={selectedAdmin}></FormKaryawan>}
                 </div>
 
-                : <p>Hanya dapat diakses oleh manager</p>
+                : 'Only for manager'
             }
         </>
     )

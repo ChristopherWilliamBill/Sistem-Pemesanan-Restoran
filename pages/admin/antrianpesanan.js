@@ -130,7 +130,10 @@ export default function AntrianPesanan({dataMenu, dataO}){
               {
                 dataOrder.filter(d => d.statusPesanan == 3).length > 0 ?
                   dataOrder.filter(d => d.statusPesanan == 3).map(
-                    d => <PendingOrderCard d={d} dataMenu={dataMenu} status={3} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable} print={print} setPrint={setPrint}></PendingOrderCard>
+                    (d,index) => 
+                    <div className={print[index] == 1 ? styles.printarea : styles.dontprint}>
+                      <PendingOrderCard d={d} dataMenu={dataMenu} status={3} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable} index={index} setPrint={setPrint} printOrder={printOrder}></PendingOrderCard>
+                    </div>
                   )
                 : <p>No Order</p>
               }

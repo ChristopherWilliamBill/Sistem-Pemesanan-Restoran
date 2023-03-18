@@ -11,6 +11,8 @@ export default function Admin(){
 
   return(
     <div className={styles.container}>
+          {console.log(session)}
+
       {/* <div onClick={() => router.push("admin/antrianpesanan")} className={styles.orderq}>
         <h3>Order Queue</h3>
       </div> */}

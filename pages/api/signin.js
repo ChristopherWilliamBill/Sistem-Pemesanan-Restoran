@@ -3,7 +3,7 @@ import { getToken } from "next-auth/jwt"
 
 export default async (req, res) => {
   if(req.method !== "POST"){
-    res.status(405)
+    res.status(405).send({ message: 'Method not allowed'})
     return
   }
 

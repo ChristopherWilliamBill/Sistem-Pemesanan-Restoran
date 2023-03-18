@@ -12,15 +12,14 @@ export default function EditMenu({dataMenu}){
   if (status === "authenticated") {
     return(
       <div className={styles.container}>
-        <div> 
-            <h3>Choose the menu to edit:</h3>
-            <div className={styles.listcontainer}>
-                {dataMenu.map(d => 
-                  <p className={styles.listitem} onClick={() => setSelectedMenu(d)}>
-                    {d.namaMenu}
-                  </p>
-                )}
-            </div>
+        <div className={styles.listcontainer}>
+        <h3>Choose the menu to edit:</h3>
+
+            {dataMenu.map(d => 
+              <p className={styles.listitem} onClick={() => setSelectedMenu(d)}>
+                {d.namaMenu}
+              </p>
+            )}
         </div>
 
         {selectedMenu == null ? <p>No menu selected</p> : <FormMenu selectedMenu={selectedMenu} dataMenu={dataMenu} idAdmin={session.idAdmin}></FormMenu>}

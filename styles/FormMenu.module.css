@@ -1,14 +1,38 @@
+.form{
+    background-color: var(--color3);
+    width: 95%;
+    height: 95%;
+    margin: 1rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    color: var(--color1);
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 5fr 1fr;
+    flex-direction: column;
+    justify-content: space-evenly;
+    font-weight: 700;
+}
+
+.container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 2rem;
+}
+
+
 .tambahmenuform{
     display: flex;
     flex-direction: column;
-    background-color: #222;
     color: #fff;
     font-size: 16px;
-    font-weight: 700;
-    padding: 20px;
     text-align: left;
     border-radius: 10px;
-    width: 500px;
+}
+
+.tambahmenuform button{
+    padding: .5rem;
+    margin-left: .5rem;
 }
 
 .tambahmenuform label{
@@ -25,7 +49,7 @@
 }
 
 .paketcontainer{
-    max-height: 250px;
+    max-height: 150px;
     overflow-y: scroll;
 }
 
@@ -41,6 +65,12 @@
     grid-template-columns: 1fr 3fr;
     align-items: top;
     padding: .5rem;
+}
+
+.form input{
+    border-radius: .5rem;
+    padding: .5rem;
+    border: none;
 }
 
 .paketlist{
@@ -68,14 +98,16 @@
 .finishbutton{
     display: flex;
     flex-direction: column;
+    width: 50%;
+    margin-left: 25%;
 }
 
 .finishbutton button{
-    margin-top: .5rem;
+    margin-top: 0.5rem;
 }
 
 .image{
-    width: 200px;
+    width: 400px;
     height: auto;
     border-radius: .5rem;
 }

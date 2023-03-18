@@ -64,7 +64,27 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
         router.push('../')
     } 
 
+    const uploadImage = async () => {
+        if(!imageSrc){
+            return null
+        }
+        const formData = new FormData();
+        formData.append('file', imageSrc);
+        formData.append('upload_preset', 'preset')
+        
+        const endpoint = 'https://api.cloudinary.com/v1_1/dpggxjyay/image/upload'
+        const options = {
+            method: 'POST',
+            body: formData
+        }
+    
+        const response = await fetch(endpoint, options)
+        const result = await response.json()   
+        return result.secure_url 
+    }
+
     const handleSubmit = async () => {
+        const resultImage = await uploadImage()
         const data = {
             namaMenu: namaMenu,
             deskripsiMenu: deskripsi,
@@ -72,7 +92,8 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
             idMenu: selectedMenu.idMenu,
             idAdmin: idAdmin,
             deletedPaket: deletedPaket,
-            paket: paket
+            paket: paket,
+            image: resultImage
         }    
         const JSONdata = JSON.stringify(data)
         const endpoint = '../api/editmenu'
@@ -91,12 +112,14 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     }
 
     const handleSubmitNew = async () => {
+        const resultImage = await uploadImage()
         const data = {
             namaMenu: namaMenu,
             deskripsiMenu: deskripsi,
             harga: harga,
             idAdmin: idAdmin,
-            paket: paket
+            paket: paket,
+            image: resultImage
         }    
         const JSONdata = JSON.stringify(data)
         const endpoint = '../api/tambahmenu'
@@ -155,77 +178,82 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     }
 
     return(
-        <div>
+        <div className={styles.form}>
             {selectedMenu ? <h3>Updated menu data: </h3> : <h3>Add menu: </h3>}
-            <div className={styles.tambahmenuform}>
-                <div className={styles.inputcontainer}>
-                    <p>Name</p>
-                    <input type='text' placeholder={selectedMenu ? selectedMenu.namaMenu : 'Menu name'} value={namaMenu} onChange={({target}) => setNamaMenu(target.value)} name="namaMenu" required></input> 
-                </div>
+            <div className={styles.container}>
+                <div className={styles.left}> 
+                    <div className={styles.tambahmenuform}>
+                        <div className={styles.inputcontainer}>
+                            <p>Name</p>
+                            <input type='text' placeholder={selectedMenu ? selectedMenu.namaMenu : 'Menu name'} value={namaMenu} onChange={({target}) => setNamaMenu(target.value)} name="namaMenu" required></input> 
+                        </div>
 
-                {paket.length === 0 && deletedPaket.length === 0 ?
-                    <div className={styles.inputcontainer}>
-                        <p>Description</p>
-                        <input type='text' placeholder={selectedMenu ? selectedMenu.deskripsiMenu : 'Menu description'} value={deskripsi} onChange={({target}) => setDeskripsi(target.value)} name="deskripsi" required></input>
-                    </div>
-                    :
-                    <div className={styles.inputcontainer}>
-                        <p>Description</p>
-                        <p>{deskripsi}</p>
-                    </div>
-                }
+                        {paket.length === 0 && deletedPaket.length === 0 ?
+                            <div className={styles.inputcontainer}>
+                                <p>Description</p>
+                                <input type='text' placeholder={selectedMenu ? selectedMenu.deskripsiMenu : 'Menu description'} value={deskripsi} onChange={({target}) => setDeskripsi(target.value)} name="deskripsi" required></input>
+                            </div>
+                            :
+                            <div className={styles.inputcontainer}>
+                                <p>Description</p>
+                                <p>{deskripsi}</p>
+                            </div>
+                        }
 
-                <div className={styles.inputcontainer}>
-                    <p>Price</p>
-                    <input type='number' placeholder={selectedMenu && selectedMenu.harga} value={harga} onChange={({target}) => setHarga(target.value)} name="harga" required></input>
-                </div>
+                        <div className={styles.inputcontainer}>
+                            <p>Price</p>
+                            <input type='number' placeholder={selectedMenu && selectedMenu.harga} value={harga} onChange={({target}) => setHarga(target.value)} name="harga" required></input>
+                        </div>
 
-                {(paket.length > 0 || deletedPaket.length > 0 || !selectedMenu) &&
-                    <div className={styles.inputpaketcontainer}>
-                        <p>Packet</p>
-                        <div className={styles.paketcontainer}>
-                            {paket.map((p, index)=> 
-                                <div className={styles.paketlist}>
-                                    <p>{dataMenu[p.isiMenu - 1].namaMenu}</p> 
-                                    <div className={styles.jumlahpaket}>
-                                        <input type='number' min="0" value={p.jumlah} onChange={({target}) => handleJumlahPaket(target.value, p.isiMenu, index)}></input>
-                                        <button onClick={() => removePaket(index, p.isiMenu)}>x</button> 
+                        {(paket.length > 0 || deletedPaket.length > 0 || !selectedMenu) &&
+                            <div className={styles.inputpaketcontainer}>
+                                <p>Packet</p>
+                                <div className={styles.paketcontainer}>
+                                    {paket.map((p, index)=> 
+                                        <div className={styles.paketlist}>
+                                            <p>{dataMenu[p.isiMenu - 1].namaMenu}</p> 
+                                            <div className={styles.jumlahpaket}>
+                                                <input type='number' min="0" value={p.jumlah} onChange={({target}) => handleJumlahPaket(target.value, p.isiMenu, index)}></input>
+                                                <button className="btn-danger" onClick={() => removePaket(index, p.isiMenu)}>x</button> 
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <div className={styles.paketlist}>
+                                        <p>Add more: </p>
+                                        <select onChange={handleChange} value={selectedPaket}>
+                                            <option value={0}> select menu </option>
+                                            {/* yang dapat menjadi option isi paket hanyalah menu yang bukan berupa paket dan belum ditambahkan jadi isi paketnya*/}
+                                            {dataMenu.filter(d => checkPaket(d.idMenu)).filter(d => d.isiMenu.length == 0).map(d => 
+                                                <option value={d.idMenu}>{d.namaMenu}</option>
+                                            )}
+                                        </select>
                                     </div>
                                 </div>
-                            )}
-
-                            <div className={styles.paketlist}>
-                                <p>Add more: </p>
-                                <select onChange={handleChange} value={selectedPaket}>
-                                    <option value={0}> select menu </option>
-                                    {/* yang dapat menjadi option isi paket hanyalah menu yang bukan berupa paket dan belum ditambahkan jadi isi paketnya*/}
-                                    {dataMenu.filter(d => checkPaket(d.idMenu)).filter(d => d.isiMenu.length == 0).map(d => 
-                                        <option value={d.idMenu}>{d.namaMenu}</option>
-                                    )}
-                                </select>
                             </div>
+                        }
+
+                        <div className={styles.inputcontainer}>
+                            <p>Picture</p>
+                            <input type="file" name="gambarmenu" onChange={({target}) => handleImage(target.files[0])}></input>
                         </div>
                     </div>
-                }
-
-                <div className={styles.inputcontainer}>
-                    <p>Picture</p>
-                    <input type="file" name="gambarmenu" onChange={({target}) => handleImage(target.files[0])}></input>
                 </div>
 
-                {(!imageSrc && selectedMenu) && <Image className={styles.image} width={600} height={400} src={selectedMenu.gambar}></Image>}
-                {imageSrc && <img className={styles.image} src={URL.createObjectURL(imageSrc)}></img>}
-
-                <div className={styles.finishbutton}>
-                    {selectedMenu? 
-                        <>
-                            <button className={'btn-primary'} onClick={handleSubmit}>Submit</button>
-                            {selectedMenu.aktif === 1 && <button className={'btn-danger'} onClick={() => menuActivation(0)}>Deactivate Menu</button>}
-                            {selectedMenu.aktif === 0 && <button className={'btn-primary'} onClick={() => menuActivation(1)}>Activate Menu</button>}
-                        </>
-                    : <button className={'btn-primary'} onClick={handleSubmitNew}>Submit</button>}
+                <div className={styles.right}>
+                    {(!imageSrc && selectedMenu) && <Image className={styles.image} width={600} height={400} src={selectedMenu.gambar}></Image>}
+                    {imageSrc && <img className={styles.image} src={URL.createObjectURL(imageSrc)}></img>}
                 </div>
-                
+            </div>
+
+            <div className={styles.finishbutton}>
+                {selectedMenu? 
+                    <>
+                        <button className={'btn-primary'} onClick={handleSubmit}>Submit</button>
+                        {selectedMenu.aktif === 1 && <button className={'btn-danger'} onClick={() => menuActivation(0)}>Deactivate Menu</button>}
+                        {selectedMenu.aktif === 0 && <button className={'btn-primary'} onClick={() => menuActivation(1)}>Activate Menu</button>}
+                    </>
+                : <button className={'btn-primary'} onClick={handleSubmitNew}>Submit</button>}
             </div>
         </div>
     )

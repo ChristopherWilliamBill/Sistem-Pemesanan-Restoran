@@ -9,6 +9,7 @@
     border: 1px solid rgba(0,0,0, 0.2);
     text-align: left;
     background-color: white;
+    transition: all 0.25s ease;
 }
 
 .menucard p{
@@ -21,19 +22,24 @@
     text-align: left;
     width: 100%;
     padding: 0;
-    margin-top: .7rem;
+    margin-top: 1rem;
     margin-bottom: 0;
 }
 
 .menucard:hover{
-    background-color: beige;
+    background-color: var(--color5);
     cursor: pointer;
+    transform: scale(1.03);
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
 .imagecontainer{
     position: relative;
     display: flex;
-    border-radius: .5rem;
+    border-top-right-radius: .5rem;
+    border-top-left-radius: .5rem;
+    border: none;
     overflow: hidden;
     background-color: red;
+    margin: -.5rem;
 }

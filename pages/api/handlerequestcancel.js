@@ -4,7 +4,7 @@ import { getToken } from "next-auth/jwt"
 export default async (req, res) => {
 
     if(req.method !== "PUT"){
-        res.status(405)
+        res.status(405).send({ message: 'Method not allowed'})
         return
     }
 
@@ -14,6 +14,7 @@ export default async (req, res) => {
         console.log(req)
     } else {
         res.status(401).send({message: "Not signed in"})
+        return
     }
 
     const request = JSON.parse(JSON.stringify(req.body))

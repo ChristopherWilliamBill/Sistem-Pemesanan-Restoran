@@ -172,7 +172,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                     : <p style={{textAlign: "center"}}>Order your desired menu by clicking the menu card on the left.</p>}
                     
                     {orderTambahan.reduce((i, o) => {return i + o.count}, 0) != 0 && //cek jumlah count > 0 (ada pesanan)
-                        <>
+                        <> 
                             <h3>Additional Order</h3>
                             <ul className={styles.ul}>
                             {orderTambahan.filter(ot => ot.count > 0).map((or, index) => 

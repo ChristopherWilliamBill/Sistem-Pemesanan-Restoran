@@ -1,4 +1,4 @@
-.container{
+/* .container{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -30,4 +30,109 @@
     width: 30%;
     margin-top: 30px;
     margin-left: 35%;
+} */
+
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #EEEEEE;
+}
+  
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.container h2 {
+    text-align: center;
+    color: var(--color1);
+}
+
+.signinform{
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    width: 400px;
+    background-color: var(--color3);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.signinform button {
+    border: none;
+    padding: 1rem 2rem;
+    width: 100%;
+    border-radius: 20px;
+    margin: 0;
+    font-weight: bolder;
+    margin-top: 1rem;
+}
+
+.signinform div {
+    margin-bottom: 1rem;
+}
+
+.signinform label{
+    margin-bottom: 1rem;
+    display: block;
+    font-weight: bolder;
+    color: var(--color1);
+}
+
+.input{
+    width: 100%;
+    border: none;
+    border-radius: .5rem !important;
+    padding: .5rem;
+    background-color: var(--color1);
+}
+
+.switch {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0 !important;
+}
+
+.switch input {
+    display: none;
+}
+
+.switch label {
+    background-color: var(--color1);
+    color: var(--color3);
+    font-size: .9rem;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    transition: all 0.1s ease-in-out;
+}
+
+.switch label:hover {
+    cursor: pointer;
+}
+
+.switch input:checked + label {
+    /*switch kalau diklik (checked)*/
+    background-color: var(--color2);
+}
+
+.switch label:first-of-type {
+    /*switch kiri*/
+    border-radius: 1rem 0 0 1rem;
+    padding: 1rem;
+}
+
+.switch label:last-of-type {
+    /*switch kanan*/
+    border-radius: 0 1rem 1rem 0;
+    padding: 1rem;
 }
