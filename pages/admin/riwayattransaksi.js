@@ -1,5 +1,5 @@
 import Layout from '../../component/layout'
-import {conn} from '../../lib/pg.js';
+import {conn} from '../../module/pg.js';
 import styles from '../../styles/RiwayatTransaksi.module.css'
 import { useState } from 'react';
 import { useEffect } from 'react';

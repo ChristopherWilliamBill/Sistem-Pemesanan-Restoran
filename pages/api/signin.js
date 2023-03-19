@@ -1,4 +1,4 @@
-import {conn} from '../../lib/pg.js';
+import {conn} from '../../module/pg.js';
 import { getToken } from "next-auth/jwt"
 
 export default async (req, res) => {

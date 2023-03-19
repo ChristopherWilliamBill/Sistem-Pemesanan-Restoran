@@ -92,6 +92,7 @@
 }
 
 .harga{
+    width: 100px;
     grid-area: d;
 }
 
@@ -213,6 +214,11 @@
     .garisbawah{
         display: none;
     }
+
+    .harga{
+        width: 150px;
+    }
+
     .orderitem, .orderitemtambahan{
         border: none;
         color: black;
@@ -220,7 +226,7 @@
         height: 50px;
         display: flex;
         display: grid;
-        grid-template-columns: 5fr 2fr 6fr 3fr;
+        grid-template-columns: 5fr 1fr 1fr 1fr;
     }
 
     .total{

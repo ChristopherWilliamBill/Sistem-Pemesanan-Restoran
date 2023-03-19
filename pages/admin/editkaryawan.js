@@ -1,7 +1,7 @@
 import styles from '../../styles/EditKaryawan.module.css'
 import Layout from '../../component/layout'
 import { useSession } from 'next-auth/react';
-import {conn} from '../../lib/pg.js';
+import {conn} from '../../module/pg.js';
 import { useState } from 'react';
 import FormKaryawan from '../../component/formkaryawan';
 

@@ -34,11 +34,12 @@
 }
 
 .header{
-    background-color: antiquewhite;
+    background-color: var(--color3);
+    color: var(--color1);
 }
   
 .trtransaksi{
-    background-color: aquamarine;
+    background-color: var(--color2);
 }
 
 .isimenu{
@@ -47,7 +48,8 @@
 }
 
 .total{
-    background-color: #EEEEEE;
+    background-color: var(--color3);
+    color: var(--color1);
     font-weight: bold;
 }
 
@@ -56,7 +58,7 @@
     transform-origin: top center;
     margin: 0;
     padding: 0;
-    background-color: aliceblue;
+    background-color: var(--color1);
 }
 
 

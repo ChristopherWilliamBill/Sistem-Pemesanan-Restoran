@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import styles from '../../styles/Meja.module.css'
 import { useSession } from 'next-auth/react'
-import {conn} from '../../lib/pg.js';
+import {conn} from '../../module/pg.js';
 
 
 export default function Meja({dataMeja, dataOrder}){
@@ -69,7 +69,7 @@ export default function Meja({dataMeja, dataOrder}){
     }
 }
 
-export async function getStaticProps(){
+export async function getServerSideProps(){
     const query = `SELECT * FROM "Meja" ORDER BY "idMeja"`
     const queryOrder = `SELECT "idMeja" FROM "Pesanan" WHERE "selesai" = 0`
 

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import styles from '../../styles/TambahMenu.module.css'
 import { useSession } from 'next-auth/react'
 import FormMenu from '../../component/formmenu'
-import {conn} from '../../lib/pg.js';
+import {conn} from '../../module/pg.js';
 
 
 export default function TambahMenu({dataMenu}){

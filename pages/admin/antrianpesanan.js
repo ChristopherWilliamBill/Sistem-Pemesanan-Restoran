@@ -1,10 +1,11 @@
 import Layout from '../../component/layout'
 import PendingOrderCard from '../../component/pendingordercard';
-import {conn} from '../../lib/pg.js';
+import {conn} from '../../module/pg.js';
 import styles from '../../styles/AntrianPesanan.module.css'
 import io from 'Socket.IO-client'
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { orderFormatter } from '../../module/orderformatter';
 
 let socket = null
 
@@ -12,34 +13,36 @@ export default function AntrianPesanan({dataMenu, dataO}){
 
   const { data: session, status } = useSession()
 
-  const order = dataO.reduce((order, {idPesanan, uuid, isiPesanan, jumlah, statusPesanan, jam, idMeja, status, delivered, requestcancel}) => {
-    if(!order[idPesanan -1]){
-      order[idPesanan -1] = {idPesanan: idPesanan, uuid: uuid, isiPesanan: [], jumlah: [], status: [], isiPaket: [], delivered: [], requestcancel: []}
-    }
-    //order[idPesanan] ??= {idPesanan: idPesanan, isiPesanan: "", jumlah: []}; // ??= --> logical nullish assignment
+  // const order = dataO.reduce((order, {idPesanan, uuid, isiPesanan, jumlah, statusPesanan, jam, idMeja, status, delivered, requestcancel}) => {
+  //   if(!order[idPesanan -1]){
+  //     order[idPesanan -1] = {idPesanan: idPesanan, uuid: uuid, isiPesanan: [], jumlah: [], status: [], isiPaket: [], delivered: [], requestcancel: []}
+  //   }
+  //   //order[idPesanan] ??= {idPesanan: idPesanan, isiPesanan: "", jumlah: []}; // ??= --> logical nullish assignment
 
-    order[idPesanan - 1].isiPesanan.push(isiPesanan)
-    order[idPesanan - 1].jumlah.push(jumlah)
-    order[idPesanan - 1].statusPesanan = statusPesanan
-    order[idPesanan - 1].jam = jam
-    order[idPesanan - 1].idMeja = idMeja
-    order[idPesanan - 1].status.push(status)
-    order[idPesanan - 1].delivered.push(delivered)
-    order[idPesanan - 1].requestcancel.push(requestcancel)
+  //   order[idPesanan - 1].isiPesanan.push(isiPesanan)
+  //   order[idPesanan - 1].jumlah.push(jumlah)
+  //   order[idPesanan - 1].statusPesanan = statusPesanan
+  //   order[idPesanan - 1].jam = jam
+  //   order[idPesanan - 1].idMeja = idMeja
+  //   order[idPesanan - 1].status.push(status)
+  //   order[idPesanan - 1].delivered.push(delivered)
+  //   order[idPesanan - 1].requestcancel.push(requestcancel)
 
-    return order;
-  }, []);
+  //   return order;
+  // }, []);
 
-  //loop setiap order yang sudah difilter (bukan order yang dicancel)
-  order.filter(or => or.status[0] != null).map(o => { 
-    o.isiPesanan.map( isi => { //lihat setiap isi pesanannya
-      dataMenu[isi - 1].isiMenu.length > 0 ? //kalau isi pesanannya punya isi menu lagi (artinya pesanan ini = paket)
-        o.isiPaket.push(dataMenu[isi - 1].isiMenu) //array isiPaket diisi array isiMenu (daftar menu dari paketnya)
-      : o.isiPaket.push(0) //kalau tidak, isi angka 0 (artinya bukan paket)
-    })
-  })
+  // //loop setiap order yang sudah difilter (bukan order yang dicancel)
+  // order.filter(or => or.status[0] != null).map(o => { 
+  //   o.isiPesanan.map( isi => { //lihat setiap isi pesanannya
+  //     dataMenu[isi - 1].isiMenu.length > 0 ? //kalau isi pesanannya punya isi menu lagi (artinya pesanan ini = paket)
+  //       o.isiPaket.push(dataMenu[isi - 1].isiMenu) //array isiPaket diisi array isiMenu (daftar menu dari paketnya)
+  //     : o.isiPaket.push(0) //kalau tidak, isi angka 0 (artinya bukan paket)
+  //   })
+  // })
+
+  console.log(orderFormatter(dataO, dataMenu))
   
-  const [dataOrder, setDataOrder] = useState(order)
+  const [dataOrder, setDataOrder] = useState(orderFormatter(dataO, dataMenu))
   const [tab, setTab] = useState("neworders")
   const [print, setPrint] = useState(new Array(dataOrder.filter(d => d.statusPesanan == 2).length).fill(0))
 

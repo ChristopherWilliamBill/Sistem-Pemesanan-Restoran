@@ -1,6 +1,6 @@
 import Layout from '../../component/layout'
 import React, { useState } from 'react';
-import {conn} from '../../lib/pg.js';
+import {conn} from '../../module/pg.js';
 import styles from '../../styles/EditMenu.module.css';
 import FormMenu from '../../component/formmenu';
 import { useSession } from 'next-auth/react';
@@ -35,7 +35,7 @@ export default function EditMenu({dataMenu}){
   )
 }
 
-export async function getStaticProps(){
+export async function getServerSideProps(){
   const query = `SELECT * FROM "Menu"`
   const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu", "TerdiriMenu"."jumlah" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
 

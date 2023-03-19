@@ -1,5 +1,6 @@
 import styles from '../styles/PendingOrderCard.module.css'
 import { useState, useEffect } from 'react';
+import { timeCalculator } from '../module/timecalculator';
 
 export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, notifyTable, idAdmin, index, printOrder}){
     const [jumlahDeliver, setJumlahDeliver] = useState(new Array(d.isiPesanan.length).fill(0))
@@ -307,7 +308,8 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
             <div className={styles.orderinfo}>
                 <p className={styles.printinfo}>{new Date().toString().slice(0,25)}</p>
                 <p className={styles.table}><b>Table: {d.idMeja}</b></p>
-                {d.statusPesanan < 3 ? <p className={styles.waitingtime}><b>Waiting Time: {toHMS(toSeconds(time) - toSeconds(d.jam.split(".")[0]))}</b></p> : null}
+                {/* {d.statusPesanan < 3 ? <p className={styles.waitingtime}><b>Waiting Time: {toHMS(toSeconds(time) - toSeconds(d.jam.split(".")[0]))}</b></p> : null} */}
+                {d.statusPesanan < 3 ? <p className={styles.waitingtime}><b>Waiting Time: {timeCalculator(d.jam.split('.')[0], time)}</b></p> : null}
             </div>
 
             <p className={styles.uuid}>ID: {d.uuid}</p>
