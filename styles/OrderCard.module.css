@@ -23,6 +23,7 @@
     margin: 0;
     overflow-y: scroll;
     width: 100%;
+    height: 300px;
 }
 
 .orderlist{

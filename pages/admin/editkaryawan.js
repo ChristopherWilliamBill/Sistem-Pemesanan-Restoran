@@ -23,7 +23,7 @@ export default function EditKaryawan({dataAdmin}){
                         )}
                     </div>
 
-                    {selectedAdmin == null ? <p>No admin selected</p> : <FormKaryawan dataAdmin={selectedAdmin}></FormKaryawan>}
+                    {selectedAdmin == null ? <p>No admin selected</p> : <FormKaryawan key={selectedAdmin.idAdmin} dataAdmin={selectedAdmin}></FormKaryawan>}
                 </div>
 
                 : 'Only for manager'

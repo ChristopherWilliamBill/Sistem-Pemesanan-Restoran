@@ -19,11 +19,10 @@ export function orderFormatter(dataO, dataMenu){
         ]
     ------------------------------------------------------------------*/ 
 
-
     let order = dataO.reduce((order, {idPesanan, uuid, isiPesanan, jumlah, statusPesanan, jam, idMeja, status, delivered, requestcancel}) => {
         //loop setiap dataO, jika belum dibuat order dengan index idPesanan - 1, maka isi elemen tersebut dengan objek awal
         if(!order[idPesanan -1]){
-          order[idPesanan -1] = {idPesanan: idPesanan, uuid: uuid, isiPesanan: [], jumlah: [], status: [], isiPaket: [], delivered: [], requestcancel: []}
+          order[idPesanan -1] = {idPesanan: idPesanan, uuid: uuid, isiPesanan: [], jumlah: [], status: [], isiPaket: [], jumlahPaket: [], delivered: [], requestcancel: []}
         }
 
         //untuk setiap idPesanan yang sama, isi objek dengan value yang ditemukan
@@ -43,8 +42,8 @@ export function orderFormatter(dataO, dataMenu){
     order.filter(or => or.status[0] != null).map(o => { 
         o.isiPesanan.map( isi => { //lihat setiap isi pesanannya
             dataMenu[isi - 1].isiMenu.length > 0 ? //kalau isi pesanannya punya isi menu lagi (artinya pesanan ini = paket)
-            o.isiPaket.push(dataMenu[isi - 1].isiMenu) //array isiPaket diisi array isiMenu (daftar menu dari paketnya)
-            : o.isiPaket.push(0) //kalau tidak, isi angka 0 (artinya bukan paket)
+            (o.isiPaket.push(dataMenu[isi - 1].isiMenu), o.jumlahPaket.push(dataMenu[isi - 1].jumlahMenu)) //array isiPaket dan jumlahPaket diisi array isiMenu dan jumlahnya(daftar menu dari paketnya)
+            : (o.isiPaket.push(0), o.jumlahPaket.push(0)) //kalau tidak, isi angka 0 (artinya bukan paket)
         })
     })
     

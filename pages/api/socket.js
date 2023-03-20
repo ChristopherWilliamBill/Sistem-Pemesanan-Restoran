@@ -16,7 +16,7 @@ export default (req, res) => {
                 const queryMenu = `SELECT * FROM "Menu"`
                 const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."uuid", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status", "TerdiriPesanan"."delivered", "TerdiriPesanan"."requestcancel" FROM "Pesanan" LEFT JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" ORDER BY "TerdiriPesanan"."status", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."isiPesanan"`
                 const queryOrderTambahan = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "PesananTambahan"."isiPesanan", "PesananTambahan"."jumlah", "PesananTambahan"."status", "PesananTambahan"."delivered" FROM "Pesanan" INNER JOIN "PesananTambahan" ON "Pesanan"."idPesanan" = "PesananTambahan"."idPesanan" ORDER BY "PesananTambahan"."isiPesanan" ASC`
-                const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
+                const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu", "TerdiriMenu"."jumlah" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
 
                 try{
                     const resMenu = await conn.query(queryMenu)
@@ -34,12 +34,14 @@ export default (req, res) => {
 
                     for(let i = 0; i < dataMenu.length; i++){
                         dataMenu[i].isiMenu = []
+                        dataMenu[i].jumlahMenu = []
                     }
 
                     dataMenu.sort((a,b) => a.idMenu - b.idMenu)
 
                     for(let i = 0; i < dataPaket.length; i++){
                       dataMenu[dataPaket[i].idMenu - 1].isiMenu.push(dataPaket[i].isiMenu)
+                      dataMenu[dataPaket[i].idMenu - 1].jumlahMenu.push(dataPaket[i].jumlah)
                     }
 
                     const order = orderFormatter(dataOrder, dataMenu)
@@ -71,8 +73,6 @@ export default (req, res) => {
                     // })
 
                     // order.filter(o => o != null)
-
-                    console.log(order)
 
                     if(msg === 'table'){
                         console.log('notify kitchen diterima dari table') //maka meja membroadcast ke kitchen (broadcast == send back to everyone)

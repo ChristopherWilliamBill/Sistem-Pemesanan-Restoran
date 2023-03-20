@@ -22,7 +22,7 @@ export default function EditMenu({dataMenu}){
             )}
         </div>
 
-        {selectedMenu == null ? <p>No menu selected</p> : <FormMenu selectedMenu={selectedMenu} dataMenu={dataMenu} idAdmin={session.idAdmin}></FormMenu>}
+        {selectedMenu == null ? <p>No menu selected</p> : <FormMenu key={selectedMenu.idMenu} selectedMenu={selectedMenu} dataMenu={dataMenu} idAdmin={session.idAdmin}></FormMenu>}
       </div>
     )
   }

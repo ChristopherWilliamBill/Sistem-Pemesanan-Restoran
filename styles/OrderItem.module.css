@@ -1,15 +1,14 @@
-.orderlistfinished{
+.container{
     display: grid;
     column-gap: 10px;
     grid-template-columns: 6fr 1fr 4fr; 
     align-items: center;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .orderlistfinished input{
     width: 100%;
     height: 1.5rem;
-
 }
 
 .aksicontainer{
@@ -20,4 +19,9 @@
 
 .aksicontainer input{
     width: 30%;
+}
+
+.info p{
+    font-size: small;
+    margin: .5rem;
 }

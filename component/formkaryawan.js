@@ -1,21 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styles from "../styles/FormKaryawan.module.css"
 import Router, { useRouter } from "next/router";
 
 export default function FormKaryawan({dataAdmin}){
     const router = useRouter()
 
-    const [namaAdmin, setNamaAdmin] = useState("")
-    const [password, setPassword] = useState("")
-    const [role, setRole] = useState("karyawan")
-
-    useEffect(() => {
-        if (dataAdmin) {
-            setNamaAdmin(dataAdmin.username);
-            setPassword(dataAdmin.password);
-            setRole(dataAdmin.role)
-        }
-    }, [dataAdmin]); //ketika dataAdmin berubah, callback akan dieksekusi (mengupdate state menjadi admin yang sedang dipilih di parent)
+    const [namaAdmin, setNamaAdmin] = useState(dataAdmin ? dataAdmin.username : "")
+    const [password, setPassword] = useState(dataAdmin ? dataAdmin.password : "")
+    const [role, setRole] = useState(dataAdmin ? dataAdmin.role : "karyawan")
 
     const handleSubmit = async () => {
         let endpoint
@@ -74,17 +66,6 @@ export default function FormKaryawan({dataAdmin}){
                     <input checked={role === "manager" && true} type='radio' id="radiomanager" value={"manager"} onChange={({target}) => setRole(target.value)} name="role"></input> 
                     <label htmlFor="radiomanager">Manager</label>
                 </div>
-
-
-                {/* 
-                <div className={styles.inputcontainer}>
-                    <input checked={role === "karyawan" && true} type='radio' value={"karyawan"} onChange={({target}) => setRole(target.value)} name="role"></input> Karyawan
-                </div>
-
-                <div className={styles.inputcontainer}>
-                    <input checked={role === "manager" && true} type='radio' value={"manager"} onChange={({target}) => setRole(target.value)} name="role"></input> Manager
-                </div> */}
-
                 <button className='btn-primary' onClick={handleSubmit}>Submit</button>
             </div>
         </div>

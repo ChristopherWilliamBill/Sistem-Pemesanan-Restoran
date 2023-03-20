@@ -3,11 +3,20 @@ import { useState, useEffect } from 'react';
 import { timeCalculator } from '../module/timecalculator';
 
 export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, notifyTable, idAdmin, index, printOrder}){
+    const calculateTotal = () => {
+        let total = 0
+        for(let i = 0; i < d.isiPesanan.length; i++){
+            total += (dataMenu[d.isiPesanan[i] - 1].harga * d.jumlah[i])
+        }
+        return total
+    }
+
     const [jumlahDeliver, setJumlahDeliver] = useState(new Array(d.isiPesanan.length).fill(0))
     const [jumlahReject, setJumlahReject] = useState(new Array(d.isiPesanan.length).fill(0))
+    const [jumlahAdditionalAccept, setJumlahAdditionalAccept] = useState(new Array(d.isiPesanan.length).fill(0))
     const [jumlahAdditionalReject, setJumlahAdditionalReject] = useState(new Array(d.isiPesanan.length).fill(0))
     const [printAdditional, setPrintAdditional] = useState(0)
-    const [total, setTotal] = useState(0)
+    const [total, setTotal] = useState(Math.ceil(calculateTotal() * 1.15))
 
     const handleOrder = async (status) => {
         const data = {idPesanan: d.idPesanan, status: status, idAdmin: idAdmin}
@@ -72,6 +81,15 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         if(!jumlah){ jumlah = 0 }
         temp[index] = jumlah
         setJumlahAdditionalReject(temp)
+    }
+
+    const handleChangeAdditionalAccept = (jumlah, index, max) => {
+        const temp = jumlahAdditionalAccept.slice()
+        if(jumlah > max){ jumlah = max }
+        if(!jumlah){ jumlah = 0 }
+        temp[index] = jumlah
+        setJumlahAdditionalAccept(temp)
+        console.log(jumlahAdditionalAccept)
     }
 
     const deliverOneOrder = async (isiPesanan, jumlah) => {
@@ -148,6 +166,32 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         notifyKitchen()
         notifyTable({idMeja: d.idMeja, message: message})
         setJumlahAdditionalReject(new Array(d.isiPesanan.length).fill(0))
+    }
+
+    const acceptMenuTambahan = async (isiPesanan, jumlah) => {
+        const data = {
+            idPesanan: d.idPesanan,
+            isiPesanan: isiPesanan,
+            jumlah: jumlah
+        }
+
+        const JSONdata = JSON.stringify(data)
+        const endpoint = '../api/acceptmenutambahan'
+
+        const options = {
+            method: "PUT",
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSONdata
+        }
+        const response = await fetch(endpoint, options)
+        const result = await response.json()
+        const message = `Additional order ${dataMenu[isiPesanan - 1].namaMenu} x ${jumlah} accepted`
+
+        notifyKitchen()
+        notifyTable({idMeja: d.idMeja, message: message})
+        setJumlahAdditionalAccept(new Array(d.isiPesanan.length).fill(0))
     }
 
     const rejectOneOrder = async (isiPesanan, jumlah) => {
@@ -244,26 +288,18 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         notifyTable({idMeja: d.idMeja, message: message})
     }
 
-    const calculateTotal = () => {
-        let total = 0
-        for(let i = 0; i < d.isiPesanan.length; i++){
-            total += (dataMenu[d.isiPesanan[i] - 1].harga * d.jumlah[i])
-        }
-        return total
-    }
-
     const date = new Date()
 
-    const toSeconds = (t) => {
-        let x = t.split(':');
-        return (x[0] * 3600) + (x[1] * 60) + (x[2] * 1)
-    }
+    // const toSeconds = (t) => {
+    //     let x = t.split(':');
+    //     return (x[0] * 3600) + (x[1] * 60) + (x[2] * 1)
+    // }
 
     const formatter = (n) => {return (n < 10 ? '0' : '') + n}
 
-    const toHMS = (secs) => {
-        return formatter(parseInt(secs/3600)) + 'h:' + formatter(parseInt(secs%3600/60)) + 'm:' + formatter(parseInt(secs%60)) + "s"
-    }
+    // const toHMS = (secs) => {
+    //     return formatter(parseInt(secs/3600)) + 'h:' + formatter(parseInt(secs%3600/60)) + 'm:' + formatter(parseInt(secs%60)) + "s"
+    // }
 
     const formatTime = (t) => {
         const ampm = t.split(' ')
@@ -286,13 +322,6 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
     }, []);
 
     useEffect(() => {
-        setTotal(Math.ceil(calculateTotal() * 1.15))
-        setJumlahDeliver(new Array(d.isiPesanan.length).fill(0))
-        setJumlahReject(new Array(d.isiPesanan.length).fill(0))
-        setJumlahAdditionalReject(new Array(d.isiPesanan.length).fill(0))
-    },[d])
-
-    useEffect(() => {
         if(printAdditional === 1){
             printOrder(index)
             window.onafterprint = () => {
@@ -303,6 +332,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
 
     return(
         <div className={styles.ordercard}> 
+        {console.log(d)}
             {d.statusPesanan === 3 && <h1 className={styles.printinfo}>Thank You!</h1>}
 
             <div className={styles.orderinfo}>
@@ -365,18 +395,16 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                                 </div>
                             }
                         </div>
+                        {d.isiPaket[index].length > 0 && d.isiPaket[index].map(isi => <p className={styles.isiPaket}>{d.jumlahPaket[index] * (d.jumlah[index] - d.delivered[index]) } x {dataMenu[isi - 1].namaMenu}</p>)}
 
                         {d.requestcancel[index] > 0 && 
                             <div className={styles.requestcancel}>
-                                <p>Cancellation requested </p>
+                                <p>Cancellation requested</p>
                                 <p> x {d.requestcancel[index]}</p>
                                 <button className='btn-primary' onClick={() => handleRequestCancel('approve', d.idPesanan, d.isiPesanan[index])}>Approve</button>
                                 <button className='btn-danger' onClick={() => handleRequestCancel('reject', d.idPesanan, d.isiPesanan[index])}>Reject</button>
                             </div>
                         }
-
-                        {d.isiPaket[index].length > 0 && d.isiPaket[index].map( isi => <p className={styles.isiPaket}>{dataMenu[isi - 1].namaMenu}</p>)}
-
                         <div className={styles.garisbawah}></div>
                     </>
                 )}
@@ -417,15 +445,26 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                     <div className={styles.additionalordercontainer}>
                         <h4>Additional Order</h4>
                         <div className={styles.orderlisttambahan}>
-                            {d.isiPesanan.map((order, index) => (d.status[index] == 3) && 
+                            {d.isiPesanan.map((order, index) => (d.status[index] === 3) && 
+                            <div className={styles.listtambahan}>
                                 <div key={index} className={styles.orderitem}>
-                                    <p className={d.status[index] == 3 && styles.additionalorder}>{dataMenu[order - 1].namaMenu}</p> 
+                                    <p className={styles.additionalorder}>{dataMenu[order - 1].namaMenu}</p> 
                                     <p className={styles.orderjumlah}>x {d.jumlah[index]}</p>
+
                                     <div className={styles.orderaction}>
-                                        <input type='number' min="0" className={styles.inputnumber} onChange={({target}) => handleChangeAdditionalReject(target.value, index, d.jumlah[index] - d.delivered[index])} value={jumlahAdditionalReject[index]}></input>
-                                        <button className='btn-danger' onClick={() => {cancelMenuTambahan(d.isiPesanan[index], jumlahAdditionalReject[index])}}>reject</button>
+                                        <div className={styles.orderinput}> 
+                                            <input type='number' min="0" className={styles.inputnumber} onChange={({target}) => handleChangeAdditionalAccept(target.value, index, d.jumlah[index] - d.delivered[index])} value={jumlahAdditionalAccept[index]}></input>
+                                            <input type='number' min="0" className={styles.inputnumber} onChange={({target}) => handleChangeAdditionalReject(target.value, index, d.jumlah[index] - d.delivered[index])} value={jumlahAdditionalReject[index]}></input>
+                                        </div>
+
+                                        <div className={styles.orderbutton}> 
+                                            <button className='btn-primary' onClick={() => {acceptMenuTambahan(d.isiPesanan[index], jumlahAdditionalAccept[index])}}>accept</button>
+                                            <button className='btn-danger' onClick={() => {cancelMenuTambahan(d.isiPesanan[index], jumlahAdditionalReject[index])}}>reject</button>
+                                        </div>
                                     </div>
                                 </div>
+                                {d.isiPaket[index].length > 0 && d.isiPaket[index].map(isi => <p className={styles.isiPaket}>{d.jumlahPaket[index] * (d.jumlah[index] - d.delivered[index]) } x {dataMenu[isi - 1].namaMenu}</p>)}
+                            </div>
                             )}
                         </div>
 

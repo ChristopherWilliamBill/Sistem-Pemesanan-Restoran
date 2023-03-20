@@ -42,7 +42,6 @@ export default async (req, res) => {
       orderUtama: resultOrder.rows,
       orderTambahan: resultTambahan.rows
     }
-    console.log(result)
     //const result = resultOrder.rows.concat(resultTambahan.rows)
 
     res.status(200).send({ message: result})

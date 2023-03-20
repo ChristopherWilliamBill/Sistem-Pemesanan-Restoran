@@ -151,7 +151,6 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
 
     return(
         <div className={styles.ordercontainer}>
-            {console.log(order)}
             { isWaiting ? 
                 <>
                     {order.some(o => o.statusPesanan == 1 ) && <h3>Waiting for comfirmation.</h3>}
@@ -164,8 +163,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                         <ul className={styles.ul}>
                             {order.filter(o => o.count > 0).map((or, index) => 
                             <>
-                                <OrderItem or={or} jumlahCancel={jumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} index={index} handleChange={handleChange} handleChangeAdditional={handleChangeAdditional}cancelMenu={cancelMenu} requestCancel={requestCancel} cancelAdditional={cancelAdditional}></OrderItem>
-                                {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p>{order[o.isiMenu - 1].namaMenu} x {o.jumlah * or.count}</p>)}</>}
+                                <OrderItem or={or} order={order} jumlahCancel={jumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} index={index} handleChange={handleChange} handleChangeAdditional={handleChangeAdditional}cancelMenu={cancelMenu} requestCancel={requestCancel} cancelAdditional={cancelAdditional}></OrderItem>
                             </>
                             )}
                         </ul>
@@ -177,8 +175,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                             <ul className={styles.ul}>
                             {orderTambahan.filter(ot => ot.count > 0).map((or, index) => 
                                 <>
-                                    <OrderItem or={or} jumlahCancel={jumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} index={index} handleChange={handleChange} handleChangeAdditional={handleChangeAdditional}cancelMenu={cancelMenu} requestCancel={requestCancel} cancelAdditional={cancelAdditional}></OrderItem>
-                                    {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p>{order[o.isiMenu - 1].namaMenu} x {o.jumlah * or.count}</p>)}</>}
+                                    <OrderItem or={or} order={order} jumlahCancel={jumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} index={index} handleChange={handleChange} handleChangeAdditional={handleChangeAdditional}cancelMenu={cancelMenu} requestCancel={requestCancel} cancelAdditional={cancelAdditional}></OrderItem>
                                 </>
                             )}
                             </ul>

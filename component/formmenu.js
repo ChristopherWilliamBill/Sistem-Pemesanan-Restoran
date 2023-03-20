@@ -5,25 +5,14 @@ import Image from "next/image";
 
 export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     const router = useRouter()
-    const [namaMenu, setNamaMenu] = useState("")
-    const [deskripsi, setDeskripsi] = useState("")
-    const [harga, setHarga] = useState(0)
-    const [paket, setPaket] = useState([])
+    const [namaMenu, setNamaMenu] = useState(selectedMenu ? selectedMenu.namaMenu : '')
+    const [deskripsi, setDeskripsi] = useState(selectedMenu ? selectedMenu.deskripsiMenu : '')
+    const [harga, setHarga] = useState(selectedMenu ? selectedMenu.harga : 0)
+    const [paket, setPaket] = useState(selectedMenu ? selectedMenu.isiMenu : [])
     const [deletedPaket, setDeletedPaket] = useState([])
     const [selectedPaket, setSelectedPaket] = useState(0)
     const [imageSrc, setImageSrc] = useState();
-
-    useEffect(() => {
-        if (selectedMenu) {
-            setNamaMenu(selectedMenu.namaMenu)
-            setHarga(selectedMenu.harga)
-            setPaket(selectedMenu.isiMenu)
-            setDeskripsi(selectedMenu.deskripsiMenu)
-            setDeletedPaket([])
-            //deskripsi untuk menu paket adalah list nama isi paketnya
-        }
-    }, [selectedMenu]) //ketika selectedMenu berubah, callback akan dieksekusi (mengupdate state menjadi menu yang sedang dipilih di parent)
-
+    
     useEffect(() => {
         let d = ""
         if(paket.length > 0){

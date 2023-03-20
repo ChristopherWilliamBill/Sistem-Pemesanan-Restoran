@@ -1,13 +1,14 @@
 import styles from '../styles/OrderItem.module.css'
 
-export default function OrderItem({or, jumlahCancel, jumlahCancelAdditional, index, handleChange, handleChangeAdditional, cancelMenu, requestCancel, cancelAdditional}){
+export default function OrderItem({or, order, jumlahCancel, jumlahCancelAdditional, index, handleChange, handleChangeAdditional, cancelMenu, requestCancel, cancelAdditional}){
 
     return(
-        <li className={styles.orderlistfinished}>
+        <li className={styles.container}>
             <p>{or.namaMenu}</p>
             {(or.statusPesanan == 1 || or.statusPesanan > 2) && <p>x {or.count}</p>}
 
-            {or.statusPesanan == 1 && <div className={styles.aksicontainer}>
+            {or.statusPesanan == 1 && 
+            <div className={styles.aksicontainer}>
                 <input type="number" min="0" value={jumlahCancel[index]} max={or.count - or.delivered} onChange={({target}) => handleChange(target.value, index, or.count - or.delivered)}></input>
                 <button className='btn-danger' onClick={() => cancelMenu(or, jumlahCancel[index])}>cancel</button>
             </div>}
@@ -31,7 +32,10 @@ export default function OrderItem({or, jumlahCancel, jumlahCancelAdditional, ind
                     }
                 </div>
             }
-            {or.requestcancel > 0 && <p>x {or.requestcancel} requested to cancel</p>}
+            <div className={styles.info}>
+                {or.requestcancel > 0 && <p>x {or.requestcancel} requested to cancel</p>}
+                {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p>{order[o.isiMenu - 1].namaMenu} {or.delivered * o.jumlah}/{o.jumlah * or.count}</p>)}</>}
+            </div>
         </li>
     )
 }

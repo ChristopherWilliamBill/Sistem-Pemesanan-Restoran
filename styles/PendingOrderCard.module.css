@@ -136,6 +136,14 @@
     width: 100%;
 }
 
+.orderlisttambahan p{
+    color: salmon;
+}
+
+.listtambahan{
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
 .printadditional{
     width: 100%;
 }
