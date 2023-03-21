@@ -51,6 +51,7 @@ export default function Home({dataMenu}) {
   }
 
   const notifyKitchen = async () => {
+    socket.emit('notify-antrian', 'table')
     socket.emit('notify-kitchen', 'table')
   }
 
@@ -193,9 +194,17 @@ export default function Home({dataMenu}) {
     return (
       <>
         <h1 className={styles.title}>Welcome {session.user.name} !</h1>
-        <button className={styles.notifbutton} onClick={() => setShowNotification(!showNotification)}>
-          Notification
-        </button>
+        {session.user.name.substring(0,5) === "Table" &&  
+        <div>
+          <button className={styles.notifbutton} onClick={() => setShowNotification(!showNotification)}>
+            Notification
+          </button>
+
+          {/* <button className={styles.help}>
+            Request help
+          </button> */}
+        </div>
+        }
 
         {showNotification && <div className={styles.notification}>
             {notification.map(n => <p>{n}</p>)}

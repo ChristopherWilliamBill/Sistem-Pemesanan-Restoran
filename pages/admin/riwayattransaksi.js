@@ -3,9 +3,10 @@ import {conn} from '../../module/pg.js';
 import styles from '../../styles/RiwayatTransaksi.module.css'
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
 export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, dataAdminFinish, dataAdminAccept}){
-
+    const { data: session, status } = useSession()
     const [fromDate, setFromDate] = useState()
     const [toDate, setToDate] = useState()
     const [showIsi, setShowIsi] = useState([])
@@ -36,7 +37,8 @@ export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, da
     }, []);
 
     return(
-        <>
+        <> 
+          {session.role === "manager" ? 
           <div className={styles.container}>
             <h1>Transaction History</h1>
             {dataTransaksi.length > 0 ?
@@ -101,6 +103,7 @@ export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, da
               </>
             : <p>No transaction yet</p>}
           </div>
+        : 'Only for manager'}
         </>
     )
 }

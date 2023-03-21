@@ -19,6 +19,10 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
     const [total, setTotal] = useState(Math.ceil(calculateTotal() * 1.15))
 
     const handleOrder = async (status) => {
+        if(status === 3 && d.requestcancel.length > 0){
+            alert('Handle cancellation request first!')
+            return
+        }
         const data = {idPesanan: d.idPesanan, status: status, idAdmin: idAdmin}
         const JSONdata = JSON.stringify(data)
         const endpoint = '../api/handleorder'
@@ -395,7 +399,14 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                                 </div>
                             }
                         </div>
-                        {d.isiPaket[index].length > 0 && d.isiPaket[index].map(isi => <p className={styles.isiPaket}>{d.jumlahPaket[index] * (d.jumlah[index] - d.delivered[index]) } x {dataMenu[isi - 1].namaMenu}</p>)}
+
+                        {d.isiPaket[index].length > 0 && 
+                            d.isiPaket[index].map((isi, i) => 
+                                <p className={styles.isiPaket}>
+                                    {d.jumlahPaket[index][i] * (d.jumlah[index] - d.delivered[index]) } x {dataMenu[isi - 1].namaMenu}
+                                </p>
+                            )
+                        }
 
                         {d.requestcancel[index] > 0 && 
                             <div className={styles.requestcancel}>

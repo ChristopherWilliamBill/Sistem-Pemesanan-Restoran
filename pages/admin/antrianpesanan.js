@@ -42,6 +42,7 @@ export default function AntrianPesanan({dataMenu, dataO}){
   }
 
   const notifyKitchen = async () => {
+    socket.emit('notify-antrian', 'kitchen')
     socket.emit('notify-kitchen', 'kitchen')
   }
 

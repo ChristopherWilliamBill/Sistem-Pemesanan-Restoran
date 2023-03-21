@@ -11,13 +11,30 @@ export default function Admin(){
 
   return(
     <div className={styles.container}>
-          {console.log(session)}
-
-      {/* <div onClick={() => router.push("admin/antrianpesanan")} className={styles.orderq}>
-        <h3>Order Queue</h3>
-      </div> */}
+      {console.log(session)}
 
       <div className={styles.aksi}>
+        <div className={styles.section}>
+          <h3>Operational</h3>
+          <div className={styles.card} onClick={() => router.push("admin/antrianpesanan")}>
+            Order Queue
+          </div>
+
+          <div className={styles.card} onClick={() => router.push("admin/kitchen")}>
+            Kitchen
+          </div>
+
+          <div className={styles.card} onClick={() => router.push("admin/meja")}>
+            Table
+          </div>
+
+          {session.role === "manager" && 
+          <div className={styles.card} onClick={() => router.push("admin/riwayattransaksi")}>
+            Transaction History
+          </div>
+          }
+        </div>
+
         <div className={styles.section}>
           <h3>Menu</h3>
           <div className={styles.card} onClick={() => router.push("admin/editmenu")}>
@@ -27,20 +44,9 @@ export default function Admin(){
           <div className={styles.card} onClick={() => router.push("admin/tambahmenu")}>
             Add Menu
           </div>
-        </div>
 
-        <div className={styles.section}>
-          <h3>Operational</h3>
-          <div className={styles.card} onClick={() => router.push("admin/antrianpesanan")}>
-            Order Queue
-          </div>
-
-          <div className={styles.card} onClick={() => router.push("admin/riwayattransaksi")}>
-            Transaction History
-          </div>
-
-          <div className={styles.card} onClick={() => router.push("admin/meja")}>
-            Table
+          <div className={styles.card} onClick={() => router.push("/")}>
+            Menu
           </div>
         </div>
 

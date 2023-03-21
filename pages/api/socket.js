@@ -12,7 +12,7 @@ export default (req, res) => {
         res.socket.server.io = io
 
         io.on('connection', socket => {
-            socket.on('notify-kitchen', async msg => {
+            socket.on('notify-antrian', async msg => {
                 const queryMenu = `SELECT * FROM "Menu"`
                 const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."uuid", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status", "TerdiriPesanan"."delivered", "TerdiriPesanan"."requestcancel" FROM "Pesanan" LEFT JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" ORDER BY "TerdiriPesanan"."status", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."isiPesanan"`
                 const queryOrderTambahan = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "PesananTambahan"."isiPesanan", "PesananTambahan"."jumlah", "PesananTambahan"."status", "PesananTambahan"."delivered" FROM "Pesanan" INNER JOIN "PesananTambahan" ON "Pesanan"."idPesanan" = "PesananTambahan"."idPesanan" ORDER BY "PesananTambahan"."isiPesanan" ASC`
@@ -46,47 +46,27 @@ export default (req, res) => {
 
                     const order = orderFormatter(dataOrder, dataMenu)
 
-                    // const order = dataOrder.reduce((order, {idPesanan, uuid, isiPesanan, jumlah, statusPesanan, jam, idMeja, status, delivered, requestcancel}) => {
-                    //     if(!order[idPesanan -1]){
-                    //       order[idPesanan -1] = {idPesanan: idPesanan, uuid: uuid, isiPesanan: [], jumlah: [], status: [], isiPaket: [], delivered: [], requestcancel: []}
-                    //     }
-                    
-                    //     order[idPesanan - 1].isiPesanan.push(isiPesanan)
-                    //     order[idPesanan - 1].jumlah.push(jumlah)
-                    //     order[idPesanan - 1].statusPesanan = statusPesanan
-                    //     order[idPesanan - 1].jam = jam
-                    //     order[idPesanan - 1].idMeja = idMeja
-                    //     order[idPesanan - 1].status.push(status)
-                    //     order[idPesanan - 1].delivered.push(delivered)
-                    //     order[idPesanan - 1].requestcancel.push(requestcancel)
-
-                    //     return order;
-                    // }, []);
-
-                    // //loop setiap order yang sudah difilter (bukan order yang dicancel)
-                    // order.filter(or => or.status[0] != null).map(o => {
-                    //     o.isiPesanan.map( isi => { //lihat setiap isi pesanannya
-                    //       dataMenu[isi - 1].isiMenu.length > 0 ? //kalau isi pesanannya punya isi menu lagi (artinya pesanan ini = paket)
-                    //         o.isiPaket.push(dataMenu[isi - 1].isiMenu) //array isiPaket diisi array isiMenu (daftar menu dari paketnya)
-                    //       : o.isiPaket.push(0) //kalau tidak, isi angka 0 (artinya bukan paket)
-                    //     })
-                    // })
-
-                    // order.filter(o => o != null)
-
                     if(msg === 'table'){
-                        console.log('notify kitchen diterima dari table') //maka meja membroadcast ke kitchen (broadcast == send back to everyone)
+                        console.log('notify antrian diterima dari table') //maka meja membroadcast ke kitchen (broadcast == send back to everyone)
                         socket.broadcast.emit('sendorders', order)
                     }
 
                     if(msg === 'kitchen'){
-                        console.log('notify kitchen diterima dari kitchen sendiri') //maka kirim ke diri sendiri (emit == send back to sender)
+                        console.log('notify antrian diterima dari kitchen sendiri') //maka kirim ke diri sendiri (emit == send back to sender)
                         socket.emit('sendorders', order)
                     }
                 }catch(err){
                     console.log(err)
                 }
             })
+
+            socket.on('notify-kitchen', async msg => {
+                const queryKitchen = `SELECT "isiPesanan", SUM("TerdiriPesanan"."jumlah") - SUM("delivered") AS "sisa" FROM "TerdiriPesanan" INNER JOIN "Pesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" WHERE "Pesanan"."statusPesanan" = 2 AND "TerdiriPesanan"."status" = 1 OR "TerdiriPesanan"."status" = 5 GROUP BY "isiPesanan", "Pesanan"."statusPesanan" ORDER BY "sisa" DESC`
+                const resKitchen = await conn.query(queryKitchen)
+                const dataKitchen = resKitchen.rows
+                socket.broadcast.emit('datakitchen', dataKitchen)
+            })
+
 
             socket.on('handleorder', async msg => {
                 try{

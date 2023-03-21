@@ -25,6 +25,20 @@
   font-weight: bold;
 }
 
+.help{
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: var(--color6);
+  margin: 1.2rem;
+  margin-left: 8rem;
+  padding: .7rem;
+  border-radius: .5rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  z-index: 2;
+  font-weight: bold;
+}
+
 .notification{
   position: absolute;
   left: 0;
