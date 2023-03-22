@@ -34,6 +34,10 @@ export default function Home({dataMenu}) {
       console.log('connected')
     })
 
+    socket.on('newmenu', () => {
+      router.reload();
+    })
+
     if(session){
       const statusorder = 'statusorder' + session.user.name.substring(6, session.user.name.length)
       socket.on(statusorder, (msg) => {
@@ -242,7 +246,7 @@ export default function Home({dataMenu}) {
   )
 }
 
-export async function getServerSideProps(){
+export async function getStaticProps(){
   const query = `SELECT * FROM "Menu"`
   const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu", "TerdiriMenu"."jumlah" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
 

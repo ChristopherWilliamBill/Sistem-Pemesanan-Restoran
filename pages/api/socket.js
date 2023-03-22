@@ -67,11 +67,18 @@ export default (req, res) => {
                 socket.broadcast.emit('datakitchen', dataKitchen)
             })
 
-
             socket.on('handleorder', async msg => {
                 try{
                     const statusorder = 'statusorder' + msg.idMeja
                     socket.broadcast.emit(statusorder, msg)
+                }catch(err){
+                    console.log(err)
+                }
+            })
+
+            socket.on('newmenu', async msg => {
+                try{
+                    socket.broadcast.emit('newmenu', 'kitchen')
                 }catch(err){
                     console.log(err)
                 }

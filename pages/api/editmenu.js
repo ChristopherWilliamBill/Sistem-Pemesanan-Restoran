@@ -66,8 +66,21 @@ export default async (req, res) => {
 
     const result = await conn.query(query)
 
+    const datarevalidate = {secret: process.env.REVALIDATE_TOKEN, path: '/'}
+    const JSONdata = JSON.stringify(datarevalidate)
+    const endpoint = 'http://localhost:3000/api/revalidate'
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSONdata
+    }
 
-    res.status(200).json({ message: 'Data Updated' })
+    const resRevalidate = await fetch(endpoint, options)
+    const revalidated = await resRevalidate.json()
+
+    res.status(200).json({ message: 'Data Updated', revalidated: revalidated})
   }catch(err){
     console.log(err)
     res.status(400).send({ message: 'Failed' })

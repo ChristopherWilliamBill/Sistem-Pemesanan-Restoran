@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import styles from "../styles/FormMenu.module.css"
 import Router, { useRouter } from "next/router";
 import Image from "next/image";
+import io from 'Socket.IO-client'
+
+let socket = null
 
 export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     const router = useRouter()
@@ -35,6 +38,17 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
         }
     }, [paket])
 
+    const socketInitializer = async () => {
+        await fetch('/api/socket')
+        socket = io()
+    
+        socket.on('connect', () => {
+          console.log('connected')
+        })
+    }
+
+    useEffect(() => {socketInitializer()}, [])
+
     const menuActivation = async (action) => {
         const data = { idMenu: selectedMenu.idMenu, action: action, idAdmin: idAdmin }
         const JSONdata = JSON.stringify(data)
@@ -49,8 +63,12 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     
         const response = await fetch(endpoint, options)
         const result = await response.json()
+        console.log(result)
+        if(result.revalidated){
+            socket.emit('newmenu', 'kitchen')
+        }
         alert(result.message)
-        router.push('../')
+        router.reload()
     } 
 
     const uploadImage = async () => {
@@ -96,8 +114,11 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     
         const response = await fetch(endpoint, options)
         const result = await response.json()
+        if(result.revalidated){
+            socket.emit('newmenu', 'kitchen')
+        }
         alert(result.message)
-        router.push('../')
+        router.reload()
     }
 
     const handleSubmitNew = async () => {
@@ -122,8 +143,11 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     
         const response = await fetch(endpoint, options)
         const result = await response.json()
+        if(result.revalidated){
+            socket.emit('newmenu', 'kitchen')
+        }
         alert(result.message)
-        router.push('../')
+        router.reload()
     }
 
     const handleImage = (v) => {
