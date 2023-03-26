@@ -56,7 +56,6 @@ export default function AntrianPesanan({dataMenu, dataO}){
     }
   }, [print])
 
-
   if (status === "authenticated") {
 
     if(!dataOrder){
@@ -66,9 +65,9 @@ export default function AntrianPesanan({dataMenu, dataO}){
     return(
       <>
         <div className={styles.navbar}>
-          <button onClick={() => setTab("neworders")} className={tab === "neworders" && styles.selected}>New Orders</button>
-          <button onClick={() => setTab("kitchen")} className={tab === "kitchen" && styles.selected}>In the Kitchen</button>
-          <button onClick={() => setTab("payment")} className={tab === "payment" && styles.selected}>Waiting for Payment</button>
+          <button onClick={() => setTab("neworders")} className={tab === "neworders" ? styles.selected : 'false'}>New Orders</button>
+          <button onClick={() => setTab("kitchen")} className={tab === "kitchen" ? styles.selected : 'false'}>In the Kitchen</button>
+          <button onClick={() => setTab("payment")} className={tab === "payment" ? styles.selected : 'false'}>Waiting for Payment</button>
         </div>
 
         {tab === "neworders" && 
@@ -77,7 +76,7 @@ export default function AntrianPesanan({dataMenu, dataO}){
               {
                 dataOrder.filter(d => d.statusPesanan == 1).length > 0 ?
                   dataOrder.filter(d => d.statusPesanan == 1).map(
-                    (d, index) => (<PendingOrderCard key={d.idPesanan} d={d} dataMenu={dataMenu} status={1} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable} index={index} setPrint={setPrint}></PendingOrderCard>)
+                    (d, index) => <PendingOrderCard key={d.idPesanan} d={d} dataMenu={dataMenu} status={1} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable} index={index} setPrint={setPrint}></PendingOrderCard>
                   )
                 : <p>No Order</p>
               }
@@ -91,7 +90,7 @@ export default function AntrianPesanan({dataMenu, dataO}){
                 dataOrder.filter(d => d.statusPesanan == 2).length > 0 ?
                   dataOrder.filter(d => d.statusPesanan == 2).map(
                     (d,index) =>  
-                      <div className={print[index] == 1 ? styles.printarea : styles.dontprint}>
+                      <div key={d.idPesanan} className={print[index] == 1 ? styles.printarea : styles.dontprint}>
                         <PendingOrderCard key={d.idPesanan} d={d} dataMenu={dataMenu} status={2} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable} index={index} setPrint={setPrint} printOrder={printOrder}></PendingOrderCard>
                       </div>
                   )
@@ -108,7 +107,7 @@ export default function AntrianPesanan({dataMenu, dataO}){
                 dataOrder.filter(d => d.statusPesanan == 3).length > 0 ?
                   dataOrder.filter(d => d.statusPesanan == 3).map(
                     (d,index) => 
-                    <div className={print[index] == 1 ? styles.printarea : styles.dontprint}>
+                    <div key={d.idPesanan} className={print[index] == 1 ? styles.printarea : styles.dontprint}>
                       <PendingOrderCard key={d.idPesanan} d={d} dataMenu={dataMenu} status={3} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable} index={index} setPrint={setPrint} printOrder={printOrder}></PendingOrderCard>
                     </div>
                   )

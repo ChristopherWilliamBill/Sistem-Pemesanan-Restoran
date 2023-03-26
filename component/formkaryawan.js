@@ -10,16 +10,14 @@ export default function FormKaryawan({dataAdmin}){
     const [role, setRole] = useState(dataAdmin ? dataAdmin.role : "karyawan")
 
     const handleSubmit = async () => {
-        let endpoint
+        let endpoint = '../api/karyawan'
         let idAdmin
         let method
 
         if(dataAdmin){  
-            endpoint = '../api/editkaryawan'
             idAdmin = dataAdmin.idAdmin
             method = 'PUT'
         }else{
-            endpoint = '../api/tambahkaryawan'
             method = 'POST'
         }   
 
@@ -43,7 +41,14 @@ export default function FormKaryawan({dataAdmin}){
         const response = await fetch(endpoint, options)
         const result = await response.json()
         alert(result.message)
-        router.push('../admin')
+
+        if(result.revalidated){
+            if(dataAdmin){  
+                router.reload()
+            }else{
+                router.push('/admin/editkaryawan')
+            } 
+        }
     }
 
     return(

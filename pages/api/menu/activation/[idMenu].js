@@ -1,8 +1,7 @@
-import {conn} from '../../module/pg.js';
+import {conn} from '../../../../module/pg'
 import { getToken } from "next-auth/jwt"
 
 export default async (req, res) => {
-
   if(req.method !== "PUT"){
     res.status(405).send({ message: 'Method not allowed'})
     return
@@ -17,15 +16,14 @@ export default async (req, res) => {
   }
 
   const request = JSON.parse(JSON.stringify(req.body))
+  const { idMenu } = req.query
 
-  console.log(request)
-
-  const query = `UPDATE "Menu" SET "aktif" = ${request.action}, "idAdmin" = '${request.idAdmin}' WHERE "idMenu" = ${request.idMenu}`
+  const query = `UPDATE "Menu" SET "aktif" = ${request.action}, "idAdmin" = '${request.idAdmin}' WHERE "idMenu" = ${idMenu}`
 
   try{
     const result = await conn.query(query)
 
-    const datarevalidate = {secret: process.env.REVALIDATE_TOKEN, path: '/'}
+    const datarevalidate = {secret: process.env.REVALIDATE_TOKEN, path: ['/', '/admin/editmenu', '/admin/tambahmenu']}
     const JSONdata = JSON.stringify(datarevalidate)
     const endpoint = 'http://localhost:3000/api/revalidate'
     const options = {

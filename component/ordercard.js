@@ -10,18 +10,30 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
         }
 
         const dataOrder = order.filter(o => o.count > 0)
-
         const idMeja = meja.substring(6, meja.length)
-        const data = {
-            idMeja: idMeja,
-            dataOrder: dataOrder,
-            tipe: tipe,
-            ...(idPesanan && {idPesanan: idPesanan})
+
+        let JSONdata = null
+        let endpoint = ''
+
+        if(tipe === 'additional'){
+            const data = {
+                idMeja: idMeja,
+                dataOrder: dataOrder,
+                idPesanan: idPesanan
+            }
+                
+            JSONdata = JSON.stringify(data)
+            endpoint = '../api/order/additional'
+        }else{
+            const data = {
+                idMeja: idMeja,
+                dataOrder: dataOrder,
+            }
+                
+            JSONdata = JSON.stringify(data)
+            endpoint = '../api/order'
         }
-            
-        const JSONdata = JSON.stringify(data)
-        const endpoint = '../api/makeorder'
-    
+
         const options = {
             method: 'POST',
             headers: {
@@ -29,7 +41,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
             },
             body: JSONdata
         }
-    
+
         const response = await fetch(endpoint, options)
         const result = await response.json()
 
@@ -53,9 +65,9 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
         }
 
         const JSONdata = JSON.stringify(data)
-        const endpoint = '../api/requestcancel'
+        const endpoint = '../api/cancellationrequest'
         const options = {
-            method: "PUT",
+            method: "POST",
             headers: {
                 'Content-type': 'application/json'
             },
@@ -72,13 +84,12 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
     const cancelMenu = async (menu, jumlah) => {
         if(jumlah === 0){ return }
         const data = {
-            idPesanan: idPesanan,
-            isiPesanan: menu.idMenu,
+            tipe: 'cancel',
             jumlah: jumlah
         }
 
         const JSONdata = JSON.stringify(data)
-        const endpoint = '../api/cancelmenu'
+        const endpoint = `../api/order/${idPesanan}/${menu.idMenu}`
         const options = {
             method: "PUT",
             headers: {
@@ -103,13 +114,12 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
     const cancelAdditional = async (menu, jumlah) => {
         if(jumlah === 0){ return }
         const data = {
-            idPesanan: idPesanan,
-            isiPesanan: menu.idMenu,
+            tipe: 'reject',
             jumlah: jumlah
         }
 
         const JSONdata = JSON.stringify(data)
-        const endpoint = '../api/cancelmenutambahan'
+        const endpoint = `../api/order/additional/${idPesanan}/${menu.idMenu}`
         const options = {
             method: "PUT",
             headers: {
@@ -162,9 +172,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                     {order.reduce((i, o) => {return i + o.count}, 0) != 0 ? //cek jumlah count > 0 (ada pesanan)
                         <ul className={styles.ul}>
                             {order.filter(o => o.count > 0).map((or, index) => 
-                            <>
-                                <OrderItem or={or} order={order} jumlahCancel={jumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} index={index} handleChange={handleChange} handleChangeAdditional={handleChangeAdditional}cancelMenu={cancelMenu} requestCancel={requestCancel} cancelAdditional={cancelAdditional}></OrderItem>
-                            </>
+                                <OrderItem key={or} or={or} order={order} jumlahCancel={jumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} index={index} handleChange={handleChange} handleChangeAdditional={handleChangeAdditional} cancelMenu={cancelMenu} requestCancel={requestCancel} cancelAdditional={cancelAdditional}></OrderItem>
                             )}
                         </ul>
                     : <p style={{textAlign: "center"}}>Order your desired menu by clicking the menu card on the left.</p>}
@@ -174,9 +182,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                             <h3>Additional Order</h3>
                             <ul className={styles.ul}>
                             {orderTambahan.filter(ot => ot.count > 0).map((or, index) => 
-                                <>
-                                    <OrderItem or={or} order={order} jumlahCancel={jumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} index={index} handleChange={handleChange} handleChangeAdditional={handleChangeAdditional}cancelMenu={cancelMenu} requestCancel={requestCancel} cancelAdditional={cancelAdditional}></OrderItem>
-                                </>
+                                <OrderItem key={or} or={or} order={order} jumlahCancel={jumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} index={index} handleChange={handleChange} handleChangeAdditional={handleChangeAdditional} cancelMenu={cancelMenu} requestCancel={requestCancel} cancelAdditional={cancelAdditional}></OrderItem>
                             )}
                             </ul>
                         </>
@@ -192,15 +198,15 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                     {order.reduce((i, o) => {return i + o.count}, 0) != 0 ?
                         <ul className={styles.ul}>
                             {order.filter(o => o.count > 0).map(or => 
-                                <>
-                                    <li key={or.id} className={styles.orderlist}>
+                                <div key={or.idMenu}>
+                                    <li className={styles.orderlist}>
                                         <p>{or.namaMenu}</p>
                                         <p>x {or.count}</p>
                                         <button onClick={() => addToOrder(or)}>+</button>
                                         <button onClick={() => reduceOrder(or)}>-</button>
                                     </li>
-                                    {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p>{order[o.isiMenu - 1].namaMenu} x {o.jumlah * or.count}</p>)}</>}
-                                </>
+                                    {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p key={o.isiMenu}>{order[o.isiMenu - 1].namaMenu} x {o.jumlah * or.count}</p>)}</>}
+                                </div>
                             )}
                         </ul>
                     : <p style={{textAlign: "center"}}>Order your desired menu by clicking the menu card on the left.</p>}

@@ -21,7 +21,7 @@ export default function TambahMenu({dataMenu}){
   }
 }
 
-export async function getServerSideProps(){
+export async function getStaticProps(){
   const query = `SELECT * FROM "Menu"`
   const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu", "TerdiriMenu"."jumlah" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
 

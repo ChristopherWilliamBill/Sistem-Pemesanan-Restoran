@@ -2,8 +2,8 @@ import {conn} from '../../module/pg.js';
 import { getToken } from "next-auth/jwt"
 
 export default async (req, res) => {
-
-  if(req.method !== "PUT"){
+  // insert data transaksi baru
+  if(req.method !== "POST"){
     res.status(405).send({ message: 'Method not allowed'})
     return
   }
@@ -20,14 +20,18 @@ export default async (req, res) => {
 
   console.log(request)
 
-  const query = `UPDATE "Admin" SET "username" = '${request.username}', "password" = '${request.password}', "role" = '${request.role}' WHERE "idAdmin" = ${request.idAdmin}`
+  const query = `INSERT INTO "Transaksi" ("total", "tanggal", "idMeja") VALUES ('${request.total}', current_timestamp, ${request.idMeja}) RETURNING "idTransaksi"`
 
   try{
     const result = await conn.query(query)
-    res.status(200).json({ message: 'Update Success' })
+    const idTransaksi = result.rows[0].idTransaksi
+    const queryTerdiri = `INSERT INTO "TerdiriTransaksi" VALUES (${idTransaksi}, ${request.idPesanan})`
+    const resultTerdiri = await conn.query(queryTerdiri)
+
+    res.status(200).json({ message: 'Insert Success' })
   }catch(err){
     console.log(err)
-    res.status(400).send({ message: 'Update Failed' })
+    res.status(400).send({ message: 'Insert Failed' })
   }
 
   return

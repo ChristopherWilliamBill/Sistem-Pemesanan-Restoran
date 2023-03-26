@@ -10,9 +10,7 @@
 }
 
 .listcontainer{ 
-    max-height: 92vh;
-    overflow: scroll;
-    width: 80%;
+    width: 100%;
     margin: 1rem;
 }
 

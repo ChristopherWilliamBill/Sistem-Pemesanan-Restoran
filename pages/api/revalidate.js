@@ -13,7 +13,9 @@ export default async function handler(req, res) {
   
     try {
         const path = request.path
-        await res.revalidate(path)
+        for(let i = 0; i < path.length; i++){
+            await res.revalidate(path[i])
+        }
         return res.json({ revalidated: true })
     } catch (err) {
         return res.status(500).send('Error revalidating')

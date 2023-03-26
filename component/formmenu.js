@@ -16,28 +16,6 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     const [selectedPaket, setSelectedPaket] = useState(0)
     const [imageSrc, setImageSrc] = useState();
     
-    useEffect(() => {
-        let d = ""
-        if(paket.length > 0){
-            for(let i = 0; i < paket.length; i++){
-                d += `${paket[i].jumlah} x ${dataMenu[paket[i].isiMenu - 1].namaMenu}, `
-            }
-
-            d = d.substring(0, d.length - 2)
-            setDeskripsi(d)
-        }else{
-            if(selectedMenu) {
-                setDeskripsi(selectedMenu.deskripsiMenu)
-            }else{
-                setDeskripsi('')
-            }
-        }
-
-        if(paket.length == 0 && deletedPaket.length > 0){
-            setDeskripsi('-')
-        }
-    }, [paket])
-
     const socketInitializer = async () => {
         await fetch('/api/socket')
         socket = io()
@@ -50,9 +28,9 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     useEffect(() => {socketInitializer()}, [])
 
     const menuActivation = async (action) => {
-        const data = { idMenu: selectedMenu.idMenu, action: action, idAdmin: idAdmin }
+        const data = { action: action, idAdmin: idAdmin }
         const JSONdata = JSON.stringify(data)
-        const endpoint = '../api/menuactivation'
+        const endpoint = `../api/menu/activation/${selectedMenu.idMenu}`
         const options = {
             method: 'PUT',
             headers: {
@@ -91,10 +69,22 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     }
 
     const handleSubmit = async () => {
+        let desc = ''
+        if (paket.length > 0 || deletedPaket.length > 0){
+            for(let i = 0; i < paket.length; i++){
+                if(i !== paket.length - 1){
+                    desc = desc + `${paket[i].jumlah} x ${dataMenu[paket[i].isiMenu - 1].namaMenu}, `
+                }else{
+                    desc = desc + `${paket[i].jumlah} x ${dataMenu[paket[i].isiMenu - 1].namaMenu}`
+                }
+            }
+        }else{
+            desc = deskripsi
+        }
         const resultImage = await uploadImage()
         const data = {
             namaMenu: namaMenu,
-            deskripsiMenu: deskripsi,
+            deskripsiMenu: desc,
             harga: harga,
             idMenu: selectedMenu.idMenu,
             idAdmin: idAdmin,
@@ -103,7 +93,7 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
             image: resultImage
         }    
         const JSONdata = JSON.stringify(data)
-        const endpoint = '../api/editmenu'
+        const endpoint = '../api/menu'
         const options = {
             method: 'PUT',
             headers: {
@@ -114,25 +104,33 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     
         const response = await fetch(endpoint, options)
         const result = await response.json()
+        alert(result.message)
+
         if(result.revalidated){
             socket.emit('newmenu', 'kitchen')
+            router.reload()
         }
-        alert(result.message)
-        router.reload()
     }
 
     const handleSubmitNew = async () => {
+        let desc = ''
+        if (paket.length > 0 || deletedPaket.length > 0){
+            desc = paket.map((p,i) => (i !== paket.length - 1 ? `${p.jumlah} x ${dataMenu[p.isiMenu - 1].namaMenu}, ` : `${p.jumlah} x ${dataMenu[p.isiMenu - 1].namaMenu}`))
+        }else{
+            desc = deskripsi
+        }
+
         const resultImage = await uploadImage()
         const data = {
             namaMenu: namaMenu,
-            deskripsiMenu: deskripsi,
+            deskripsiMenu: desc,
             harga: harga,
             idAdmin: idAdmin,
             paket: paket,
             image: resultImage
         }    
         const JSONdata = JSON.stringify(data)
-        const endpoint = '../api/tambahmenu'
+        const endpoint = '../api/menu'
         const options = {
             method: 'POST',
             headers: {
@@ -143,11 +141,12 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     
         const response = await fetch(endpoint, options)
         const result = await response.json()
+        alert(result.message)
+
         if(result.revalidated){
             socket.emit('newmenu', 'kitchen')
+            router.reload()
         }
-        alert(result.message)
-        router.reload()
     }
 
     const handleImage = (v) => {
@@ -188,6 +187,7 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
             }
             else return p;
         }))
+        console.log(paket)
     }
 
     return(
@@ -209,7 +209,12 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
                             :
                             <div className={styles.inputcontainer}>
                                 <p>Description</p>
-                                <p>{deskripsi}</p>
+                                {paket.length > 0 ? 
+                                    <p>
+                                        {paket.map((p,i) => (i !== paket.length - 1 ? `${p.jumlah} x ${dataMenu[p.isiMenu - 1].namaMenu}, ` : `${p.jumlah} x ${dataMenu[p.isiMenu - 1].namaMenu}`))}
+                                    </p>
+                                    : <p>-</p>
+                                }
                             </div>
                         }
 
@@ -223,10 +228,10 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
                                 <p>Packet</p>
                                 <div className={styles.paketcontainer}>
                                     {paket.map((p, index)=> 
-                                        <div className={styles.paketlist}>
+                                        <div key={p.isiMenu} className={styles.paketlist}>
                                             <p>{dataMenu[p.isiMenu - 1].namaMenu}</p> 
                                             <div className={styles.jumlahpaket}>
-                                                <input type='number' min="0" value={p.jumlah} onChange={({target}) => handleJumlahPaket(target.value, p.isiMenu, index)}></input>
+                                                <input type='number' onWheel={(e) => e.target.blur()} min="0" value={p.jumlah} onChange={({target}) => handleJumlahPaket(target.value, p.isiMenu, index)}></input>
                                                 <button className="btn-danger" onClick={() => removePaket(index, p.isiMenu)}>x</button> 
                                             </div>
                                         </div>
@@ -238,7 +243,7 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
                                             <option value={0}> select menu </option>
                                             {/* yang dapat menjadi option isi paket hanyalah menu yang bukan berupa paket dan belum ditambahkan jadi isi paketnya*/}
                                             {dataMenu.filter(d => checkPaket(d.idMenu)).filter(d => d.isiMenu.length == 0).map(d => 
-                                                <option value={d.idMenu}>{d.namaMenu}</option>
+                                                <option key={d.idMenu} value={d.idMenu}>{d.namaMenu}</option>
                                             )}
                                         </select>
                                     </div>

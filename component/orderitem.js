@@ -34,7 +34,7 @@ export default function OrderItem({or, order, jumlahCancel, jumlahCancelAddition
             }
             <div className={styles.info}>
                 {or.requestcancel > 0 && <p>x {or.requestcancel} requested to cancel</p>}
-                {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p>{order[o.isiMenu - 1].namaMenu} {or.delivered * o.jumlah}/{o.jumlah * or.count}</p>)}</>}
+                {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p key={or.isiMenu}>{order[o.isiMenu - 1].namaMenu} {or.delivered * o.jumlah}/{o.jumlah * or.count}</p>)}</>}
             </div>
         </li>
     )

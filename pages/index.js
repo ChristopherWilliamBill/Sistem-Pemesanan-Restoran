@@ -65,14 +65,11 @@ export default function Home({dataMenu}) {
     }
 
     resetOrder()
-    const data = { idMeja: idMeja}
-    const JSONdata = JSON.stringify(data)
-    const endpoint = '../api/getcurrentorder'
+    const endpoint = `../api/order/current/${idMeja}`
 
     const options = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSONdata
     }
     const response = await fetch(endpoint, options)
     const dataJSON = await response.json()
@@ -211,7 +208,7 @@ export default function Home({dataMenu}) {
         }
 
         {showNotification && <div className={styles.notification}>
-            {notification.map(n => <p>{n}</p>)}
+            {notification.map(n => <p key={n}>{n}</p>)}
             {notification.length === 0 && <p>No notification</p>}
         </div>}
 

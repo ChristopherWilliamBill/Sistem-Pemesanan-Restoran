@@ -14,12 +14,12 @@ export default function EditKaryawan({dataAdmin}){
         <>
             {session.role === "manager" ? 
                 <div className={styles.container}>
-                    <div classname={styles.listcontainer}> 
+                    <div className={styles.listcontainer}> 
                         <h3>Choose admin to edit:</h3>
                         {dataAdmin.map(a => 
-                            <p className={styles.listitem} onClick={() => setSelectedAdmin(a)}>
-                                {a.username}
-                            </p>
+                          <p key={a.idAdmin} className={styles.listitem} onClick={() => setSelectedAdmin(a)}>
+                            {a.username}
+                          </p>
                         )}
                     </div>
 
@@ -32,7 +32,7 @@ export default function EditKaryawan({dataAdmin}){
     )
 }
 
-export async function getServerSideProps(){
+export async function getStaticProps(){
     const query = `SELECT * FROM "Admin"`
     const res = await conn.query(query)
     const dataAdmin = res.rows

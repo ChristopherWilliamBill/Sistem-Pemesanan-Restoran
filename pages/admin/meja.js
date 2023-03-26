@@ -13,8 +13,10 @@ export default function Meja({dataMeja, dataOrder}){
 
     const [username, setUsername] = useState()
     const [password, setPassword] = useState()
+    const [isNew, setIsNew] = useState(false)
 
     const handleNew = () => {
+        setIsNew(true)
         setUsername('Table ' + (dataMeja.length + 1))
         setPassword('meja' + (dataMeja.length + 1))
     }
@@ -23,24 +25,55 @@ export default function Meja({dataMeja, dataOrder}){
         if(username){
             return
         }
+        setIsNew(false)
         setUsername(d.username)
         setPassword(d.password)
     }
 
     const handleCancel = () => {
+        setIsNew(false)
         setPassword()
         setUsername()
+    }
+
+    const handleSubmit = async () => {
+        let method = ''
+        if(isNew){
+            method = 'POST'
+        }else{
+            method = 'PUT'
+        }
+
+        const data = {
+            username: username,
+            password: password,
+        }    
+        const JSONdata = JSON.stringify(data)
+        const endpoint = '../api/meja'
+        const options = {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSONdata
+        }
+    
+        const response = await fetch(endpoint, options)
+        const result = await response.json()
+        alert(result.message)
+        if(result.revalidated){
+            router.reload()
+        }
     }
 
     if (status === "authenticated") {
         return(
             <>
-            {console.log(dataOrder)}
                 <div className={styles.container}>
                     <div className={styles.containerexisting}>
                         <h3>Existing Table: </h3>
                         {dataMeja.map(d => 
-                        <div className={styles.list}>                            
+                        <div key={d.idMeja} className={styles.list}>                            
                             <p>{d.username} {dataOrder.some(dataO => dataO.idMeja === d.idMeja) && 'occupied'}</p>
                             {!username && <button className='btn-primary' onClick={() => handleExisting(d)}>edit</button>}
                         </div>)
@@ -51,14 +84,16 @@ export default function Meja({dataMeja, dataOrder}){
 
                     {username && 
                         <div className={styles.newmeja}>
-                            <h3>Editing: {username}</h3>
+                            {username === 'Table ' + (dataMeja.length + 1) ?
+                            <h3>Add New: {username} </h3>
+                            : <h3>Editing: {username}</h3>}
                             <label className={styles.input}>
                                 <p>Set password:</p>
                                 <input type="text" value={password} placeholder={password} onChange={({target}) => setPassword(target.value)}></input>
                             </label> 
 
                             <div className={styles.btn}>
-                                <button className='btn-primary'>Submit</button>
+                                <button className='btn-primary' onClick={handleSubmit}>Submit</button>
                                 <button className='btn-danger' onClick={handleCancel}>Cancel</button>
                             </div>
                         </div>
@@ -69,7 +104,7 @@ export default function Meja({dataMeja, dataOrder}){
     }
 }
 
-export async function getServerSideProps(){
+export async function getStaticProps(){
     const query = `SELECT * FROM "Meja" ORDER BY "idMeja"`
     const queryOrder = `SELECT "idMeja" FROM "Pesanan" WHERE "selesai" = 0`
 

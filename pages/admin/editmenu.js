@@ -16,7 +16,7 @@ export default function EditMenu({dataMenu}){
         <h3>Choose the menu to edit:</h3>
 
             {dataMenu.map(d => 
-              <p className={styles.listitem} onClick={() => setSelectedMenu(d)}>
+              <p key={d.idMenu} className={styles.listitem} onClick={() => setSelectedMenu(d)}>
                 {d.namaMenu}
               </p>
             )}
@@ -35,7 +35,7 @@ export default function EditMenu({dataMenu}){
   )
 }
 
-export async function getServerSideProps(){
+export async function getStaticProps(){
   const query = `SELECT * FROM "Menu"`
   const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu", "TerdiriMenu"."jumlah" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
 

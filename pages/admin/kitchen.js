@@ -36,7 +36,7 @@ export default function Kitchen({dataO, dataMenu, dataPaket}){
 
                 <div className={styles.ordercontainer}>
                     {dataOrder.map(d => 
-                        <div className={styles.card}>
+                        <div key={d.isiPesanan} className={styles.card}>
                             <div className={styles.info}>
                                 <h1>{dataMenu[d.isiPesanan - 1].namaMenu}</h1>
                                 <h1>x {d.sisa}</h1>
@@ -45,7 +45,7 @@ export default function Kitchen({dataO, dataMenu, dataPaket}){
                             {dataPaket.some(paket => paket.idMenu === d.isiPesanan) &&
                             <div className={styles.paketcontainer}>
                                 {dataPaket.filter(paket => paket.idMenu === d.isiPesanan).map(p => 
-                                    <div className={styles.isipaket}>
+                                    <div key={p.isiMenu} className={styles.isipaket}>
                                         <h2>{dataMenu[p.isiMenu - 1].namaMenu}</h2> 
                                         <h2>x {p.jumlah * d.sisa}</h2>
                                     </div>

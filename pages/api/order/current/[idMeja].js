@@ -1,8 +1,8 @@
-import {conn} from '../../module/pg.js';
+import {conn} from '../../../../module/pg.js';
 import { getToken } from "next-auth/jwt"
 
 export default async (req, res) => {
-
+  //CURRENT ORDER by idmeja
   if(req.method !== "POST"){
     res.status(405).send({ message: 'Method not allowed'})
     return
@@ -16,7 +16,7 @@ export default async (req, res) => {
     return
   }
 
-  const idMeja = req.body.idMeja
+  const { idMeja } = req.query
 
   const query = `SELECT * FROM "Pesanan" WHERE "idMeja" = ${idMeja} AND selesai = 0`
   const queryMenu = `SELECT * FROM "Menu"`
@@ -42,7 +42,6 @@ export default async (req, res) => {
       orderUtama: resultOrder.rows,
       orderTambahan: resultTambahan.rows
     }
-    //const result = resultOrder.rows.concat(resultTambahan.rows)
 
     res.status(200).send({ message: result})
   }catch(err){

@@ -2,14 +2,15 @@ import Layout from '../../component/layout'
 import {conn} from '../../module/pg.js';
 import styles from '../../styles/RiwayatTransaksi.module.css'
 import { useState } from 'react';
-import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, dataAdminFinish, dataAdminAccept}){
+export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, dataAdminFinish, dataAdminAccept, show}){
     const { data: session, status } = useSession()
-    const [fromDate, setFromDate] = useState()
-    const [toDate, setToDate] = useState()
-    const [showIsi, setShowIsi] = useState([])
+    const [fromDate, setFromDate] = useState((dataTransaksi.length > 0) && new Date(dataTransaksi[0].tanggal).toLocaleDateString('en-CA'))
+    const [toDate, setToDate] = useState((dataTransaksi.length > 0) && new Date(dataTransaksi[dataTransaksi.length - 1].tanggal).toLocaleDateString('en-CA'))
+    const [showIsi, setShowIsi] = useState(show)
 
     const handleChangeFrom = (e) => {
       setFromDate(new Date(e.target.value).toLocaleDateString('en-CA'))
@@ -26,16 +27,6 @@ export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, da
       setShowIsi(temp)
     }
 
-    useEffect(() => {
-      if(dataTransaksi.length > 0){
-        setFromDate(new Date(dataTransaksi[0].tanggal).toLocaleDateString('en-CA'))
-        setToDate(new Date(dataTransaksi[dataTransaksi.length - 1].tanggal).toLocaleDateString('en-CA'))
-        dataTransaksi.map(d => setShowIsi(
-          showIsi => [...showIsi, {idTransaksi: d.idTransaksi, show: false}]
-        ))
-      }
-    }, []);
-
     return(
         <> 
           {session.role === "manager" ? 
@@ -48,6 +39,7 @@ export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, da
                   <div> To: <input type="date" value={toDate} onChange={(e) => handleChangeTo(e)}></input> </div>
                 </div>
                 <table className={styles.table}>
+                  <tbody>
                   <tr className={styles.header}>
                     <th>Date</th>
                     <th>Order ID</th>
@@ -56,7 +48,7 @@ export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, da
                   </tr>
                   {dataTransaksi.filter(
                     data => new Date(data.tanggal).toLocaleDateString('en-CA') >= fromDate && new Date(data.tanggal).toLocaleDateString('en-CA') <= toDate).map(d => 
-                    <>
+                    <React.Fragment key={d.uuid}>
                       <tr className={styles.trtransaksi} onClick={() => handleClick(d.idTransaksi)}>
                         <td>{new Date(d.tanggal).toString().slice(0,15)}</td>
                         <td>{d.uuid}</td>
@@ -65,16 +57,16 @@ export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, da
                       </tr>
 
                       {showIsi[showIsi.findIndex(s => s.idTransaksi === d.idTransaksi)].show && 
-                        <td colspan={4} className={styles.animasi}>
-                          <tr>
-                            <th className={styles.isimenu}>Menu</th>
-                            <th className={styles.isimenu}>Amount</th>
-                            <th className={styles.isimenu}></th>
-                            <th className={styles.isimenu}></th>
-                          </tr>
+                      <>
+                        <tr colSpan={4} className={styles.animasi}>
+                          <th className={styles.isimenu}>Menu</th>
+                          <th className={styles.isimenu}>Amount</th>
+                          <th className={styles.isimenu}></th>
+                          <th className={styles.isimenu}></th>
+                        </tr>
 
                         {dataOrder.filter(dataO => dataO.idPesanan === d.idPesanan).map( d => 
-                          <tr>
+                          <tr key={d.isiPesanan}>
                             <td className={styles.isimenu}>{dataMenu[d.isiPesanan - 1].namaMenu}</td>
                             <td className={styles.isimenu}>{d.jumlah}</td>
                             <td className={styles.isimenu}></td>
@@ -88,9 +80,9 @@ export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, da
                             <th className={styles.isimenu}>Finished by: {dataAdminFinish[dataAdminFinish.findIndex(da => da.idTransaksi == d.idTransaksi)].username}</th>
                             <th className={styles.isimenu}>At: {dataAdminFinish[dataAdminFinish.findIndex(da => da.idTransaksi == d.idTransaksi)].jam.split('.')[0]}</th>
                           </tr>
-                        </td>
+                      </>
                       }
-                    </>
+                    </React.Fragment>
                   )}
                   <tr>
                     <td className={styles.total} colSpan={4}>
@@ -99,6 +91,7 @@ export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, da
                       .reduce((total, i) => total + i.total, 0).toLocaleString()}
                     </td>
                   </tr>
+                  </tbody>
                 </table>
               </>
             : <p>No transaction yet</p>}
@@ -130,6 +123,9 @@ export async function getServerSideProps(){
   dataOrder.map(d => d.tanggal = d.tanggal.toString())
 
   dataTransaksi.map(d => d.tanggal = String(d.tanggal))
+  const show = []
+  dataTransaksi.map(d => show.push({idTransaksi: d.idTransaksi, show: false}))
+
   console.log(dataOrder)
 
   return{
@@ -138,7 +134,8 @@ export async function getServerSideProps(){
       dataOrder,
       dataMenu,
       dataAdminFinish,
-      dataAdminAccept
+      dataAdminAccept,
+      show
     }
   }
 }
