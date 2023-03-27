@@ -5,4 +5,10 @@
     align-items: center;
     background-color: var(--color1);
     height: 92vh;
+    width: 80%;
+    margin-left: 20%;
+}
+
+.rootcontainer{
+    display: flex;
 }

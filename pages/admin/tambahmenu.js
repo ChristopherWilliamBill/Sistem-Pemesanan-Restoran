@@ -1,11 +1,10 @@
 import Layout from '../../component/layout'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
 import styles from '../../styles/TambahMenu.module.css'
 import { useSession } from 'next-auth/react'
 import FormMenu from '../../component/formmenu'
 import {conn} from '../../module/pg.js';
-
+import NavBar from '../../component/navbar'
 
 export default function TambahMenu({dataMenu}){
   const router = useRouter()
@@ -51,7 +50,10 @@ export async function getStaticProps(){
 TambahMenu.getLayout = function getLayout(page) {
     return (
       <Layout>
-        {page}
+        <div className={styles.rootcontainer}>
+          <NavBar key='tambahmenu' currentPath={'/admin/tambahmenu'}></NavBar>
+          {page}
+        </div>
       </Layout>
     )
 }

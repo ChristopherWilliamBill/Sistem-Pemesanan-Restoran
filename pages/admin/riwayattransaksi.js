@@ -4,7 +4,7 @@ import styles from '../../styles/RiwayatTransaksi.module.css'
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import NavBar from '../../component/navbar';
 
 export default function RiwayatTransaksi({dataTransaksi, dataOrder, dataMenu, dataAdminFinish, dataAdminAccept, show}){
     const { data: session, status } = useSession()
@@ -143,7 +143,10 @@ export async function getServerSideProps(){
 RiwayatTransaksi.getLayout = function getLayout(page) {
     return (
       <Layout>
-        {page}
+        <div className={styles.rootcontainer}>
+          <NavBar key='riwayattransaksi' currentPath={'/admin/riwayattransaksi'}></NavBar>
+          {page}
+        </div>
       </Layout>
     )
 }

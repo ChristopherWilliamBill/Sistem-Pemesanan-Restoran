@@ -1,3 +1,7 @@
+.rootcontainer{
+    display: flex;
+}
+
 .container{
     display: flex;
     flex-direction: column;
@@ -10,8 +14,6 @@
     width: 10%;
     margin-left: 45%;
 }
-
-
 
 .ordercontainer{
     display: grid;

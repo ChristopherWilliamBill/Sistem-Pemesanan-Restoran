@@ -1,4 +1,9 @@
+.rootcontainer{
+    display: flex;
+}
+
 .container{
+    width: 100%;
     background-color: var(--color1);
     display: grid;
     grid-template-columns: 1fr 4fr;
@@ -6,7 +11,7 @@
     padding: 2rem;
     column-gap: 2rem;
     width: 80%;
-    margin-left: 15%;
+    margin-left: 20%;
 }
 
 .listcontainer{ 

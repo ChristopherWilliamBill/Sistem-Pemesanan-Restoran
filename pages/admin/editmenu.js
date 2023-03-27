@@ -4,6 +4,7 @@ import {conn} from '../../module/pg.js';
 import styles from '../../styles/EditMenu.module.css';
 import FormMenu from '../../component/formmenu';
 import { useSession } from 'next-auth/react';
+import NavBar from '../../component/navbar';
 
 export default function EditMenu({dataMenu}){
   const [selectedMenu, setSelectedMenu] = useState(null);
@@ -65,7 +66,10 @@ export async function getStaticProps(){
 EditMenu.getLayout = function getLayout(page) {
   return (
     <Layout>
-      {page}
+      <div className={styles.rootcontainer}>
+        <NavBar key='editmenu' currentPath={'/admin/editmenu'}></NavBar>
+        {page}
+      </div>    
     </Layout>
   )
 }

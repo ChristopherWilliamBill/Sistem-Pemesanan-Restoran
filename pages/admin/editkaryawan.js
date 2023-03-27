@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import {conn} from '../../module/pg.js';
 import { useState } from 'react';
 import FormKaryawan from '../../component/formkaryawan';
+import NavBar from '../../component/navbar';
 
 export default function EditKaryawan({dataAdmin}){
     const [selectedAdmin, setSelectedAdmin] = useState(null);
@@ -47,7 +48,10 @@ export async function getStaticProps(){
 EditKaryawan.getLayout = function getLayout(page) {
   return (
     <Layout>
-      {page}
+      <div className={styles.rootcontainer}>
+        <NavBar key='editkaryawan' currentPath={'/admin/editkaryawan'}></NavBar>
+        {page}
+      </div>
     </Layout>
   )
 }

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import styles from '../../styles/Meja.module.css'
 import { useSession } from 'next-auth/react'
 import {conn} from '../../module/pg.js';
-
+import NavBar from '../../component/navbar'
 
 export default function Meja({dataMeja, dataOrder}){
     const router = useRouter()
@@ -124,7 +124,10 @@ export async function getStaticProps(){
 Meja.getLayout = function getLayout(page) {
     return (
       <Layout>
-        {page}
+        <div className={styles.rootcontainer}>
+            <NavBar key='meja' currentPath={'/admin/meja'}></NavBar>
+            {page}
+        </div>
       </Layout>
     )
 }

@@ -2,6 +2,7 @@ import Layout from '../../component/layout'
 import styles from '../../styles/TambahKaryawan.module.css'
 import { useSession } from 'next-auth/react'
 import FormKaryawan from '../../component/formkaryawan'
+import NavBar from '../../component/navbar'
 
 export default function TambahKaryawan(){
 
@@ -25,7 +26,10 @@ export default function TambahKaryawan(){
 TambahKaryawan.getLayout = function getLayout(page) {
     return (
       <Layout>
-        {page}
+        <div className={styles.rootcontainer}>
+          <NavBar key='tambahkaryawan' currentPath={'/admin/tambahkaryawan'}></NavBar>
+          {page}
+        </div>
       </Layout>
     )
 }

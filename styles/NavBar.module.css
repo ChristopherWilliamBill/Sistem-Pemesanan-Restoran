@@ -1,0 +1,48 @@
+.container{
+    display: flex;
+    width: 20%;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: left;
+    background-color: var(--color2);
+    height: 100%;
+    position: fixed;
+    padding-top: 8vh;
+    top: 0;
+}
+
+.card{
+    margin-top: .5rem;
+    padding: .5rem;
+    border-radius: .5rem;
+    background-color: var(--color2);
+}
+
+.selected{
+    margin-top: .5rem;
+    padding: .5rem;
+    border-radius: .5rem;
+    color: var(--color1);
+    background-color: var(--color3);
+}
+
+.section{
+    display: flex;
+    flex-direction: column;
+    margin-top: .5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.card:hover{
+    background-color: var(--color3);
+    color: var(--color1);
+}
+
+.orderq{
+    width: 100%;
+    background-color: antiquewhite;
+    border: 1px solid rgba(0,0,0, 0.2);
+    text-align: center;
+    border-radius: .5rem;
+}
