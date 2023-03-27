@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react'
 import {conn} from '../../module/pg.js';
 import NavBar from '../../component/navbar'
 
-export default function Meja({dataMeja, dataOrder}){
+export default function Meja({dataMeja}){
     const router = useRouter()
 
     const { data: session, status } = useSession()
@@ -74,7 +74,7 @@ export default function Meja({dataMeja, dataOrder}){
                         <h3>Existing Table: </h3>
                         {dataMeja.map(d => 
                         <div key={d.idMeja} className={styles.list}>                            
-                            <p>{d.username} {dataOrder.some(dataO => dataO.idMeja === d.idMeja) && 'occupied'}</p>
+                            <p>{d.username}</p>
                             {!username && <button className='btn-primary' onClick={() => handleExisting(d)}>edit</button>}
                         </div>)
                         }
@@ -106,17 +106,12 @@ export default function Meja({dataMeja, dataOrder}){
 
 export async function getStaticProps(){
     const query = `SELECT * FROM "Meja" ORDER BY "idMeja"`
-    const queryOrder = `SELECT "idMeja" FROM "Pesanan" WHERE "selesai" = 0`
-
     const res = await conn.query(query)
-    const resOrder = await conn.query(queryOrder)
     const dataMeja = res.rows
-    const dataOrder = resOrder.rows
     
     return{
         props:{
             dataMeja,
-            dataOrder
         }
     }
 }
