@@ -355,11 +355,12 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                                 </div>
                             }
                         </div>
+                        {console.log(d.jumlahPaket[2])}
 
                         {d.isiPaket[index].length > 0 && 
                             d.isiPaket[index].map((isi, i) => 
-                                <p key={isi} className={styles.isiPaket}>
-                                    {d.jumlahPaket[index][i] * (d.jumlah[index] - d.delivered[index]) } x {dataMenu[isi - 1].namaMenu}
+                                <p key={isi} className={styles.isiPaket}> 
+                                    {d.jumlahPaket[index][i] * (d.delivered[index])}/{d.jumlahPaket[index][i] * (d.jumlah[index])} {dataMenu[isi - 1].namaMenu}
                                 </p>
                             )
                         }

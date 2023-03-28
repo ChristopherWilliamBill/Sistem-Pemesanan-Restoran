@@ -1,7 +1,7 @@
 import styles from "../styles/OrderCard.module.css"
 import OrderItem from './orderitem';
 
-export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder, resetOrder, notifyKitchen, isWaiting, setIsWaiting, meja, idPesanan, getCurrentOrder, setExtendOrder, extendOrder, jumlahCancel, setJumlahCancel, jumlahCancelAdditional, setJumlahCancelAdditional, uuid}){
+export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder, resetOrder, notifyKitchen, occupyTable, isWaiting, setIsWaiting, meja, idPesanan, getCurrentOrder, setExtendOrder, extendOrder, jumlahCancel, setJumlahCancel, jumlahCancelAdditional, setJumlahCancelAdditional, uuid}){
     
     const handleSubmit = async (tipe) => {
         if(order.reduce((i, o) => {return i + o.count}, 0) == 0){
@@ -47,6 +47,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
 
         if(result.message === "Order Success"){
             notifyKitchen()
+            occupyTable()
             resetOrder()
             getCurrentOrder(meja.substring(6, meja.length))
             setIsWaiting(true)
