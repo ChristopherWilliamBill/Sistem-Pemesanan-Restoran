@@ -25,6 +25,7 @@ export default function Home({dataMenu}) {
   const [jumlahCancel, setJumlahCancel] = useState([])
   const [jumlahCancelAdditional, setJumlahCancelAdditional] = useState([])
   const [audio, setAudio] = useState()
+  const [isRequestingHelp, setIsRequestingHelp] = useState(false)
 
   const socketInitializer = async () => {
     await fetch('/api/socket')
@@ -61,6 +62,50 @@ export default function Home({dataMenu}) {
 
   const occupyTable = async () => {
     socket.emit('occupied', session.user.name.substring(6, session.user.name.length))
+  }
+
+  const requestHelp = async () => {
+    const endpoint = `../api/help/${session.user.name.substring(6, session.user.name.length)}`
+    const options = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' }    
+    }
+
+    const response = await fetch(endpoint, options)
+    const result = await response.json()
+
+    if(result.message === 1){
+      alert('Help requested')
+      setIsRequestingHelp(true)
+      socket.emit('help', {idMeja: session.user.name.substring(6, session.user.name.length), help: 1 })
+    }else if(result.message === 0){
+      alert('Done')
+      setIsRequestingHelp(false)
+      socket.emit('help', {idMeja: session.user.name.substring(6, session.user.name.length), help: 0})
+    }else{
+      alert('Failed')
+    }
+  }
+
+  const getRequestHelp = async (idMeja) => {
+    const endpoint = `../api/help/${idMeja}`
+    const options = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }    
+    }
+
+    const response = await fetch(endpoint, options)
+    const result = await response.json()
+
+    console.log(result)
+
+    if(result.message === 1){
+      setIsRequestingHelp(true)
+    }else if(result.message === 0){
+      setIsRequestingHelp(false)
+    }else{
+      console.log('Failed')
+    }
   }
 
   const getCurrentOrder = async (idMeja) => {
@@ -128,6 +173,7 @@ export default function Home({dataMenu}) {
     if(session){
       const x = session.user.name.substring(6, session.user.name.length)
       getCurrentOrder(x)
+      getRequestHelp(x)
     }
   },[status])
 
@@ -205,9 +251,9 @@ export default function Home({dataMenu}) {
             Notification
           </button>
 
-          {/* <button className={styles.help}>
-            Request help
-          </button> */}
+          <button className={styles.help} onClick={() => requestHelp()}>
+            { isRequestingHelp ? 'Done' :'Request help'}
+          </button>
         </div>
         }
 

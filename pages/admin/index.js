@@ -16,21 +16,8 @@ export default function Admin({dataTopMenu, dataAllTimeRevenue, dataDailyRevenue
 
   const { data: session, status } = useSession()
   const [occupied, setOccupied] = useState(dataOccupied)
+  const [meja, setMeja] = useState(dataMeja)
   // const today = new Date().toLocaleDateString('en-CA')
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Chart.js Line Chart',
-      },
-    },
-  };
-
-  
 
   useEffect(() => {socketInitializer()}, [])
 
@@ -44,6 +31,19 @@ export default function Admin({dataTopMenu, dataAllTimeRevenue, dataDailyRevenue
 
     socket.on('occupied', (msg) => {
       setOccupied(occupied => [...occupied, {idMeja: parseInt(msg)}])
+    })
+
+    socket.on('help', (msg) => {
+      console.log(msg)
+      setMeja(meja => [...meja].map(m => {
+        if(m.idMeja === parseInt(msg.idMeja)){
+          return {
+            ...m,
+            help: msg.help
+          }
+        }
+        else return m
+      }))
     })
   }
 
@@ -65,7 +65,7 @@ export default function Admin({dataTopMenu, dataAllTimeRevenue, dataDailyRevenue
   return(
     <div className={styles.container}>
       <h3>Dashboard</h3>
-      {console.log(occupied)}
+      {console.log(meja)}
       <div className={styles.cardcontainer}>
         <div className={styles.card}>
           Best selling menu:
@@ -126,9 +126,9 @@ export default function Admin({dataTopMenu, dataAllTimeRevenue, dataDailyRevenue
 
       <div className={styles.bigcard}>
         <div className={styles.occupiedtable}>
-          {dataMeja.map(m => occupied.some(o => o.idMeja === m.idMeja) ? 
-            <p className={styles.occupied}>Table {m.idMeja} <b>order on-going</b></p> 
-            : <p>Table {m.idMeja} <b>idle</b></p>)}
+          {meja.map(m => occupied.some(o => o.idMeja === m.idMeja) ? 
+            <p className={styles.occupied}>Table {m.idMeja} <b>{m.help === 1 && 'help'}</b> <b>order on-going</b> </p> 
+            : <p>Table {m.idMeja} <b>{m.help === 1 && 'help'}</b> <b>idle</b> </p>)}
         </div>
 
         <div className={styles.menuperformance}>
@@ -153,7 +153,7 @@ export async function getServerSideProps(){
   const queryAllTimeRevenue = `SELECT SUM("total") AS "total" FROM "Transaksi"`
   const queryDailyRevenue = `SELECT "Transaksi"."tanggal", SUM("total") AS "total" FROM "Transaksi" GROUP BY "Transaksi"."tanggal" ORDER BY "Transaksi"."tanggal" ASC`
   const queryOccupied = `SELECT "idMeja" FROM "Pesanan" WHERE "selesai" = 0`
-  const queryMeja = `SELECT "idMeja" FROM "Meja" ORDER BY "idMeja" ASC`
+  const queryMeja = `SELECT "idMeja", "help" FROM "Meja" ORDER BY "idMeja" ASC`
   const queryJumlahOrder = `SELECT COUNT("Pesanan"."idPesanan") AS "total" FROM "Pesanan" WHERE "statusPesanan" = 4`
   const queryJumlahDailyOrder = `SELECT COUNT("Pesanan"."idPesanan") AS "total" FROM "Pesanan" WHERE "statusPesanan" = 4 AND "tanggal" = '${today}'`
   const queryTotalToday = `SELECT SUM("total") AS "total" FROM "Transaksi" WHERE "tanggal" = '${today}'`

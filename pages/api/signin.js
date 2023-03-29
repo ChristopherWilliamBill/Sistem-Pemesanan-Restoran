@@ -20,6 +20,9 @@ export default async (req, res) => {
 
   const result = await conn.query(query)
   const user = result.rows
+  console.log(user)
+  console.log(request)
+
 
   //user = array, user.length ngecek ada user atau ga
   if(user.length){
@@ -30,6 +33,7 @@ export default async (req, res) => {
     res.status(200).json(user)
     return
   }
+  console.log(user)
 
   res.status(401).send({ message: 'username or password invalid' })
 }

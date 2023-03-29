@@ -23,8 +23,8 @@ export default function MenuCard({aktif, menu, addToOrder, addToInputOrderTambah
                 />
             </div>
             <h3>{menu.namaMenu}</h3>
-            {aktif === 1 && <p>{menu.deskripsiMenu}</p>}
-            {aktif === 0 && <p>unavailable</p>}
+            {aktif === 1 && <p className={styles.deskripsi}>{menu.deskripsiMenu}</p>}
+            {aktif === 0 && <p className={styles.deskripsi}>unavailable</p>}
 
             <p><b>IDR {menu.harga.toLocaleString()}</b></p>
         </div>

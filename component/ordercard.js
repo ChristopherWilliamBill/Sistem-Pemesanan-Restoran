@@ -46,8 +46,10 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
         const result = await response.json()
 
         if(result.message === "Order Success"){
+            if(tipe === 'new'){
+                occupyTable()
+            }
             notifyKitchen()
-            occupyTable()
             resetOrder()
             getCurrentOrder(meja.substring(6, meja.length))
             setIsWaiting(true)

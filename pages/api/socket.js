@@ -86,8 +86,15 @@ export default (req, res) => {
 
             socket.on('occupied', async msg => {
                 try{
-                    console.log('occupied diterima ' + msg)
                     socket.broadcast.emit('occupied', msg)
+                }catch(err){
+                    console.log(err)
+                }
+            })
+
+            socket.on('help', async msg => {
+                try{
+                    socket.broadcast.emit('help', msg)
                 }catch(err){
                     console.log(err)
                 }

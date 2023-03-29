@@ -16,7 +16,7 @@ export default async (req, res) => {
   
     switch (method) {
       case 'POST': //Tambah data meja
-        const queryInsert = `INSERT INTO "Meja" VALUES (DEFAULT, '${request.password}', '${request.username}')`
+        const queryInsert = `INSERT INTO "Meja" VALUES (DEFAULT, '${request.password}', '${request.username}', 0)`
         
         try{
           const resultInsert = await conn.query(queryInsert)
