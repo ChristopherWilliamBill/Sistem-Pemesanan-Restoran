@@ -21,10 +21,10 @@ export default function SignIn() {
         }).then(({ok, error}) => {
             if(ok){
                 if(role === "meja"){
-                    router.push('../')
+                    router.replace('../')
                 }
                 if(role === "admin"){
-                    router.push('../admin')
+                    router.replace('../admin')
                 }
             }else{
                 alert("Username or password invalid")

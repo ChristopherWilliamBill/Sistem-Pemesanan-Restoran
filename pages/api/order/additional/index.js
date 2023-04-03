@@ -18,7 +18,6 @@ export default async (req, res) => {
         case 'POST': //Tambah additional order baru
                 
             const idMeja = parseInt(request.idMeja)
-            const queryPesanan = `INSERT INTO "Pesanan" ("idMeja", "jam", "statusPesanan", "selesai", "tanggal", "uuid") VALUES (${idMeja}, current_timestamp, 1, 0, now(), gen_random_uuid()) RETURNING "idPesanan"`
             
             try{            
                 const queryStatus = `SELECT "statusPesanan" FROM "Pesanan" WHERE "idPesanan" = ${request.idPesanan}`
@@ -58,10 +57,10 @@ export default async (req, res) => {
                 
                         //JIKA SUDAH ADA PESANAN TAMBAHAN YANG SAMA
                         if(checkMultiple.filter(r => r.isiPesanan == request.dataOrder[i].idMenu).length > 0){
-                            let queryUpdateTP = `UPDATE "PesananTambahan" SET "jumlah" = "jumlah" + ${jumlah}, "status" = 3 WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${idMenu}`
+                            let queryUpdateTP = `UPDATE "PesananTambahan" SET "jumlah" = "jumlah" + ${jumlah} WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${idMenu}`
                             let resultUpdateTP = await conn.query(queryUpdateTP)
                         }else{ //JIKA TIDAK, INSERT BARU  
-                            let queryTerdiriPesanan = `INSERT INTO "PesananTambahan" ("idPesanan", "isiPesanan", "jumlah", "status", "delivered") VALUES (${request.idPesanan}, ${idMenu}, ${jumlah}, 3, 0)`
+                            let queryTerdiriPesanan = `INSERT INTO "PesananTambahan" ("idPesanan", "isiPesanan", "jumlah") VALUES (${request.idPesanan}, ${idMenu}, ${jumlah})`
                             let resultTerdiriPesanan = await conn.query(queryTerdiriPesanan)
                         }
                     }
@@ -81,10 +80,10 @@ export default async (req, res) => {
                 
                         //JIKA SUDAH ADA PESANAN TAMBAHAN YANG SAMA
                         if(checkMultiple.filter(r => r.isiPesanan == request.dataOrder[i].idMenu).length > 0){
-                            let queryUpdateTP = `UPDATE "PesananTambahan" SET "jumlah" = "jumlah" + ${jumlah}, "status" = 3 WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${idMenu}`
+                            let queryUpdateTP = `UPDATE "PesananTambahan" SET "jumlah" = "jumlah" + ${jumlah} WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${idMenu}`
                             let resultUpdateTP = await conn.query(queryUpdateTP)
                         }else{ //JIKA TIDAK, INSERT BARU  
-                            let queryTerdiriPesanan = `INSERT INTO "PesananTambahan" ("idPesanan", "isiPesanan", "jumlah", "status", "delivered") VALUES (${request.idPesanan}, ${idMenu}, ${jumlah}, 3, 0)`
+                            let queryTerdiriPesanan = `INSERT INTO "PesananTambahan" ("idPesanan", "isiPesanan", "jumlah") VALUES (${request.idPesanan}, ${idMenu}, ${jumlah})`
                             let resultTerdiriPesanan = await conn.query(queryTerdiriPesanan)
                         }
                     }

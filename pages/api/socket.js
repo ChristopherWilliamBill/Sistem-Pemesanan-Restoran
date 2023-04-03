@@ -1,4 +1,4 @@
-import { Server } from 'Socket.IO'
+import { Server } from 'socket.io'
 import {conn} from '../../module/pg.js';
 import { getToken } from "next-auth/jwt"
 import { orderFormatter } from '../../module/orderformatter.js';
@@ -15,7 +15,7 @@ export default (req, res) => {
             socket.on('notify-antrian', async msg => {
                 const queryMenu = `SELECT * FROM "Menu"`
                 const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."uuid", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status", "TerdiriPesanan"."delivered", "TerdiriPesanan"."requestcancel" FROM "Pesanan" LEFT JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" ORDER BY "TerdiriPesanan"."status", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."isiPesanan"`
-                const queryOrderTambahan = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "PesananTambahan"."isiPesanan", "PesananTambahan"."jumlah", "PesananTambahan"."status", "PesananTambahan"."delivered" FROM "Pesanan" INNER JOIN "PesananTambahan" ON "Pesanan"."idPesanan" = "PesananTambahan"."idPesanan" ORDER BY "PesananTambahan"."isiPesanan" ASC`
+                const queryOrderTambahan = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "PesananTambahan"."isiPesanan", "PesananTambahan"."jumlah" FROM "Pesanan" INNER JOIN "PesananTambahan" ON "Pesanan"."idPesanan" = "PesananTambahan"."idPesanan" ORDER BY "PesananTambahan"."isiPesanan" ASC`
                 const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu", "TerdiriMenu"."jumlah" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
 
                 try{
@@ -30,6 +30,10 @@ export default (req, res) => {
                     const dataMenu = resMenu.rows
                     const dataPaket = resPaket.rows
 
+                    dataOrderTambahan.map(d => {
+                        d.status = 3
+                        d.delivered = 0
+                      })
                     const dataOrder = dataOrderUtama.concat(dataOrderTambahan)
 
                     for(let i = 0; i < dataMenu.length; i++){

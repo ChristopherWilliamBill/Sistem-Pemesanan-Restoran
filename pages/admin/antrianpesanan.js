@@ -2,7 +2,7 @@ import Layout from '../../component/layout'
 import PendingOrderCard from '../../component/pendingordercard';
 import {conn} from '../../module/pg.js';
 import styles from '../../styles/AntrianPesanan.module.css'
-import io from 'Socket.IO-client'
+import io from 'socket.io-client'
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { orderFormatter } from '../../module/orderformatter';
@@ -127,7 +127,7 @@ export async function getServerSideProps(){
   const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu", "TerdiriMenu"."jumlah" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
   //queryOrder terurut berdasarkan status, kemudian jumlah
   const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."uuid", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status", "TerdiriPesanan"."delivered", "TerdiriPesanan"."requestcancel" FROM "Pesanan" LEFT JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" ORDER BY "TerdiriPesanan"."status", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."isiPesanan"`
-  const queryOrderTambahan = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "PesananTambahan"."isiPesanan", "PesananTambahan"."jumlah", "PesananTambahan"."status", "PesananTambahan"."delivered" FROM "Pesanan" INNER JOIN "PesananTambahan" ON "Pesanan"."idPesanan" = "PesananTambahan"."idPesanan" ORDER BY "PesananTambahan"."isiPesanan" ASC`
+  const queryOrderTambahan = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "PesananTambahan"."isiPesanan", "PesananTambahan"."jumlah" FROM "Pesanan" INNER JOIN "PesananTambahan" ON "Pesanan"."idPesanan" = "PesananTambahan"."idPesanan" ORDER BY "PesananTambahan"."isiPesanan" ASC`
 
   const resMenu = await conn.query(queryMenu)
   const resPaket = await conn.query(queryPaket)
@@ -152,7 +152,10 @@ export async function getServerSideProps(){
 
   const dataOrder = resOrder.rows
   const dataOrder2 = resOrderTambahan.rows
-
+  dataOrder2.map(d => {
+    d.status = 3
+    d.delivered = 0
+  })
   const dataO = dataOrder.concat(dataOrder2)
 
   return{

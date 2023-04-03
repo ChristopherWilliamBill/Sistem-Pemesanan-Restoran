@@ -5,7 +5,7 @@ import {conn} from '../module/pg.js';
 import MenuCard from '../component/menucard';
 import OrderCard from '../component/ordercard';
 import { useSession, signIn } from 'next-auth/react';
-import io from 'Socket.IO-client'
+import io from 'socket.io-client';
 
 let socket = null
 
@@ -285,6 +285,7 @@ export default function Home({dataMenu}) {
             </div>
           }
         </div>
+        <p>Harga belum termasuk 10% PPN dan 5% service</p>
       </>
     )
   }

@@ -3,7 +3,7 @@ import Layout from '../../component/layout'
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import NavBar from '../../component/navbar';
-import io from 'Socket.IO-client'
+import io from 'socket.io-client'
 import {conn} from '../../module/pg.js';
 import { useEffect } from 'react';
 import { useState } from 'react';

@@ -4,7 +4,7 @@ import { useState, useEffect} from 'react'
 import styles from '../../styles/Kitchen.module.css'
 import { useSession } from 'next-auth/react'
 import {conn} from '../../module/pg.js';
-import io from 'Socket.IO-client'
+import io from 'socket.io-client'
 
 let socket = null
 export default function Kitchen({dataO, dataMenu, dataPaket}){

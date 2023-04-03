@@ -431,7 +431,8 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                                         </div>
                                     </div>
                                 </div>
-                                {d.isiPaket[index].length > 0 && d.isiPaket[index].map(isi => <p key={isi} className={styles.isiPaket}>{d.jumlahPaket[index] * (d.jumlah[index] - d.delivered[index]) } x {dataMenu[isi - 1].namaMenu}</p>)}
+                                
+                                {d.isiPaket[index].length > 0 && d.isiPaket[index].map((isi, i) => <p key={isi} className={styles.isiPaket}>{d.jumlahPaket[index][i] * (d.jumlah[index])} x {dataMenu[isi - 1].namaMenu}</p>)}
                             </div>
                             )}
                         </div>
