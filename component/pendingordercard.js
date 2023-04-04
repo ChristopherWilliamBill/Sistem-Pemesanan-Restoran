@@ -93,7 +93,6 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         if(!jumlah){ jumlah = 0 }
         temp[index] = jumlah
         setJumlahAdditionalAccept(temp)
-        console.log(jumlahAdditionalAccept)
     }
 
     const deliverOrder = async (isiPesanan, jumlah) => {
@@ -279,9 +278,9 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         const ampm = t.split(' ')
         const x = ampm[0].split(':')
 
-        ampm == "PM" ? x[0] = parseInt(x[0]) + 12 : parseInt(x[0]) + 0
-        parseInt(x[0]) < 10 ? x[0] = parseInt(x[0]) + 12 : parseInt(x[0]) + 0
-        const y = formatter(x[0]) + ":" + formatter(x[1]) + ":" + formatter(x[2])
+        ampm[1] === "PM" ? x[0] = parseInt(x[0]) + 12 : parseInt(x[0]) + 0
+        //parseInt(x[0]) < 10 ? x[0] = parseInt(x[0]) + 12 : parseInt(x[0]) + 0
+        const y = (x[0]) + ":" + (x[1]) + ":" + (x[2])
 
         return y.substring(0, 8) 
     }
@@ -304,6 +303,8 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         }
     },[printAdditional]) 
 
+    useEffect(() => console.log(time), [time])
+
     return(
         <div className={styles.ordercard}> 
             {d.statusPesanan === 3 && <h1 className={styles.printinfo}>Thank You!</h1>}
@@ -319,7 +320,6 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
             <div className={printAdditional === 0 ? styles.orderlistcontainer : styles.dontprint}>
                 <div className={styles.orderlist}>
                 {d.isiPesanan.map((order, index) => 
-                    (d.status[index] != 4 && d.status[index] != 3) &&
                     <div key={order}>
                         <div className={styles.orderitem}>
                             <p>{dataMenu[order - 1].namaMenu}</p> {/* nama menu */}
@@ -327,6 +327,8 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                             {d.statusPesanan > 1 && <p className={styles.orderjumlah}>{d.delivered[index]}/{d.jumlah[index]}</p>} {/* delivered (1/3) */}
                             {d.statusPesanan === 3 && <p className={styles.harga}>Rp {dataMenu[order - 1].harga.toLocaleString()}</p>}
 
+                            {/* Jika tidak ada request cancel...
+                                Jika ada, harus ditanggapi terlebih dahulu */}
                             {d.requestcancel[index] === 0 &&
                                 <div className={styles.orderaction}>
                                     {(d.delivered[index] === d.jumlah[index] && d.statusPesanan) === 2 && <p>delivered</p>}
@@ -341,21 +343,20 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                                         {(d.statusPesanan === 2 && d.delivered[index] < d.jumlah[index]) && 
                                         <>
                                             <input type='number' min="0" className={styles.inputnumber} onChange={({target}) => handleChangeDeliver(target.value, index, d.jumlah[index] - d.delivered[index])} value={jumlahDeliver[index]}></input>
-                                            <input type='number' min="0" className={styles.inputnumber} onChange={({target}) => handleChangeReject(target.value, index, d.jumlah[index] - d.delivered[index])} value={jumlahReject[index]}></input>
+                                            {/* <input type='number' min="0" className={styles.inputnumber} onChange={({target}) => handleChangeReject(target.value, index, d.jumlah[index] - d.delivered[index])} value={jumlahReject[index]}></input> */}
                                         </>}
                                     </div>
 
                                     <div className={styles.orderbutton}> 
                                         {(d.delivered[index] != d.jumlah[index]) && d.statusPesanan === 2 && 
                                         <>
-                                            <button className='btn-primary' onClick={() => deliverOrder(d.isiPesanan[index], jumlahDeliver[index])}>deliver</button>
-                                            <button className='btn-danger' onClick={() => rejectOrder('reject', d.isiPesanan[index], jumlahReject[index])}>reject</button>
+                                            <button className='btn-primary' onClick={() => deliverOrder(d.isiPesanan[index], jumlahDeliver[index])}>deliver {jumlahDeliver[index]}</button>
+                                            {/* <button className='btn-danger' onClick={() => rejectOrder('reject', d.isiPesanan[index], jumlahReject[index])}>reject</button> */}
                                         </>}
                                     </div>
                                 </div>
                             }
                         </div>
-                        {console.log(d.jumlahPaket[2])}
 
                         {d.isiPaket[index].length > 0 && 
                             d.isiPaket[index].map((isi, i) => 

@@ -119,6 +119,7 @@
 
 .orderbutton button{
     height: 1.5rem;
+    white-space: nowrap;
 }
 
 .additionalordercontainer{

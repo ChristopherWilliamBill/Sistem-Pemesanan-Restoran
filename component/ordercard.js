@@ -183,6 +183,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                     {orderTambahan.reduce((i, o) => {return i + o.count}, 0) != 0 && //cek jumlah count > 0 (ada pesanan)
                         <> 
                             <h3>Additional Order</h3>
+                            <h5>Waiting For Confirmation</h5>
                             <ul className={styles.ul}>
                             {orderTambahan.filter(ot => ot.count > 0).map((or, index) => 
                                 <OrderItem key={or} or={or} order={order} jumlahCancel={jumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} index={index} handleChange={handleChange} handleChangeAdditional={handleChangeAdditional} cancelMenu={cancelMenu} requestCancel={requestCancel} cancelAdditional={cancelAdditional}></OrderItem>
