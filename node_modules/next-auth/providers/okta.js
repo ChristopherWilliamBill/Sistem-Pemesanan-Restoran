@@ -29,6 +29,14 @@ function Okta(options) {
       };
     },
 
+    style: {
+      logo: "/okta.svg",
+      logoDark: "/okta-dark.svg",
+      bg: "#fff",
+      text: "#000",
+      bgDark: "#000",
+      textDark: "#fff"
+    },
     options
   };
 }

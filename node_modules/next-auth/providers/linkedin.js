@@ -17,6 +17,9 @@ function LinkedIn(options) {
       }
     },
     token: "https://www.linkedin.com/oauth/v2/accessToken",
+    client: {
+      token_endpoint_auth_method: "client_secret_post"
+    },
     userinfo: {
       url: "https://api.linkedin.com/v2/me",
       params: {
@@ -41,6 +44,14 @@ function LinkedIn(options) {
       };
     },
 
+    style: {
+      logo: "/linkedin.svg",
+      logoDark: "/linkedin-dark.svg",
+      bg: "#fff",
+      text: "#069",
+      bgDark: "#069",
+      textDark: "#fff"
+    },
     options
   };
 }

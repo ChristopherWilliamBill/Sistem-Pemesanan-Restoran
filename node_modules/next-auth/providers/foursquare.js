@@ -23,21 +23,21 @@ function Foursquare(options) {
       async request({
         tokens
       }) {
-        const url = new URL('https://api.foursquare.com/v2/users/self');
-        url.searchParams.append('v', apiVersion);
-        url.searchParams.append('oauth_token', tokens.access_token);
+        const url = new URL("https://api.foursquare.com/v2/users/self");
+        url.searchParams.append("v", apiVersion);
+        url.searchParams.append("oauth_token", tokens.access_token);
         const req = (0, _https.get)(url, {
           timeout: 3500
         });
-        const [response] = await Promise.race([(0, _events.once)(req, 'response'), (0, _events.once)(req, 'timeout')]);
+        const [response] = await Promise.race([(0, _events.once)(req, "response"), (0, _events.once)(req, "timeout")]);
 
         if (!response) {
           req.destroy();
-          throw new Error('HTTP Request Timed Out');
+          throw new Error("HTTP Request Timed Out");
         }
 
         if (response.statusCode !== 200) {
-          throw new Error('Expected 200 OK from the userinfo endpoint');
+          throw new Error("Expected 200 OK from the userinfo endpoint");
         }
 
         const parts = [];
@@ -64,6 +64,14 @@ function Foursquare(options) {
       };
     },
 
+    style: {
+      logo: "/foursquare.svg",
+      logoDark: "/foursquare-dark.svg",
+      bg: "#fff",
+      text: "#000",
+      bgDark: "#000",
+      textDark: "#fff"
+    },
     options
   };
 }

@@ -30,6 +30,14 @@ function Keycloak(options) {
       };
     },
 
+    style: {
+      logo: "/keycloak.svg",
+      logoDark: "/keycloak.svg",
+      bg: "#fff",
+      text: "#000",
+      bgDark: "#fff",
+      textDark: "#000"
+    },
     options
   };
 }

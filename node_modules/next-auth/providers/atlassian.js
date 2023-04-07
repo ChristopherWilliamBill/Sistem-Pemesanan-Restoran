@@ -29,6 +29,14 @@ function Atlassian(options) {
       };
     },
 
+    style: {
+      logo: "/atlassian.svg",
+      logoDark: "/atlassian-dark.svg",
+      bg: "#0052cc",
+      text: "#fff",
+      bgDark: "#fff",
+      textDark: "#0052cc"
+    },
     options
   };
 }

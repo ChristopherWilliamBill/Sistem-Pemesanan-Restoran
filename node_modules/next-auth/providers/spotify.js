@@ -25,6 +25,14 @@ function Spotify(options) {
       };
     },
 
+    style: {
+      logo: "/spotify.svg",
+      logoDark: "/spotify.svg",
+      bg: "#fff",
+      text: "#2ebd59",
+      bgDark: "#fff",
+      textDark: "#2ebd59"
+    },
     options
   };
 }

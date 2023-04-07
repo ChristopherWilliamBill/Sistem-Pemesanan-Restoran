@@ -26,6 +26,14 @@ function Slack(options) {
       };
     },
 
+    style: {
+      logo: "/slack.svg",
+      logoDark: "/slack.svg",
+      bg: "#fff",
+      text: "#000",
+      bgDark: "#000",
+      textDark: "#fff"
+    },
     options
   };
 }

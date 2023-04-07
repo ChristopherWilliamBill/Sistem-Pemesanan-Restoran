@@ -17,7 +17,19 @@ export default function AntrianPesanan({dataMenu, dataO}){
   const [tab, setTab] = useState("neworders")
   const [print, setPrint] = useState(new Array(dataOrder.filter(d => d.statusPesanan == 2).length).fill(0))
 
-  const printOrder = (index) => {
+  const printOrder = async (index) => {
+    // const data = {message: 'test'}
+    // const JSONdata = JSON.stringify(data)
+    // const endpoint = '../api/print'
+    // const options = {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json', },
+    //   body: JSONdata
+    // }
+    
+    // const response = await fetch(endpoint, options)
+    // const result = await response.json()
+    
     let temp = print.slice()
     temp[index] = 1
     setPrint(temp)

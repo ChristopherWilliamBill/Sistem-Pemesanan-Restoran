@@ -31,6 +31,14 @@ function Discord(options) {
       };
     },
 
+    style: {
+      logo: "/discord.svg",
+      logoDark: "/discord-dark.svg",
+      bg: "#fff",
+      text: "#7289DA",
+      bgDark: "#7289DA",
+      textDark: "#fff"
+    },
     options
   };
 }

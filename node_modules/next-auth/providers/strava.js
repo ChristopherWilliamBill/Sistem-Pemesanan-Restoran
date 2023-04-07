@@ -15,8 +15,7 @@ function Strava(options) {
       params: {
         scope: "read",
         approval_prompt: "auto",
-        response_type: "code",
-        redirect_uri: "http://localhost:3000/api/auth/callback/strava"
+        response_type: "code"
       }
     },
     token: {
@@ -30,7 +29,7 @@ function Strava(options) {
     profile(profile) {
       return {
         id: profile.id,
-        name: profile.firstname,
+        name: `${profile.firstname} ${profile.lastname}`,
         email: null,
         image: profile.profile
       };

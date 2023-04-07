@@ -14,7 +14,7 @@ function AzureAD(options) {
     id: "azure-ad",
     name: "Azure Active Directory",
     type: "oauth",
-    wellKnown: `https://login.microsoftonline.com/${tenant}/v2.0/.well-known/openid-configuration`,
+    wellKnown: `https://login.microsoftonline.com/${tenant}/v2.0/.well-known/openid-configuration?appid=${options.clientId}`,
     authorization: {
       params: {
         scope: "openid profile email"
@@ -22,30 +22,39 @@ function AzureAD(options) {
     },
 
     async profile(profile, tokens) {
-      const profilePicture = await fetch(`https://graph.microsoft.com/v1.0/me/photos/${profilePhotoSize}x${profilePhotoSize}/$value`, {
+      var _image;
+
+      const response = await fetch(`https://graph.microsoft.com/v1.0/me/photos/${profilePhotoSize}x${profilePhotoSize}/$value`, {
         headers: {
           Authorization: `Bearer ${tokens.access_token}`
         }
       });
+      let image;
 
-      if (profilePicture.ok) {
-        const pictureBuffer = await profilePicture.arrayBuffer();
-        const pictureBase64 = Buffer.from(pictureBuffer).toString("base64");
-        return {
-          id: profile.sub,
-          name: profile.name,
-          email: profile.email,
-          image: `data:image/jpeg;base64, ${pictureBase64}`
-        };
-      } else {
-        return {
-          id: profile.sub,
-          name: profile.name,
-          email: profile.email
-        };
+      if (response.ok && typeof Buffer !== "undefined") {
+        try {
+          const pictureBuffer = await response.arrayBuffer();
+          const pictureBase64 = Buffer.from(pictureBuffer).toString("base64");
+          image = `data:image/jpeg;base64, ${pictureBase64}`;
+        } catch (_unused) {}
       }
+
+      return {
+        id: profile.sub,
+        name: profile.name,
+        email: profile.email,
+        image: (_image = image) !== null && _image !== void 0 ? _image : null
+      };
     },
 
+    style: {
+      logo: "/azure.svg",
+      logoDark: "/azure-dark.svg",
+      bg: "#fff",
+      text: "#0072c6",
+      bgDark: "#0072c6",
+      textDark: "#fff"
+    },
     options
   };
 }

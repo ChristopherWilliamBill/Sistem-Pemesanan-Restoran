@@ -2,7 +2,9 @@ import { useState, useEffect } from "react";
 import styles from "../styles/FormMenu.module.css"
 import Router, { useRouter } from "next/router";
 import Image from "next/image";
-import io from 'Socket.IO-client'
+import io from 'socket.io-client'
+import { crypto } from 'crypto';
+import sha256 from 'crypto-js/sha256';
 
 let socket = null
 
@@ -53,9 +55,16 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
         if(!imageSrc){
             return null
         }
+
+        const timestamp = Math.round(new Date().getTime() / 1000)
+        const signatureString = `timestamp=${timestamp}${process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET}`
+        const signature = sha256(signatureString);
+
         const formData = new FormData();
-        formData.append('file', imageSrc);
-        formData.append('upload_preset', 'preset')
+        formData.append('file', imageSrc)
+        formData.append('api_key', process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY)
+        formData.append('timestamp', timestamp)
+        formData.append('signature', signature)
         
         const endpoint = 'https://api.cloudinary.com/v1_1/dpggxjyay/image/upload'
         const options = {
@@ -65,6 +74,7 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     
         const response = await fetch(endpoint, options)
         const result = await response.json()   
+
         return result.secure_url 
     }
 
@@ -99,7 +109,7 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
             headers: {
                 'Content-Type': 'application/json',
             },
-        body: JSONdata
+            body: JSONdata
         }
     
         const response = await fetch(endpoint, options)

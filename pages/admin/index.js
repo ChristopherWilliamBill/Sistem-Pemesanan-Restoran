@@ -49,12 +49,17 @@ export default function Admin({dataTopMenu, dataAllTimeRevenue, dataDailyRevenue
 
   const router = useRouter()
 
-  const calculateDifference = (current, previous) => {    
+  const calculateDifference = (current, previous) => {  
+    console.log(current)
+    console.log(previous)  
     if(current === 0 || previous === 0){
       return '-'
     }
 
     let diff = (((current/previous) - 1) * 100).toFixed(2)
+    if(isNaN(diff)){
+      return '-'
+    }
     return diff
   }
 
@@ -127,8 +132,8 @@ export default function Admin({dataTopMenu, dataAllTimeRevenue, dataDailyRevenue
       <div className={styles.bigcard}>
         <div className={styles.occupiedtable}>
           {meja.map(m => occupied.some(o => o.idMeja === m.idMeja) ? 
-            <p className={styles.occupied}>Table {m.idMeja} <b>{m.help === 1 && 'help'}</b> <b>order on-going</b> </p> 
-            : <p>Table {m.idMeja} <b>{m.help === 1 && 'help'}</b> <b>idle</b> </p>)}
+            <p key={m.idMeja} className={styles.occupied}>Table {m.idMeja} <b>{m.help === 1 && 'help'}</b> <b>order on-going</b> </p> 
+            : <p key={m.idMeja}>Table {m.idMeja} <b>{m.help === 1 && 'help'}</b> <b>idle</b> </p>)}
         </div>
 
         <div className={styles.menuperformance}>
@@ -147,7 +152,6 @@ export default function Admin({dataTopMenu, dataAllTimeRevenue, dataDailyRevenue
 
 export async function getServerSideProps(){
   const today = new Date().toLocaleDateString('en-CA')
-  console.log(today)
 
   const queryTopMenu = `SELECT "TerdiriPesanan"."isiPesanan", "Menu"."namaMenu", COUNT("TerdiriPesanan"."isiPesanan") AS "jumlah" FROM "TerdiriPesanan" INNER JOIN "Menu" ON "Menu"."idMenu" = "TerdiriPesanan"."isiPesanan" GROUP BY "TerdiriPesanan"."isiPesanan", "Menu"."namaMenu" ORDER BY "jumlah" DESC`
   const queryAllTimeRevenue = `SELECT SUM("total") AS "total" FROM "Transaksi"`
@@ -190,6 +194,7 @@ export async function getServerSideProps(){
   if(resTotalToday.rows[0].total !== null){
     dataTotalToday = resTotalToday.rows
   }
+
 
   let dataTotalYesterday = resTotalYesterday.rows
   if(resTotalYesterday.rows[0].total !== null){

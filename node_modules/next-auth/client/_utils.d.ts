@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import type { IncomingMessage } from "http";
 import type { LoggerInstance, Session } from "..";
-export interface NextAuthClientConfig {
+export interface AuthClientConfig {
     baseUrl: string;
     basePath: string;
     baseUrlServer: string;
@@ -17,9 +17,13 @@ export interface NextAuthClientConfig {
     _getSession: (...args: any[]) => any;
 }
 export interface CtxOrReq {
-    req?: IncomingMessage;
+    req?: Partial<IncomingMessage> & {
+        body?: any;
+    };
     ctx?: {
-        req: IncomingMessage;
+        req: Partial<IncomingMessage> & {
+            body?: any;
+        };
     };
 }
 /**
@@ -29,8 +33,8 @@ export interface CtxOrReq {
  * work seemlessly in getInitialProps() on server side
  * pages *and* in _app.js.
  */
-export declare function fetchData<T = any>(path: string, __NEXTAUTH: NextAuthClientConfig, logger: LoggerInstance, { ctx, req }?: CtxOrReq): Promise<T | null>;
-export declare function apiBaseUrl(__NEXTAUTH: NextAuthClientConfig): string;
+export declare function fetchData<T = any>(path: string, __NEXTAUTH: AuthClientConfig, logger: LoggerInstance, { ctx, req }?: CtxOrReq): Promise<T | null>;
+export declare function apiBaseUrl(__NEXTAUTH: AuthClientConfig): string;
 /** Returns the number of seconds elapsed since January 1, 1970 00:00:00 UTC. */
 export declare function now(): number;
 export interface BroadcastMessage {
@@ -53,3 +57,4 @@ export declare function BroadcastChannel(name?: string): {
     /** Notify other tabs/windows. */
     post(message: Record<string, unknown>): void;
 };
+//# sourceMappingURL=_utils.d.ts.map

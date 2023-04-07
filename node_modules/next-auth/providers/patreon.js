@@ -29,6 +29,14 @@ function Patreon(options) {
       };
     },
 
+    style: {
+      logo: "/patreon.svg",
+      logoDark: "/patreon.svg",
+      bg: "#fff",
+      text: "#e85b46",
+      bgDark: "#000",
+      textDark: "#e85b46"
+    },
     options
   };
 }

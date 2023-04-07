@@ -17,7 +17,7 @@ function Naver(options) {
     profile(profile) {
       return {
         id: profile.response.id,
-        name: profile.response.name,
+        name: profile.response.nickname,
         email: profile.response.email,
         image: profile.response.profile_image
       };

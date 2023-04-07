@@ -15,13 +15,14 @@ async function openidClient(options) {
   if (provider.wellKnown) {
     issuer = await _openidClient.Issuer.discover(provider.wellKnown);
   } else {
-    var _provider$authorizati, _provider$authorizati2, _provider$token$url, _provider$token, _provider$userinfo$ur, _provider$userinfo;
+    var _provider$authorizati, _provider$token, _provider$userinfo;
 
     issuer = new _openidClient.Issuer({
       issuer: provider.issuer,
-      authorization_endpoint: (_provider$authorizati = (_provider$authorizati2 = provider.authorization) === null || _provider$authorizati2 === void 0 ? void 0 : _provider$authorizati2.url) !== null && _provider$authorizati !== void 0 ? _provider$authorizati : provider.authorization,
-      token_endpoint: (_provider$token$url = (_provider$token = provider.token) === null || _provider$token === void 0 ? void 0 : _provider$token.url) !== null && _provider$token$url !== void 0 ? _provider$token$url : provider.token,
-      userinfo_endpoint: (_provider$userinfo$ur = (_provider$userinfo = provider.userinfo) === null || _provider$userinfo === void 0 ? void 0 : _provider$userinfo.url) !== null && _provider$userinfo$ur !== void 0 ? _provider$userinfo$ur : provider.userinfo
+      authorization_endpoint: (_provider$authorizati = provider.authorization) === null || _provider$authorizati === void 0 ? void 0 : _provider$authorizati.url,
+      token_endpoint: (_provider$token = provider.token) === null || _provider$token === void 0 ? void 0 : _provider$token.url,
+      userinfo_endpoint: (_provider$userinfo = provider.userinfo) === null || _provider$userinfo === void 0 ? void 0 : _provider$userinfo.url,
+      jwks_uri: provider.jwks_endpoint
     });
   }
 

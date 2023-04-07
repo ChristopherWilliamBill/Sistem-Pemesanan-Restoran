@@ -35,12 +35,12 @@ export default function LineChart({dataDailyRevenue}){
     const data = {
         labels: labels,
         datasets: [{
-        label: 'Revenue',
-        data: dataD,
-        fill: false,
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1,
-        backgroundColor: 'rgb(0,0,0)'
+            label: 'Revenue',
+            data: dataD,
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1,
+            backgroundColor: 'rgb(0,0,0)'
         }]
     };
     

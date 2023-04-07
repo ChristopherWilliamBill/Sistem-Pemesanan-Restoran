@@ -34,6 +34,14 @@ function Twitch(options) {
       };
     },
 
+    style: {
+      logo: "/twitch.svg",
+      logoDark: "/twitch-dark.svg",
+      bg: "#fff",
+      text: "#65459B",
+      bgDark: "#65459B",
+      textDark: "#fff"
+    },
     options
   };
 }

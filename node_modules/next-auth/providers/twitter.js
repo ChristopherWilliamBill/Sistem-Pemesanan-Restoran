@@ -26,6 +26,14 @@ function TwitterLegacy(options) {
       };
     },
 
+    style: {
+      logo: "/twitter.svg",
+      logoDark: "/twitter-dark.svg",
+      bg: "#fff",
+      text: "#1da1f2",
+      bgDark: "#1da1f2",
+      textDark: "#fff"
+    },
     options
   };
 }
@@ -82,6 +90,14 @@ function Twitter(options) {
       },
 
       checks: ["pkce", "state"],
+      style: {
+        logo: "/twitter.svg",
+        logoDark: "/twitter-dark.svg",
+        bg: "#fff",
+        text: "#1da1f2",
+        bgDark: "#1da1f2",
+        textDark: "#fff"
+      },
       options
     };
   }

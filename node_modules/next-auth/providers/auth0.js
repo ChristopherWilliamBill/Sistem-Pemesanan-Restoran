@@ -28,6 +28,14 @@ function Auth0(options) {
       };
     },
 
+    style: {
+      logo: "/auth0.svg",
+      logoDark: "/auth0-dark.svg",
+      bg: "#fff",
+      text: "#EB5424",
+      bgDark: "#EB5424",
+      textDark: "#fff"
+    },
     options
   };
 }
