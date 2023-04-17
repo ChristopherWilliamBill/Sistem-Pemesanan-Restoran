@@ -18,7 +18,7 @@ export default async (req, res) => {
         case 'POST': //Tambah admin
             const queryPOST = `INSERT INTO "Admin" ("username", "password", "role") VALUES ('${request.username}', '${request.password}', '${request.role}')`
 
-            const datarevalidate = {secret: process.env.REVALIDATE_TOKEN, path: ['/admin/editkaryawan']}
+            const datarevalidate = {secret: process.env.REVALIDATE_TOKEN, path: ['/admin/editemployee']}
             const JSONdata = JSON.stringify(datarevalidate)
             const endpoint = 'http://localhost:3000/api/revalidate'
             const options = {
@@ -46,7 +46,7 @@ export default async (req, res) => {
             try{
                 const resultPUT = await conn.query(queryPUT)
 
-                const datarevalidate = {secret: process.env.REVALIDATE_TOKEN, path: ['/admin/editkaryawan']}
+                const datarevalidate = {secret: process.env.REVALIDATE_TOKEN, path: ['/admin/editemployee']}
                 const JSONdata = JSON.stringify(datarevalidate)
                 const endpoint = 'http://localhost:3000/api/revalidate'
                 const options = {

@@ -34,8 +34,7 @@ export default async (req, res) => {
                     help = 0
                 }
                 const query = `UPDATE "Meja" SET "help" = ${help} WHERE "idMeja" = ${idMeja} RETURNING "help"`
-                const result = await conn.query(query)
-                
+                const result = await conn.query(query)                
                 res.status(200).json({ message: result.rows[0].help })
             }catch(err){
                 console.log(err)

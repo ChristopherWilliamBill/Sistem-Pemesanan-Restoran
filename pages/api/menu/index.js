@@ -35,7 +35,7 @@ export default async (req, res) => {
                 }
                 }
 
-                const datarevalidate = {secret: process.env.REVALIDATE_TOKEN, path: ['/', '/admin/editmenu', '/admin/tambahmenu']}
+                const datarevalidate = {secret: process.env.REVALIDATE_TOKEN, path: ['/', '/admin/editmenu', '/admin/addmenu']}
                 const JSONdata = JSON.stringify(datarevalidate)
                 const endpoint = 'http://localhost:3000/api/revalidate'
                 const options = {
@@ -104,7 +104,7 @@ export default async (req, res) => {
 
                 const result = await conn.query(query)
 
-                const datarevalidate = {secret: process.env.REVALIDATE_TOKEN, path: ['/', '/admin/editmenu', '/admin/tambahmenu']}
+                const datarevalidate = {secret: process.env.REVALIDATE_TOKEN, path: ['/', '/admin/editmenu', '/admin/addmenu']}
                 const JSONdata = JSON.stringify(datarevalidate)
                 const endpoint = 'http://localhost:3000/api/revalidate'
                 const options = {
