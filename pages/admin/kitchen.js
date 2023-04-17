@@ -37,9 +37,12 @@ export default function Kitchen({dataO, dataMenu, dataPaket}){
                 <div className={styles.ordercontainer}>
                     {dataOrder.map(d => 
                         <div key={d.isiPesanan} className={styles.card}>
-                            <div className={styles.info}>
-                                <h1>{dataMenu[d.isiPesanan - 1].namaMenu}</h1>
-                                <h1>x {d.sisa}</h1>
+                            <div className={styles.content}>
+                                <h3>Earliest Order Time: {d.jam.split('.')[0]}</h3>
+                                <div className={styles.info}>
+                                    <h1>{dataMenu[d.isiPesanan - 1].namaMenu}</h1>
+                                    <h1>x {d.sisa}</h1>
+                                </div>
                             </div>
 
                             {dataPaket.some(paket => paket.idMenu === d.isiPesanan) &&
@@ -55,15 +58,13 @@ export default function Kitchen({dataO, dataMenu, dataPaket}){
                         </div>
                     )}
                 </div>
-
-                <button className='btn-primary' onClick={window.print}>print</button>
             </div>
         )
     }
 }
 
 export async function getServerSideProps(){
-    const query = `SELECT "isiPesanan", SUM("TerdiriPesanan"."jumlah") - SUM("delivered") AS "sisa" FROM "TerdiriPesanan" INNER JOIN "Pesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" WHERE "Pesanan"."statusPesanan" = 2 AND "TerdiriPesanan"."status" = 1 OR "TerdiriPesanan"."status" = 5 GROUP BY "isiPesanan", "Pesanan"."statusPesanan" ORDER BY "sisa" DESC`
+    const query = `SELECT "isiPesanan", SUM("TerdiriPesanan"."jumlah") - SUM("delivered") AS "sisa", MIN("Pesanan"."jam") AS "jam" FROM "TerdiriPesanan" INNER JOIN "Pesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" WHERE "Pesanan"."statusPesanan" = 2 AND "TerdiriPesanan"."status" = 1 OR "TerdiriPesanan"."status" = 5 GROUP BY "isiPesanan", "Pesanan"."statusPesanan" ORDER BY "sisa" DESC, "jam" ASC`
     const queryMenu = `SELECT "namaMenu" FROM "Menu" ORDER BY "idMenu"`
     const queryPaket = `SELECT * FROM "TerdiriMenu"`
     const res = await conn.query(query)
@@ -90,3 +91,4 @@ Kitchen.getLayout = function getLayout(page) {
       </Layout>
     )
 }
+

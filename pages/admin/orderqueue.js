@@ -15,6 +15,10 @@ export default function OrderQueue({dataMenu, dataO}){
   const [dataOrder, setDataOrder] = useState(orderFormatter(dataO, dataMenu))
   const [tab, setTab] = useState("neworders")
   const [print, setPrint] = useState(new Array(dataOrder.filter(d => d.statusPesanan == 2).length).fill(0))
+  const [currentIndexNewOrders, setCurrentIndexNewOrders] = useState(0)
+  const [currentIndexKitchen, setCurrentIndexKitchen] = useState(0)
+  const [currentIndexPayment, setCurrentIndexPayment] = useState(0)
+
 
   const printOrder = async (index) => {
 
@@ -87,8 +91,28 @@ export default function OrderQueue({dataMenu, dataO}){
     }
   }, [print])
 
-  if (status === "authenticated") {
+  const visibleOrderNewOrders = dataOrder.filter(d => d.statusPesanan === 1).slice(currentIndexNewOrders, currentIndexNewOrders + 3);
+  const visibleOrderKitchen = dataOrder.filter(d => d.statusPesanan === 2).slice(currentIndexKitchen, currentIndexKitchen + 3);
+  const visibleOrderPayment = dataOrder.filter(d => d.statusPesanan === 3).slice(currentIndexPayment, currentIndexPayment + 3);
 
+  const handlePrevClick = () => {
+    if(tab === "neworders" && currentIndexNewOrders >= 3){ setCurrentIndexNewOrders(currentIndexNewOrders - 3) }
+    if(tab === "kitchen" && currentIndexKitchen >= 3){ setCurrentIndexKitchen(currentIndexKitchen - 3) }
+    if(tab === "payment" && currentIndexPayment >= 3){ setCurrentIndexPayment(currentIndexPayment - 3) }
+  }
+
+  const handleNextClick = () => {
+    if(tab === "neworders" && currentIndexNewOrders + 3 < dataOrder.filter(d => d.statusPesanan === 1).length){ setCurrentIndexNewOrders(currentIndexNewOrders + 3) }
+    if(tab === "kitchen" && currentIndexKitchen + 3 < dataOrder.filter(d => d.statusPesanan === 2).length){ setCurrentIndexKitchen(currentIndexKitchen + 3) }
+    if(tab === "payment" && currentIndexPayment + 3 < dataOrder.filter(d => d.statusPesanan === 3).length){ setCurrentIndexPayment(currentIndexPayment + 3) }
+  }
+
+  let currentStatusTab
+  if(tab === "neworders"){ currentStatusTab = 1}
+  if(tab === "kitchen"){ currentStatusTab = 2}
+  if(tab === "payment"){ currentStatusTab = 3}
+
+  if (status === "authenticated") {
     if(!dataOrder){
       return <h1>LOADING</h1>
     }
@@ -103,10 +127,17 @@ export default function OrderQueue({dataMenu, dataO}){
 
         {tab === "neworders" && 
           <>
+            {visibleOrderNewOrders.length > 0 && 
+            <div className={styles.buttoncarousel}>
+              <button className='btn-primary' onClick={handlePrevClick}>&#60;</button>
+              <label>Page {currentIndexNewOrders + 1}/{Math.ceil(dataOrder.filter(d => d.statusPesanan === 1).length/3)}</label>
+              <button className='btn-primary' onClick={handleNextClick}>&#62;</button>
+            </div>}
+
             <div className={styles.container}>
               {
-                dataOrder.filter(d => d.statusPesanan == 1).length > 0 ?
-                  dataOrder.filter(d => d.statusPesanan == 1).map(
+                visibleOrderNewOrders.length > 0 ?
+                  visibleOrderNewOrders.map(
                     (d, index) => <PendingOrderCard key={d.idPesanan} d={d} dataMenu={dataMenu} status={1} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable} index={index} setPrint={setPrint}></PendingOrderCard>
                   )
                 : <p>No Order</p>
@@ -116,10 +147,16 @@ export default function OrderQueue({dataMenu, dataO}){
         }
         {tab === "kitchen" &&
           <>
+            {visibleOrderKitchen.length > 0 && 
+            <div className={styles.buttoncarousel}>
+              <button className='btn-primary' onClick={handlePrevClick}>&#60;</button>
+              <label>Page {currentIndexKitchen === 0 ? currentIndexKitchen + 1 : currentIndexKitchen/3 + 1}/{Math.ceil(dataOrder.filter(d => d.statusPesanan === 2).length/3)}</label>
+              <button className='btn-primary' onClick={handleNextClick}>&#62;</button>
+            </div>}
             <div className={styles.container}>
               {
-                dataOrder.filter(d => d.statusPesanan == 2).length > 0 ?
-                  dataOrder.filter(d => d.statusPesanan == 2).map(
+                visibleOrderKitchen.length > 0 ?
+                  visibleOrderKitchen.map(
                     (d,index) =>  
                       <div key={d.idPesanan} className={print[index] == 1 ? styles.printarea : styles.dontprint}>
                         <PendingOrderCard key={d.idPesanan} d={d} dataMenu={dataMenu} status={2} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable} index={index} setPrint={setPrint} printOrder={printOrder}></PendingOrderCard>
@@ -128,15 +165,24 @@ export default function OrderQueue({dataMenu, dataO}){
                 : <p>No Order</p>
               }
             </div>
+
+            
           </>
         }
 
         {tab === "payment" &&
           <>
+            {visibleOrderPayment.length > 0 && 
+            <div className={styles.buttoncarousel}>
+              <button className='btn-primary' onClick={handlePrevClick}>&#60;</button>
+              <label>Page {currentIndexPayment + 1}/{Math.ceil(dataOrder.filter(d => d.statusPesanan === 3).length/3)}</label>
+              <button className='btn-primary' onClick={handleNextClick}>&#62;</button>
+            </div>}
+
             <div className={styles.container}>
               {
-                dataOrder.filter(d => d.statusPesanan == 3).length > 0 ?
-                  dataOrder.filter(d => d.statusPesanan == 3).map(
+                visibleOrderPayment.length > 0 ?
+                  visibleOrderPayment.map(
                     (d,index) => 
                     <div key={d.idPesanan} className={print[index] == 1 ? styles.printarea : styles.dontprint}>
                       <PendingOrderCard key={d.idPesanan} d={d} dataMenu={dataMenu} status={3} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable} index={index} setPrint={setPrint} printOrder={printOrder}></PendingOrderCard>
@@ -157,7 +203,7 @@ export async function getServerSideProps(){
   const queryMenu = `SELECT * FROM "Menu"`
   const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu", "TerdiriMenu"."jumlah" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
   //queryOrder terurut berdasarkan status, kemudian jumlah
-  const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."uuid", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status", "TerdiriPesanan"."delivered", "TerdiriPesanan"."requestcancel" FROM "Pesanan" LEFT JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" ORDER BY "TerdiriPesanan"."status", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."isiPesanan"`
+  const queryOrder = `SELECT "Pesanan"."idPesanan", "Pesanan"."uuid", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "TerdiriPesanan"."isiPesanan", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."status", "TerdiriPesanan"."delivered", "TerdiriPesanan"."requestcancel" FROM "Pesanan" LEFT JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" WHERE "selesai" = 0 ORDER BY "TerdiriPesanan"."status", "TerdiriPesanan"."jumlah", "TerdiriPesanan"."isiPesanan"`
   const queryOrderTambahan = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."selesai", "PesananTambahan"."isiPesanan", "PesananTambahan"."jumlah" FROM "Pesanan" INNER JOIN "PesananTambahan" ON "Pesanan"."idPesanan" = "PesananTambahan"."idPesanan" ORDER BY "PesananTambahan"."isiPesanan" ASC`
 
   const resMenu = await conn.query(queryMenu)

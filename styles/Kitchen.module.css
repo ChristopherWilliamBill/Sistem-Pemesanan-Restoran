@@ -36,6 +36,13 @@
     margin-bottom: 1rem;
 }
 
+.content{
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    width: 100%;
+}
+
 .info{
     display: flex;
     justify-content: space-between;

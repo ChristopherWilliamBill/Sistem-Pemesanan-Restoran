@@ -19,10 +19,10 @@ export function orderFormatter(dataO, dataMenu){
         ]
     ------------------------------------------------------------------*/ 
 
-    let order = dataO.reduce((order, {idPesanan, uuid, isiPesanan, jumlah, statusPesanan, jam, idMeja, status, delivered, requestcancel}) => {
+    let order = dataO.reduce((order, {idPesanan, uuid, isiPesanan, selesai, jumlah, statusPesanan, jam, idMeja, status, delivered, requestcancel}) => {
         //loop setiap dataO, jika belum dibuat order dengan index idPesanan - 1, maka isi elemen tersebut dengan objek awal
         if(!order[idPesanan -1]){
-          order[idPesanan -1] = {idPesanan: idPesanan, uuid: uuid, isiPesanan: [], jumlah: [], status: [], isiPaket: [], jumlahPaket: [], delivered: [], requestcancel: []}
+          order[idPesanan -1] = {idPesanan: idPesanan, uuid: uuid, isiPesanan: [], selesai: selesai, jumlah: [], status: [], isiPaket: [], jumlahPaket: [], delivered: [], requestcancel: []}
         }
 
         //untuk setiap idPesanan yang sama, isi objek dengan value yang ditemukan
@@ -46,6 +46,8 @@ export function orderFormatter(dataO, dataMenu){
             : (o.isiPaket.push(0), o.jumlahPaket.push(0)) //kalau tidak, isi angka 0 (artinya bukan paket)
         })
     })
+    
+    order = order.filter(or => or.selesai === 0)
     
     return order
 }
