@@ -46,8 +46,6 @@
 
 .orderlist{
     height: fit-content;
-    position: absolute;
-    top: 0;
 }
 
 .isiPaket{
@@ -58,7 +56,6 @@
 .orderlistcontainer{
     width: 100%;
     height: auto;
-    position: relative;
     overflow-y: scroll; 
 }
 
@@ -203,9 +200,8 @@
 
     .orderlistcontainer{
         display: block;
-        overflow: visible;
         width: 100%;
-        
+        height: auto;
     }
 
     .isiPaket{
