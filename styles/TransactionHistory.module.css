@@ -1,0 +1,92 @@
+.rootcontainer{
+  display: flex;
+}
+
+.table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    border: 1px solid black;
+}
+  
+.table th{
+    padding: 1rem;
+    width: 200px;
+    border: 1px solid black;
+    text-align: left;
+}
+
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 80%;
+    margin-left: 20%;
+}
+
+.input{
+    display: flex;
+    justify-content: space-between;
+    width: 30%;
+}
+  
+.table td{
+    padding: 1rem;
+    text-align: left;
+    border: 1px solid black;
+}
+
+.header{
+    background-color: var(--color3);
+    color: var(--color1);
+}
+  
+.trtransaksi{
+    background-color: var(--color2);
+}
+
+.isimenu{
+    text-align: left;
+    border: none !important;
+}
+
+.total{
+    background-color: var(--color3);
+    color: var(--color1);
+    font-weight: bold;
+}
+
+.animasi{
+    animation: growDown 200ms ease-in-out both;
+    transform-origin: top center;
+    margin: 0;
+    padding: 0;
+    background-color: var(--color1);
+}
+
+
+@keyframes growDown {
+    0% {
+      transform: scaleY(0)
+    }
+    80% {
+      transform: scaleY(1.1)
+    }
+    100% {
+      transform: scaleY(1)
+    }
+}
+
+@keyframes growUp {
+    0% {
+      transform: scaleY(1)
+    }
+    80% {
+      transform: scaleY(1.1)
+    }
+    100% {
+      transform: scaleY(0)
+    }
+}
