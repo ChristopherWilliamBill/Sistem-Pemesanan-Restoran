@@ -19,58 +19,50 @@ export default async (req, res) => {
 
     const escpos = require('escpos');
     escpos.USB = require('escpos-usb');
-    const vid = escpos.USB.findPrinter()[0].deviceDescriptor.idVendor //2501
     const pid = escpos.USB.findPrinter()[0].deviceDescriptor.idProduct //22750
-
-    // const device = escpos.USB(vid,pid);
-    const device = escpos.USB()
-    console.log('DEVICE: ')
-    console.log()
-    //console.log(device.command.MODEL.QSPRINTER)
-    console.log(await escpos.USB.getDevice())
- 
+    const vid = escpos.USB.findPrinter()[0].deviceDescriptor.idVendor //2501
+    const device = escpos.USB(vid,pid);
+  
     const options = { encoding: "GB18030" /* default */ }
     const printer = new escpos.Printer(device, options);
-
-
+    printer
+    .font('a')
+    .align('ct')
+    .style('bu')
+    .size(1, 1)
+    .text('Hello world')
     // console.log('PRINTER: ')
     // console.log()
     // console.log(printer)
  
-    const print = () => {
-        try{
-            device.open(
-                function(error){
-                    printer
-                    .font('a')
-                    .align('ct')
-                    .style('bu')
-                    .size(1, 1)
-                    .text('The quick brown fox jumps over the lazy dog')
-                    // .text('敏捷的棕色狐狸跳过懒狗')
-                    // .barcode('1234567', 'EAN8')
-                    // .table(["One", "Two", "Three"])
-                    // .tableCustom(
-                    //     [
-                    //         { text:"Left", align:"LEFT", width:0.33, style: 'B' },
-                    //         { text:"Center", align:"CENTER", width:0.33},
-                    //         { text:"Right", align:"RIGHT", width:0.33 }
-                    //     ],
-                    //     { encoding: 'cp857', size: [1, 1] } // Optional
-                    // )
-                }
-            );
-
-        }catch(err){
-            console.log(err)
-        }
-
-    }
+    // const print = () => {
+    //     device.open(
+    //         function(error){
+    //             printer
+    //             .font('a')
+    //             .align('ct')
+    //             .style('bu')
+    //             .size(1, 1)
+    //             .text('The quick brown fox jumps over the lazy dog')
+    //             // .text('敏捷的棕色狐狸跳过懒狗')
+    //             // .barcode('1234567', 'EAN8')
+    //             // .table(["One", "Two", "Three"])
+    //             // .tableCustom(
+    //             //     [
+    //             //         { text:"Left", align:"LEFT", width:0.33, style: 'B' },
+    //             //         { text:"Center", align:"CENTER", width:0.33},
+    //             //         { text:"Right", align:"RIGHT", width:0.33 }
+    //             //     ],
+    //             //     { encoding: 'cp857', size: [1, 1] } // Optional
+    //             // )
+    //         }
+    //     );
+    // }
 
     console.log(request)
 
     try{
-        print()
+        //print()
         res.status(200).json({ message: 'Print Success' })
     }catch(err){
         console.log(err)

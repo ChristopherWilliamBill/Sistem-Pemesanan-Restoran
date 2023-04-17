@@ -303,12 +303,9 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         }
     },[printAdditional]) 
 
-    useEffect(() => console.log(time), [time])
-
     return(
         <div className={styles.ordercard}> 
             {d.statusPesanan === 3 && <h1 className={styles.printinfo}>Thank You!</h1>}
-
             <div className={styles.orderinfo}>
                 <p className={styles.printinfo}>{new Date().toString().slice(0,25)}</p>
                 <p className={styles.table}><b>Table: {d.idMeja}</b></p>
@@ -319,12 +316,12 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
 
             <div className={printAdditional === 0 ? styles.orderlistcontainer : styles.dontprint}>
                 <div className={styles.orderlist}>
-                {d.isiPesanan.map((order, index) => 
+                {d.isiPesanan.map((order, index) => d.status[index] !== 3 && (
                     <div key={order}>
                         <div className={styles.orderitem}>
-                            <p>{dataMenu[order - 1].namaMenu}</p> {/* nama menu */}
-                            {d.statusPesanan == 1 && <p className={styles.orderjumlah}>x {d.jumlah[index]}</p>} {/* jumlah (x 3) */}
-                            {d.statusPesanan > 1 && <p className={styles.orderjumlah}>{d.delivered[index]}/{d.jumlah[index]}</p>} {/* delivered (1/3) */}
+                            <p className={styles.namamenu}>{dataMenu[order - 1].namaMenu}</p> {/* nama menu */}
+                            {(d.statusPesanan === 1 || d.statusPesanan === 3) && <p className={styles.orderjumlah}>x {d.jumlah[index]}</p>} {/* jumlah (x 3) */}
+                            {(d.statusPesanan > 1 && d.statusPesanan !== 3) && <p className={styles.orderjumlah}>{d.delivered[index]}/{d.jumlah[index]}</p>} {/* delivered (1/3) */}
                             {d.statusPesanan === 3 && <p className={styles.harga}>Rp {dataMenu[order - 1].harga.toLocaleString()}</p>}
 
                             {/* Jika tidak ada request cancel...
@@ -359,10 +356,14 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                         </div>
 
                         {d.isiPaket[index].length > 0 && 
-                            d.isiPaket[index].map((isi, i) => 
-                                <p key={isi} className={styles.isiPaket}> 
+                            d.isiPaket[index].map((isi, i) => d.statusPesanan === 3 ?
+                                (<p key={isi} className={styles.isiPaket}> 
+                                    x{d.jumlahPaket[index][i] * (d.jumlah[index])} {dataMenu[isi - 1].namaMenu}
+                                </p>)
+                                :
+                                (<p key={isi} className={styles.isiPaket}> 
                                     {d.jumlahPaket[index][i] * (d.delivered[index])}/{d.jumlahPaket[index][i] * (d.jumlah[index])} {dataMenu[isi - 1].namaMenu}
-                                </p>
+                                </p>)
                             )
                         }
 
@@ -376,7 +377,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                         }
                         <div className={styles.garisbawah}></div>
                     </div>
-                )}
+                ))}
                 </div>
             </div>
 
@@ -438,7 +439,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                             )}
                         </div>
 
-                        <div>
+                        <div className={styles.additionalbtn}>
                             <button className='btn-primary' onClick={acceptAllAdditionalOrder}>Accept All</button>
                             <button className='btn-primary' onClick={() => setPrintAdditional(1)}>Print</button>
                             <button className='btn-danger' onClick={rejectAllAdditionalOrder}>Reject All</button>

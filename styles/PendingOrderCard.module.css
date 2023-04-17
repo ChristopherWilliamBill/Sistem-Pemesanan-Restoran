@@ -186,18 +186,26 @@
         box-shadow: none;
     }
 
+    .table{
+        font-size: small;
+    }
+
     .uuid{
-        font-size: large;
+        font-size: xx-small;
     }
 
     .printinfo, .total{
-        font-size: x-large;
+        font-size: small;
         display: block;
     }
 
     .orderlistcontainer{
+        display: block;
         overflow: visible;
         width: 100%;
+        background-color: red;
+        height: 100%;
+        margin-bottom: calc(100% + 10px);
     }
 
     .additionalordercontainer{
@@ -228,19 +236,42 @@
         width: 150px;
     }
 
-    .orderitem, .orderitemtambahan{
+    .orderitem{
         border: none;
         color: black;
-        font-size: x-large;
-        height: 50px;
+        font-size: small;
         display: flex;
-        display: grid;
-        grid-template-columns: 5fr 1fr 1fr 1fr;
+        justify-content: space-between;
+    }
+
+    .namamenu{
+        text-align: left;
+        padding: 0;
+        width: 90px;
+    }
+
+    .orderjumlah{
+        text-align: right;
+        padding: 0;
+        width: 40px;
+    }
+
+    .harga{
+        text-align: right;
+        padding: 0;
+        width: 90px;
     }
 
     .total{
-        position: fixed;
-        bottom: 0;
+        border-top: 1px solid black;
         display: block;
+    }
+
+    .additionalbtn{
+        display: none;
+    }
+
+    .additionalorder{
+        color: black;
     }
 }

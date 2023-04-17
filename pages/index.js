@@ -4,7 +4,7 @@ import React, { useState,useEffect } from 'react';
 import {conn} from '../module/pg.js';
 import MenuCard from '../component/menucard';
 import OrderCard from '../component/ordercard';
-import { useSession, signIn } from 'next-auth/react';
+import { useSession, signIn, signOut } from 'next-auth/react';
 import io from 'socket.io-client';
 
 let socket = null
@@ -24,7 +24,7 @@ export default function Home({dataMenu}) {
   const [orderTambahan, setOrderTambahan] = useState(dataMenu);
   const [jumlahCancel, setJumlahCancel] = useState([])
   const [jumlahCancelAdditional, setJumlahCancelAdditional] = useState([])
-  const [audio, setAudio] = useState()
+  const [audio, setAudio] = useState(null)
   const [isRequestingHelp, setIsRequestingHelp] = useState(false)
 
   const socketInitializer = async () => {
@@ -35,7 +35,7 @@ export default function Home({dataMenu}) {
       console.log('connected')
     })
 
-    socket.on('newmenu', () => {
+    socket.on('newmenupelanggan', () => {
       router.reload();
     })
 
@@ -56,19 +56,19 @@ export default function Home({dataMenu}) {
   }
 
   const notifyKitchen = async () => {
-    socket.emit('notify-antrian', 'table')
+    socket.emit('notify-antrian', 'table ' + session.user.name.substring(6, session.user.name.length))
     socket.emit('notify-kitchen', 'table')
   }
 
   const occupyTable = async () => {
-    socket.emit('occupied', session.user.name.substring(6, session.user.name.length))
+    socket.emit('occupytable', session.user.name.substring(6, session.user.name.length))
   }
 
   const requestHelp = async () => {
     const endpoint = `../api/help/${session.user.name.substring(6, session.user.name.length)}`
     const options = {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' }    
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' }    
     }
 
     const response = await fetch(endpoint, options)
@@ -77,11 +77,11 @@ export default function Home({dataMenu}) {
     if(result.message === 1){
       alert('Help requested')
       setIsRequestingHelp(true)
-      socket.emit('help', {idMeja: session.user.name.substring(6, session.user.name.length), help: 1 })
+      socket.emit('requesthelp', {idMeja: session.user.name.substring(6, session.user.name.length), help: 1 })
     }else if(result.message === 0){
       alert('Done')
       setIsRequestingHelp(false)
-      socket.emit('help', {idMeja: session.user.name.substring(6, session.user.name.length), help: 0})
+      socket.emit('requesthelp', {idMeja: session.user.name.substring(6, session.user.name.length), help: 0})
     }else{
       alert('Failed')
     }
@@ -166,7 +166,20 @@ export default function Home({dataMenu}) {
     }
   }
 
-  useEffect(() => {socketInitializer()}, [status])
+  const socketCleanUp = () => {
+    if(socket !== null){
+      socket.removeAllListeners()
+      socket.disconnect()
+    }
+  }
+
+  useEffect(() => {
+    socketInitializer()
+    return () => {
+      socketCleanUp()
+    }
+  }, [status])
+
   useEffect(() => setAudio(new Audio('/notification.mp3')),[])
 
   useEffect(() => {
@@ -241,6 +254,12 @@ export default function Home({dataMenu}) {
     }))
   }
 
+  const handleSignOut = () => {
+    if(confirm('Are you sure you want to sign out?')){
+      signOut()
+    }
+  }
+
   if (status === "authenticated"){
     return (
       <>
@@ -253,6 +272,10 @@ export default function Home({dataMenu}) {
 
           <button className={styles.help} onClick={() => requestHelp()}>
             { isRequestingHelp ? 'Done' :'Request help'}
+          </button>
+
+          <button className={styles.logout} onClick={handleSignOut}>
+            Sign Out
           </button>
         </div>
         }

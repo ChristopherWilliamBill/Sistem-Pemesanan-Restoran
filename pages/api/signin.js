@@ -20,7 +20,6 @@ export default async (req, res) => {
 
   const result = await conn.query(query)
   const user = result.rows
-  console.log(user)
   console.log(request)
 
 

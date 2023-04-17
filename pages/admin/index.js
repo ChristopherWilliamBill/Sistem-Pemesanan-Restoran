@@ -19,8 +19,6 @@ export default function Admin({dataTopMenu, dataAllTimeRevenue, dataDailyRevenue
   const [meja, setMeja] = useState(dataMeja)
   // const today = new Date().toLocaleDateString('en-CA')
 
-  useEffect(() => {socketInitializer()}, [])
-
   const socketInitializer = async () => {
     await fetch('/api/socket')
     socket = io()
@@ -33,7 +31,7 @@ export default function Admin({dataTopMenu, dataAllTimeRevenue, dataDailyRevenue
       setOccupied(occupied => [...occupied, {idMeja: parseInt(msg)}])
     })
 
-    socket.on('help', (msg) => {
+    socket.on('notifyhelp', (msg) => {
       console.log(msg)
       setMeja(meja => [...meja].map(m => {
         if(m.idMeja === parseInt(msg.idMeja)){
@@ -47,11 +45,23 @@ export default function Admin({dataTopMenu, dataAllTimeRevenue, dataDailyRevenue
     })
   }
 
+  const socketCleanUp = () => {
+    if(socket){
+      socket.removeAllListeners()
+      socket.disconnect()
+    }
+  }
+
+  useEffect(() => {
+    socketInitializer()
+    return () => {
+      socketCleanUp()
+    }
+  }, [])
+
   const router = useRouter()
 
   const calculateDifference = (current, previous) => {  
-    console.log(current)
-    console.log(previous)  
     if(current === 0 || previous === 0){
       return '-'
     }
@@ -70,7 +80,6 @@ export default function Admin({dataTopMenu, dataAllTimeRevenue, dataDailyRevenue
   return(
     <div className={styles.container}>
       <h3>Dashboard</h3>
-      {console.log(meja)}
       <div className={styles.cardcontainer}>
         <div className={styles.card}>
           Best selling menu:
@@ -98,35 +107,40 @@ export default function Admin({dataTopMenu, dataAllTimeRevenue, dataDailyRevenue
           <h3>{dataJumlahDailyOrder[0].total}</h3>
         </div>
 
-        <div className={styles.card}>
-          All time revenue:
-          <h3>IDR {parseInt(dataAllTimeRevenue[0].total).toLocaleString()}</h3>
-        </div>
-
-        <div className={styles.card}>
-          Daily revenue:
-          <div className={styles.performance}>
-            <h3>IDR {parseInt(dataTotalToday[0].total).toLocaleString()}</h3>
-            <h3 className={dailyDifference < 0 ? styles.negative : styles.positive}>{dailyDifference > 0 ? '+' + dailyDifference : dailyDifference} %</h3>
+        {session.role === "manager" && 
+        <>
+          <div className={styles.card}>
+            All time revenue:
+            <h3>IDR {parseInt(dataAllTimeRevenue[0].total).toLocaleString()}</h3>
           </div>
-        </div>
 
-        <div className={styles.card}>
-          Weekly revenue:
-          <div className={styles.performance}>
-            <h3>IDR {parseInt(dataTotalThisWeek[0].total).toLocaleString()}</h3>
-            <h3 className={weeklyDifference < 0 ? styles.negative : styles.positive}>{weeklyDifference > 0 ? '+' + weeklyDifference : weeklyDifference} %</h3>
+          <div className={styles.card}>
+            Daily revenue:
+            <div className={styles.performance}>
+              <h3>IDR {parseInt(dataTotalToday[0].total).toLocaleString()}</h3>
+              <h3 className={dailyDifference < 0 ? styles.negative : styles.positive}>{dailyDifference > 0 ? '+' + dailyDifference : dailyDifference} %</h3>
+            </div>
           </div>
-        </div>
 
-        <div className={styles.card}>
-          Monthly revenue:
-          <div className={styles.performance}>
-            <h3>IDR {parseInt(dataTotalThisMonth[0].total).toLocaleString()}</h3>
-            {console.log(monthlyDifference)}
-            <h3 className={monthlyDifference < 0 ? styles.negative : styles.positive}>{monthlyDifference > 0 ? '+' + monthlyDifference : monthlyDifference} %</h3>
+          <div className={styles.card}>
+            Weekly revenue:
+            <div className={styles.performance}>
+              <h3>IDR {parseInt(dataTotalThisWeek[0].total).toLocaleString()}</h3>
+              <h3 className={weeklyDifference < 0 ? styles.negative : styles.positive}>{weeklyDifference > 0 ? '+' + weeklyDifference : weeklyDifference} %</h3>
+            </div>
           </div>
-        </div>
+
+          <div className={styles.card}>
+            Monthly revenue:
+            <div className={styles.performance}>
+              <h3>IDR {parseInt(dataTotalThisMonth[0].total).toLocaleString()}</h3>
+              {console.log(monthlyDifference)}
+              <h3 className={monthlyDifference < 0 ? styles.negative : styles.positive}>{monthlyDifference > 0 ? '+' + monthlyDifference : monthlyDifference} %</h3>
+            </div>
+          </div>
+        </>
+        }
+        
       </div>
 
       <div className={styles.bigcard}>
@@ -141,11 +155,13 @@ export default function Admin({dataTopMenu, dataAllTimeRevenue, dataDailyRevenue
           <BarChart dataTopMenu={dataTopMenu}></BarChart>
         </div>
       </div>
-
-      <div className={styles.incomechart}>
-        <h3>All time revenue:</h3>
-        <LineChart dataDailyRevenue={dataDailyRevenue}></LineChart>
-      </div>
+          
+      {session.role === "manager" && 
+        <div className={styles.incomechart}>
+          <h3>All time revenue:</h3>
+          <LineChart dataDailyRevenue={dataDailyRevenue}></LineChart>
+        </div>
+      }
     </div>
   )
 }
@@ -182,7 +198,6 @@ export async function getServerSideProps(){
   const resTotalThisMonth = await conn.query(queryTotalThisMonth)
 
   const dataTopMenu = resTopMenu.rows
-  console.log(dataTopMenu)
   const dataAllTimeRevenue = resAllTimeRevenue.rows
   const dataDailyRevenue = resDailyRevenue.rows
   const dataOccupied = resOccupied.rows

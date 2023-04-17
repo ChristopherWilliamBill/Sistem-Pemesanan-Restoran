@@ -16,6 +16,24 @@
     margin: .5rem;
 }
 
+.notification{
+    position: absolute;
+    right: 0;
+    top: 50%;
+    color: black;
+    background-color: var(--color6);
+    margin: 1.1rem;
+    padding: .5rem;
+    border-radius: .5rem;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    z-index: 2;
+    width: 350px;
+    max-height: 500px;
+    overflow-y: scroll;
+    animation: growDown 200ms ease-in-out forwards;
+    transform-origin: top center;
+}
+
 @media print {
     .container{
         visibility: hidden;

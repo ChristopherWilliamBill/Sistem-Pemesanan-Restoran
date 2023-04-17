@@ -41,6 +41,21 @@
   color: black
 }
 
+.logout{
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-color: #EA5455;
+  margin: 1.2rem;
+  margin-left: 8rem;
+  padding: .7rem;
+  border-radius: .5rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  z-index: 2;
+  font-weight: bold;
+  color: black
+}
+
 .notification{
   position: absolute;
   left: 0;

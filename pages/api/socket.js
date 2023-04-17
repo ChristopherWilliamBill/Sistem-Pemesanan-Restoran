@@ -50,12 +50,15 @@ export default (req, res) => {
 
                     const order = orderFormatter(dataOrder, dataMenu)
 
-                    if(msg === 'table'){
+                    const message = msg.split(' ')
+
+                    if(message[0] === 'table'){
                         console.log('notify antrian diterima dari table') //maka meja membroadcast ke kitchen (broadcast == send back to everyone)
                         socket.broadcast.emit('sendorders', order)
+                        socket.broadcast.emit('neworder', message[1])
                     }
 
-                    if(msg === 'kitchen'){
+                    if(message[0] === 'kitchen'){
                         console.log('notify antrian diterima dari kitchen sendiri') //maka kirim ke diri sendiri (emit == send back to sender)
                         socket.emit('sendorders', order)
                     }
@@ -80,15 +83,15 @@ export default (req, res) => {
                 }
             })
 
-            socket.on('newmenu', async msg => {
+            socket.on('newmenukitchen', async msg => {
                 try{
-                    socket.broadcast.emit('newmenu', 'kitchen')
+                    socket.broadcast.emit('newmenupelanggan', 'kitchen')
                 }catch(err){
                     console.log(err)
                 }
             })
 
-            socket.on('occupied', async msg => {
+            socket.on('occupytable', async msg => {
                 try{
                     socket.broadcast.emit('occupied', msg)
                 }catch(err){
@@ -96,9 +99,9 @@ export default (req, res) => {
                 }
             })
 
-            socket.on('help', async msg => {
+            socket.on('requesthelp', async msg => {
                 try{
-                    socket.broadcast.emit('help', msg)
+                    socket.broadcast.emit('notifyhelp', msg)
                 }catch(err){
                     console.log(err)
                 }

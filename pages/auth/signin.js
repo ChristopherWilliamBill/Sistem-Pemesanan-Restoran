@@ -11,8 +11,7 @@ export default function SignIn() {
     const [password, setPassword] = useState('')
     const [role, setRole] = useState('meja')
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
+    const handleSubmit = async () => {
         const res = await signIn('credentials',{
             username: username,
             password: password,

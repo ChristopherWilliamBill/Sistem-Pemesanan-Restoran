@@ -45,7 +45,7 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
         const result = await response.json()
         console.log(result)
         if(result.revalidated){
-            socket.emit('newmenu', 'kitchen')
+            socket.emit('newmenukitchen', 'kitchen')
         }
         alert(result.message)
         router.reload()

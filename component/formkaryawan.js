@@ -46,7 +46,7 @@ export default function FormKaryawan({dataAdmin}){
             if(dataAdmin){  
                 router.reload()
             }else{
-                router.push('/admin/editkaryawan')
+                router.push('/admin/editemployee')
             } 
         }
     }
@@ -67,7 +67,7 @@ export default function FormKaryawan({dataAdmin}){
 
                 <div className={styles.switch}>
                     <input checked={role === "karyawan" && true} type='radio' id="radiokaryawan" value={"karyawan"} onChange={({target}) => setRole(target.value)} name="role"></input> 
-                    <label htmlFor="radiokaryawan">Karyawan</label>
+                    <label htmlFor="radiokaryawan">Employee</label>
                     <input checked={role === "manager" && true} type='radio' id="radiomanager" value={"manager"} onChange={({target}) => setRole(target.value)} name="role"></input> 
                     <label htmlFor="radiomanager">Manager</label>
                 </div>

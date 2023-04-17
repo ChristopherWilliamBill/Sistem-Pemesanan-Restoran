@@ -8,12 +8,12 @@ export default function NavBar({currentPath}){
 
     const inititalSelectedPage = {
         '/admin': false,
-        '/admin/meja': false,
-        '/admin/riwayattransaksi': false,
+        '/admin/table': false,
+        '/admin/transactionhistory': false,
         '/admin/editmenu': false,
-        '/admin/tambahmenu': false,
-        '/admin/editkaryawan': false,
-        '/admin/tambahkaryawan': false,
+        '/admin/addmenu': false,
+        '/admin/editemployee': false,
+        '/admin/addemployee': false,
     }
 
     const { data: session, status } = useSession()
@@ -36,7 +36,7 @@ export default function NavBar({currentPath}){
                     Home
                 </div>
 
-                <div className={styles.card} onClick={() => handleClick("/admin/antrianpesanan")}>
+                <div className={styles.card} onClick={() => handleClick("/admin/orderqueue")}>
                     Order Queue
                 </div>
 
@@ -44,12 +44,12 @@ export default function NavBar({currentPath}){
                     Kitchen
                 </div>
 
-                <div className={selectedPage['/admin/meja'] ? styles.selected : styles.card} onClick={() => handleClick("/admin/meja")}>
+                <div className={selectedPage['/admin/table'] ? styles.selected : styles.card} onClick={() => handleClick("/admin/table")}>
                     Table
                 </div>
 
                 {session.role === "manager" && 
-                    <div className={selectedPage['/admin/riwayattransaksi'] ? styles.selected : styles.card} onClick={() => handleClick("/admin/riwayattransaksi")}>
+                    <div className={selectedPage['/admin/transactionhistory'] ? styles.selected : styles.card} onClick={() => handleClick("/admin/transactionhistory")}>
                         Transaction History
                     </div>
                 }
@@ -61,7 +61,7 @@ export default function NavBar({currentPath}){
                     Edit Menu
                 </div>
 
-                <div className={selectedPage['/admin/tambahmenu'] ? styles.selected : styles.card} onClick={() => handleClick("/admin/tambahmenu")}>
+                <div className={selectedPage['/admin/addmenu'] ? styles.selected : styles.card} onClick={() => handleClick("/admin/addmenu")}>
                     Add Menu
                 </div>
 
@@ -74,11 +74,11 @@ export default function NavBar({currentPath}){
                 <div className={styles.section}>
                     <h3>Employee</h3>
 
-                    <div className={selectedPage['/admin/editkaryawan'] ? styles.selected : styles.card} onClick={() => handleClick("/admin/editkaryawan")}>
+                    <div className={selectedPage['/admin/editemployee'] ? styles.selected : styles.card} onClick={() => handleClick("/admin/editemployee")}>
                     Edit Employee
                     </div>
 
-                    <div className={selectedPage['/admin/tambahkaryawan'] ? styles.selected : styles.card} onClick={() => handleClick("/admin/tambahkaryawan")}>
+                    <div className={selectedPage['/admin/addemployee'] ? styles.selected : styles.card} onClick={() => handleClick("/admin/addemployee")}>
                     Add Employee
                     </div>
                 </div>
