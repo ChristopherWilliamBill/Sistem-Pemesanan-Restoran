@@ -19,27 +19,27 @@ export default function OrderQueue({dataMenu, dataO}){
   const printOrder = async (index) => {
 
     // ------- PRINT ESCPOS ----------
-    const data = {message: 'test'}
-    const JSONdata = JSON.stringify(data)
-    const endpoint = '../api/print'
-    const options = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', },
-      body: JSONdata
-    }
+    // const data = {message: 'test'}
+    // const JSONdata = JSON.stringify(data)
+    // const endpoint = '../api/print'
+    // const options = {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json', },
+    //   body: JSONdata
+    // }
     
-    const response = await fetch(endpoint, options)
-    const result = await response.json()
-    if(result.message === 'Print Failed'){
-      alert('Printer not detected')
-    }
+    // const response = await fetch(endpoint, options)
+    // const result = await response.json()
+    // if(result.message === 'Print Failed'){
+    //   alert('Printer not detected')
+    // }
 
     
     
     // ------- PRINT BIASA -------
-    // let temp = print.slice()
-    // temp[index] = 1
-    // setPrint(temp)
+    let temp = print.slice()
+    temp[index] = 1
+    setPrint(temp)
   }  
 
   const socketInitializer = async () => {
