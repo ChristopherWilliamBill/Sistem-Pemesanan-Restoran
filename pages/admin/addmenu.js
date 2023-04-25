@@ -21,7 +21,7 @@ export default function AddMenu({dataMenu}){
 }
 
 export async function getStaticProps(){
-  const query = `SELECT * FROM "Menu"`
+  const query = `SELECT "idMenu", "namaMenu" FROM "Menu"`
   const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu", "TerdiriMenu"."jumlah" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
 
   const res = await conn.query(query)
@@ -39,6 +39,8 @@ export async function getStaticProps(){
   for(let i = 0; i < dataPaket.length; i++){
     dataMenu[dataPaket[i].idMenu - 1].isiMenu.push({isiMenu: dataPaket[i].isiMenu, jumlah: dataPaket[i].jumlah})
   }
+
+  console.log(dataMenu)
   
   return{
     props:{

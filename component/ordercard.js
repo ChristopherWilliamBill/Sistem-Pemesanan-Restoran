@@ -157,6 +157,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
         let temp = [...jumlahCancelAdditional]
         if(!jumlah){ jumlah = 0 }
         if(jumlah > max){ jumlah = max }
+        console.log(max)
 
         temp[index] = jumlah
         setJumlahCancelAdditional(temp)

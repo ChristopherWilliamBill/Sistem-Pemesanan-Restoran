@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import styles from "../styles/FormMenu.module.css"
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import io from 'socket.io-client'
-import { crypto } from 'crypto';
 import sha256 from 'crypto-js/sha256';
 
 let socket = null
@@ -15,7 +14,6 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     const [harga, setHarga] = useState(selectedMenu ? selectedMenu.harga : 0)
     const [paket, setPaket] = useState(selectedMenu ? selectedMenu.isiMenu : [])
     const [deletedPaket, setDeletedPaket] = useState([])
-    const [selectedPaket, setSelectedPaket] = useState(0)
     const [imageSrc, setImageSrc] = useState();
     
     const socketInitializer = async () => {
@@ -27,7 +25,19 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
         })
     }
 
-    useEffect(() => {socketInitializer()}, [])
+    const socketCleanUp = () => {
+        if(socket){
+            socket.removeAllListeners()
+            socket.disconnect()
+        }
+    }
+    
+    useEffect(() => {
+        socketInitializer()
+        return () => {
+            socketCleanUp()
+        }
+    }, [])
 
     const menuActivation = async (action) => {
         const data = { action: action, idAdmin: idAdmin }
@@ -159,13 +169,8 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
         }
     }
 
-    const handleImage = (v) => {
-        setImageSrc(v)
-    }
-
     const handleChange = (e) => {
         setPaket(paket => [...paket, {isiMenu: parseInt(e.target.value), jumlah: 1}])
-        setSelectedPaket(0)
     }
 
     const removePaket = (index, id) => {
@@ -249,7 +254,7 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
 
                                     <div className={styles.paketlist}>
                                         <p>Add more: </p>
-                                        <select onChange={handleChange} value={selectedPaket}>
+                                        <select onChange={handleChange} value={0}>
                                             <option value={0}> select menu </option>
                                             {/* yang dapat menjadi option isi paket hanyalah menu yang bukan berupa paket dan belum ditambahkan jadi isi paketnya*/}
                                             {dataMenu.filter(d => checkPaket(d.idMenu)).filter(d => d.isiMenu.length == 0).map(d => 
@@ -263,7 +268,7 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
 
                         <div className={styles.inputcontainer}>
                             <p>Picture</p>
-                            <input type="file" name="gambarmenu" onChange={({target}) => handleImage(target.files[0])}></input>
+                            <input type="file" name="gambarmenu" onChange={({target}) => setImageSrc(target.files[0])}></input>
                         </div>
                     </div>
                 </div>

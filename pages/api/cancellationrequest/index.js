@@ -20,10 +20,10 @@ export default async (req, res) => {
 
             try{
                 const resultPOST = await conn.query(queryPOST)        
-                res.status(200).json({ message: 'Update Success' })
+                res.status(200).json({ message: 'Success' })
             }catch(err){
                 console.log(err)
-                res.status(400).send({ message: 'Update Failed' })
+                res.status(400).send({ message: 'Failed' })
             }
             break
         case 'PUT': //Handle request cancel

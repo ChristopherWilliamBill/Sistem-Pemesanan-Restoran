@@ -105,6 +105,7 @@
 .orderinput{
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 .orderinput input{
@@ -217,20 +218,12 @@
         display: none;
     }
 
-    .dontprint{
-        visibility: hidden;
-    }
-
-    .waitingtime, .orderaction, .orderinput, .orderbutton, .btnaccept, .btn{
+    .waitingtime, .orderaction, .orderinput, .orderbutton, .btnaccept, .btn, .dontprint, .garisbawah, .additionalbtn{
         display: none;
     }
 
     .printadditional{
         display: block;
-    }
-
-    .garisbawah{
-        display: none;
     }
 
     .harga{
@@ -268,8 +261,8 @@
         display: block;
     }
 
-    .additionalbtn{
-        display: none;
+    .listtambahan{
+        border: none;
     }
 
     .additionalorder{

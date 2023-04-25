@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styles from "../styles/FormKaryawan.module.css"
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 
 export default function FormKaryawan({dataAdmin}){
     const router = useRouter()

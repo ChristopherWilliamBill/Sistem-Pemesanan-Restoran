@@ -16,9 +16,7 @@ export default async (req, res) => {
   
     switch (method) {
         case 'POST': //Tambah additional order baru
-                
-            const idMeja = parseInt(request.idMeja)
-            
+                            
             try{            
                 const queryStatus = `SELECT "statusPesanan" FROM "Pesanan" WHERE "idPesanan" = ${request.idPesanan}`
                 const resultStatus = await conn.query(queryStatus)
@@ -95,18 +93,6 @@ export default async (req, res) => {
                 res.status(400).send({ message: 'Order Failed' })
             }
             
-            break
-        case 'PUT': //Handle additional order
-            if(request.tipe === 'acceptall'){
-                //acceptadditionalorder
-            }else if(request.tipe === 'acceptpartial'){
-                //acceptmenutambahan
-            }else if(request.tipe === 'cancel'){
-                //cancelmenutambahan
-            }else if(request.tipe === 'reject'){
-                //rejectadditionalorder
-            }
-                
             break
         default:
             res.status(405).end(`Method ${method} Not Allowed`)

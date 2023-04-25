@@ -24,6 +24,7 @@ export default async (req, res) => {
 
     if(tipe === 'deliver'){ //deliver parsial dari kitchen
         const queryCheck = `SELECT "TerdiriPesanan"."status" FROM "TerdiriPesanan" INNER JOIN "Pesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" WHERE "Pesanan"."idPesanan" = ${idPesanan} AND "Pesanan"."statusPesanan" = 2`
+        const queryCheckAdditional = `SELECT "PesananTambahan"."isiPesanan" FROM "PesananTambahan" WHERE "PesananTambahan"."idPesanan" = ${idPesanan}`
         const queryDeliver = `UPDATE "TerdiriPesanan" SET "delivered" = "delivered" + ${request.jumlah} WHERE "idPesanan" = ${idPesanan} AND "isiPesanan" = ${isiPesanan} RETURNING "jumlah", "delivered", "idPesanan", "isiPesanan"`
         const query = `UPDATE "TerdiriPesanan" SET "status" = 2 WHERE "idPesanan" = ${idPesanan} AND "isiPesanan" = ${isiPesanan}`
         const queryFinish = `UPDATE "Pesanan" SET "statusPesanan" = 3 WHERE "idPesanan" = ${idPesanan}`
@@ -36,17 +37,20 @@ export default async (req, res) => {
 
             //kalau semua sudah diantar (jumlah pesanan == jumlah delivered), semua terdiripesanan jadi statusnya 2
             if(resultDeliver.rows[0].jumlah == resultDeliver.rows[0].delivered){
-            const result = await conn.query(query)
+                const result = await conn.query(query)
             }
 
             //cek jika semua terdiripesanan statusnya 2
             const resultCheck = await conn.query(queryCheck)
             console.log(resultCheck.rows)
 
+            //cek jika masih ada pesanan tambahan
+            const resultCheckAdditional = await conn.query(queryCheckAdditional)
+
             //jika ya, status pesanan = 3 (deliverd all)
-            if(resultCheck.rows.every(r => r.status == 2)){
-            const resultFinish = await conn.query(queryFinish)
-            const resultKelola = await conn.query(queryKelola)
+            if(resultCheck.rows.every(r => r.status == 2) && resultCheckAdditional.rows.length === 0){
+                const resultFinish = await conn.query(queryFinish)
+                const resultKelola = await conn.query(queryKelola)
             }
 
             res.status(200).json({ message: 'Update Success' })

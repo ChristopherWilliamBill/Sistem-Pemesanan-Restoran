@@ -22,25 +22,6 @@ export default function OrderQueue({dataMenu, dataO}){
 
   const printOrder = async (index) => {
 
-    // ------- PRINT ESCPOS ----------
-    // const data = {message: 'test'}
-    // const JSONdata = JSON.stringify(data)
-    // const endpoint = '../api/print'
-    // const options = {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json', },
-    //   body: JSONdata
-    // }
-    
-    // const response = await fetch(endpoint, options)
-    // const result = await response.json()
-    // if(result.message === 'Print Failed'){
-    //   alert('Printer not detected')
-    // }
-
-    
-    
-    // ------- PRINT BIASA -------
     let temp = print.slice()
     temp[index] = 1
     setPrint(temp)
@@ -107,11 +88,6 @@ export default function OrderQueue({dataMenu, dataO}){
     if(tab === "payment" && currentIndexPayment + 3 < dataOrder.filter(d => d.statusPesanan === 3).length){ setCurrentIndexPayment(currentIndexPayment + 3) }
   }
 
-  let currentStatusTab
-  if(tab === "neworders"){ currentStatusTab = 1}
-  if(tab === "kitchen"){ currentStatusTab = 2}
-  if(tab === "payment"){ currentStatusTab = 3}
-
   if (status === "authenticated") {
     if(!dataOrder){
       return <h1>LOADING</h1>
@@ -159,7 +135,7 @@ export default function OrderQueue({dataMenu, dataO}){
                   visibleOrderKitchen.map(
                     (d,index) =>  
                       <div key={d.idPesanan} className={print[index] == 1 ? styles.printarea : styles.dontprint}>
-                        <PendingOrderCard key={d.idPesanan} d={d} dataMenu={dataMenu} status={2} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable} index={index} setPrint={setPrint} printOrder={printOrder}></PendingOrderCard>
+                        <PendingOrderCard key={`${d.idPesanan},${d.isiPesanan.length}`} d={d} dataMenu={dataMenu} status={2} notifyKitchen={notifyKitchen} idAdmin={session.idAdmin} notifyTable={notifyTable} index={index} setPrint={setPrint} printOrder={printOrder}></PendingOrderCard>
                       </div>
                   )
                 : <p>No Order</p>

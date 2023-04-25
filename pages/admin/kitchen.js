@@ -1,5 +1,4 @@
 import Layout from '../../component/layout'
-import { useRouter } from 'next/router'
 import { useState, useEffect} from 'react'
 import styles from '../../styles/Kitchen.module.css'
 import { useSession } from 'next-auth/react'
@@ -8,7 +7,6 @@ import io from 'socket.io-client'
 
 let socket = null
 export default function Kitchen({dataO, dataMenu, dataPaket}){
-    const router = useRouter()
 
     const { data: session, status } = useSession()
     const [dataOrder, setDataOrder] = useState(dataO)
@@ -27,7 +25,19 @@ export default function Kitchen({dataO, dataMenu, dataPaket}){
         })
     }
 
-    useEffect(() => {socketInitializer()}, [])
+    const socketCleanUp = () => {
+        if(socket){
+          socket.removeAllListeners()
+          socket.disconnect()
+        }
+    }
+
+    useEffect(() => {
+        socketInitializer()
+        return () => {
+          socketCleanUp()
+        }
+    }, [])
 
     if (status === "authenticated") {
         return(
@@ -75,6 +85,9 @@ export async function getServerSideProps(){
     const dataMenu = resMenu.rows
     const dataPaket = resPaket.rows
 
+    console.log(dataO)
+    console.log(dataMenu)
+    console.log(dataPaket)
     return{
         props:{
             dataO,

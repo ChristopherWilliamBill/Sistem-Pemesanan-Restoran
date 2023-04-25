@@ -68,7 +68,7 @@ export default (req, res) => {
             })
 
             socket.on('notify-kitchen', async msg => {
-                const queryKitchen = `SELECT "isiPesanan", SUM("TerdiriPesanan"."jumlah") - SUM("delivered") AS "sisa" FROM "TerdiriPesanan" INNER JOIN "Pesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" WHERE "Pesanan"."statusPesanan" = 2 AND "TerdiriPesanan"."status" = 1 OR "TerdiriPesanan"."status" = 5 GROUP BY "isiPesanan", "Pesanan"."statusPesanan" ORDER BY "sisa" DESC`
+                const queryKitchen = `SELECT "isiPesanan", SUM("TerdiriPesanan"."jumlah") - SUM("delivered") AS "sisa", MIN("Pesanan"."jam") AS "jam" FROM "TerdiriPesanan" INNER JOIN "Pesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" WHERE "Pesanan"."statusPesanan" = 2 AND "TerdiriPesanan"."status" = 1 OR "TerdiriPesanan"."status" = 5 GROUP BY "isiPesanan", "Pesanan"."statusPesanan" ORDER BY "sisa" DESC, "jam" ASC`
                 const resKitchen = await conn.query(queryKitchen)
                 const dataKitchen = resKitchen.rows
                 socket.broadcast.emit('datakitchen', dataKitchen)

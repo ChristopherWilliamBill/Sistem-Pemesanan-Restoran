@@ -1,12 +1,10 @@
 import styles from '../styles/NavBar.module.css'
-import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import Link from 'next/link';
 
 export default function NavBar({currentPath}){
-    const router = useRouter()
 
-    const inititalSelectedPage = {
+    const selectedPage = {
         '/admin': false,
         '/admin/table': false,
         '/admin/transactionhistory': false,
@@ -17,70 +15,62 @@ export default function NavBar({currentPath}){
     }
 
     const { data: session, status } = useSession()
-    const [current, setCurrent] = useState(currentPath)
-    inititalSelectedPage[current] = true
-
-    const [selectedPage, setSelectedPage] = useState(inititalSelectedPage)
-
-    const handleClick = (path) => {
-        setSelectedPage({[path]: true})
-        router.push(path)
-    }
+    selectedPage[currentPath] = true
 
     return(
         <div className={styles.container}>
             <div className={styles.section}>
                 <h3>Operational</h3>
 
-                <div className={selectedPage['/admin'] ? styles.selected : styles.card} onClick={() => handleClick("/admin")}>
-                    Home
-                </div>
+                <Link href='/admin'>
+                    <a className={selectedPage['/admin'] ? styles.selected : styles.card}>Home</a>
+                </Link>
 
-                <div className={styles.card} onClick={() => handleClick("/admin/orderqueue")}>
-                    Order Queue
-                </div>
+                <Link href="/admin/orderqueue">
+                    <a className={styles.card}>Order Queue</a>
+                </Link>
 
-                <div className={styles.card} onClick={() => handleClick("/admin/kitchen")}>
-                    Kitchen
-                </div>
+                <Link href="/admin/kitchen">
+                    <a className={styles.card}>Kitchen</a>
+                </Link>
 
-                <div className={selectedPage['/admin/table'] ? styles.selected : styles.card} onClick={() => handleClick("/admin/table")}>
-                    Table
-                </div>
+                <Link href="/admin/table">
+                    <a className={selectedPage['/admin/table'] ? styles.selected : styles.card}>Table</a>
+                </Link>
 
                 {session.role === "manager" && 
-                    <div className={selectedPage['/admin/transactionhistory'] ? styles.selected : styles.card} onClick={() => handleClick("/admin/transactionhistory")}>
-                        Transaction History
-                    </div>
+                    <Link href="/admin/transactionhistory">
+                        <a className={selectedPage['/admin/transactionhistory'] ? styles.selected : styles.card}>Transaction History</a>
+                    </Link>
                 }
             </div>
 
             <div className={styles.section}>
                 <h3>Menu</h3>
-                <div className={selectedPage['/admin/editmenu'] ? styles.selected : styles.card} onClick={() => handleClick("/admin/editmenu")}>
-                    Edit Menu
-                </div>
+                <Link href="/admin/editmenu">
+                    <a className={selectedPage['/admin/editmenu'] ? styles.selected : styles.card}>Edit Menu</a>
+                </Link>
 
-                <div className={selectedPage['/admin/addmenu'] ? styles.selected : styles.card} onClick={() => handleClick("/admin/addmenu")}>
-                    Add Menu
-                </div>
+                <Link href="/admin/addmenu">
+                    <a className={selectedPage['/admin/addmenu'] ? styles.selected : styles.card}>Add Menu</a>
+                </Link>
 
-                <div className={styles.card} onClick={() => handleClick("/")}>
-                    Menu
-                </div>
+                <Link href="/">
+                    <a className={styles.card}>Menu</a>
+                </Link>
             </div>
 
             {session.role === "manager" && 
                 <div className={styles.section}>
                     <h3>Employee</h3>
 
-                    <div className={selectedPage['/admin/editemployee'] ? styles.selected : styles.card} onClick={() => handleClick("/admin/editemployee")}>
-                    Edit Employee
-                    </div>
+                    <Link href="/admin/editemployee">
+                        <a className={selectedPage['/admin/editemployee'] ? styles.selected : styles.card}>Edit Employee</a>
+                    </Link>
 
-                    <div className={selectedPage['/admin/addemployee'] ? styles.selected : styles.card} onClick={() => handleClick("/admin/addemployee")}>
-                    Add Employee
-                    </div>
+                    <Link href="/admin/addemployee">
+                        <a className={selectedPage['/admin/addemployee'] ? styles.selected : styles.card}>Add Employee</a>
+                    </Link>
                 </div>
             }
         </div>

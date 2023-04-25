@@ -11,8 +11,8 @@ export default function Table({dataMeja}){
 
     const { data: session, status } = useSession()
 
-    const [username, setUsername] = useState()
-    const [password, setPassword] = useState()
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
     const [isNew, setIsNew] = useState(false)
 
     const handleNew = () => {
@@ -32,8 +32,8 @@ export default function Table({dataMeja}){
 
     const handleCancel = () => {
         setIsNew(false)
-        setPassword()
-        setUsername()
+        setPassword('')
+        setUsername('')
     }
 
     const handleSubmit = async () => {

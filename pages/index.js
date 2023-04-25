@@ -1,5 +1,6 @@
 import styles from '../styles/Home.module.css'
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import React, { useState,useEffect } from 'react';
 import {conn} from '../module/pg.js';
 import MenuCard from '../component/menucard';
@@ -304,11 +305,11 @@ export default function Home({dataMenu}) {
           : 
             <div className={styles.containerpengunjung}>
               <h3 className={styles.pengunjung}>Only for customer</h3>
-              <button className='btn-primary' onClick={() => router.push('./admin')}>To Admin</button>
+              <Link href='./admin'><button className='btn-primary'>To Admin</button></Link>
             </div>
           }
         </div>
-        <p>Harga belum termasuk 10% PPN dan 5% service</p>
+        <p className={styles.tax}>Prices do not include 10% VAT and 5% service</p>
       </>
     )
   }

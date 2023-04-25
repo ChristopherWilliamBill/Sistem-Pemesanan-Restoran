@@ -32,7 +32,7 @@ export default function OrderItem({or, order, jumlahCancel, jumlahCancelAddition
                         </> 
                     :
                         <>
-                            <input type="number" min="0" onFocus={handleFocus} value={jumlahCancelAdditional[index]} max={or.count - or.delivered} onChange={({target}) => handleChangeAdditional(target.value, index, or.count - or.delivered)}></input>
+                            <input type="number" min="0" onFocus={handleFocus} value={jumlahCancelAdditional[index]} max={or.count - or.delivered} onChange={({target}) => handleChangeAdditional(target.value, index, or.count)}></input>
                             <button className='btn-danger' onClick={() => cancelAdditional(or, jumlahCancelAdditional[index])}>cancel</button>
                         </>
                     }
@@ -40,7 +40,14 @@ export default function OrderItem({or, order, jumlahCancel, jumlahCancelAddition
             }
             <div className={styles.info}>
                 {or.requestcancel > 0 && <p>x {or.requestcancel} requested to cancel</p>}
+
+                {/* Paket utama */}
                 {(or.isiMenu.length > 0 && or.status) && <>{or.isiMenu.map(o => <p key={or.isiMenu}>{order[o.isiMenu - 1].namaMenu} {or.delivered * o.jumlah}/{o.jumlah * or.count}</p>)}</>}
+
+                {/* Paket additional */}
+                {console.log(or.isiMenu)}
+                {console.log(or)}
+                {console.log(order)}
                 {(or.isiMenu.length > 0 && !or.status) && <>{or.isiMenu.map(o => <p key={or.isiMenu}>{order[o.isiMenu - 1].namaMenu} x {o.jumlah * or.count}</p>)}</>} 
             </div>
         </li>
