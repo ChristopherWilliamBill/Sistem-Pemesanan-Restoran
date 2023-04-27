@@ -45,9 +45,6 @@ export default function OrderItem({or, order, jumlahCancel, jumlahCancelAddition
                 {(or.isiMenu.length > 0 && or.status) && <>{or.isiMenu.map(o => <p key={or.isiMenu}>{order[o.isiMenu - 1].namaMenu} {or.delivered * o.jumlah}/{o.jumlah * or.count}</p>)}</>}
 
                 {/* Paket additional */}
-                {console.log(or.isiMenu)}
-                {console.log(or)}
-                {console.log(order)}
                 {(or.isiMenu.length > 0 && !or.status) && <>{or.isiMenu.map(o => <p key={or.isiMenu}>{order[o.isiMenu - 1].namaMenu} x {o.jumlah * or.count}</p>)}</>} 
             </div>
         </li>

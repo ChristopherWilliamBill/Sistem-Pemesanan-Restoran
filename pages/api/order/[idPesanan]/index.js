@@ -31,26 +31,26 @@ export default async (req, res) => {
 
     try{
         if(request.status !== 3) {
-        const result = await conn.query(query)
+            const result = await conn.query(query)
+        }
+
+        if(request.status === 3){
+            const resultGetIsi = await conn.query(queryGetIsi)
+            for(let i = 0; i < resultGetIsi.rows.length; i++){
+                let queryDeliverAll = `UPDATE "TerdiriPesanan" SET "delivered" = ${resultGetIsi.rows[i].jumlah} WHERE "idPesanan" = ${idPesanan} AND "isiPesanan" = ${resultGetIsi.rows[i].isiPesanan}`
+                let resultDeliverAll = await conn.query(queryDeliverAll)
+            }
+            const resultStatus = await conn.query(queryStatus)
+
+            const resultCheckAdditional = await conn.query(queryCheckAdditional)
+            //jika tidak ada pesanan tambahan
+            if(resultCheckAdditional.rows.length === 0){
+                const resultStatus3 = await conn.query(query)
+            }
         }
 
         const resultKelola = await conn.query(queryKelola)
 
-        if(request.status === 3){
-        const resultGetIsi = await conn.query(queryGetIsi)
-        for(let i = 0; i < resultGetIsi.rows.length; i++){
-            let queryDeliverAll = `UPDATE "TerdiriPesanan" SET "delivered" = ${resultGetIsi.rows[i].jumlah} WHERE "idPesanan" = ${idPesanan} AND "isiPesanan" = ${resultGetIsi.rows[i].isiPesanan}`
-            let resultDeliverAll = await conn.query(queryDeliverAll)
-        }
-        const resultStatus = await conn.query(queryStatus)
-
-        const resultCheckAdditional = await conn.query(queryCheckAdditional)
-        //jika tidak ada pesanan tambahan
-        if(resultCheckAdditional.rows.length === 0){
-            const resultStatus3 = await conn.query(query)
-        }
-        }
-        
         res.status(200).json({ mesage: 'Success'})
     }catch(err){
         console.log(err)

@@ -25,7 +25,13 @@
     margin: 0;
     overflow-y: scroll;
     width: 100%;
-    height: 300px;
+    max-height: 300px;
+}
+
+.isiPaket{
+    margin-left: .5rem;
+    font-size: small;
+    margin-top: 0;
 }
 
 .orderlist{

@@ -58,15 +58,6 @@
     font-weight: bold;
 }
 
-.animasi{
-    animation: growDown 200ms ease-in-out both;
-    transform-origin: top center;
-    margin: 0;
-    padding: 0;
-    background-color: var(--color1);
-}
-
-
 @keyframes growDown {
     0% {
       transform: scaleY(0)

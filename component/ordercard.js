@@ -193,7 +193,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                         </>
                     }
 
-                    <h4>Total: IDR {order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}</h4>
+                    <h4>Total: IDR {order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}<sup>*</sup></h4>
                     {!extendOrder && <button onClick={() => setExtendOrder(true)} className='btn-primary'>Add more order</button>}
                 </>
             : 
@@ -207,16 +207,16 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                                     <li className={styles.orderlist}>
                                         <p>{or.namaMenu}</p>
                                         <p>x {or.count}</p>
-                                        <button onClick={() => addToOrder(or)}>+</button>
-                                        <button onClick={() => reduceOrder(or)}>-</button>
+                                        <button className="btn-primary" onClick={() => addToOrder(or)}>+</button>
+                                        <button className="btn-danger" onClick={() => reduceOrder(or)}>-</button>
                                     </li>
-                                    {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p key={o.isiMenu}>{order[o.isiMenu - 1].namaMenu} x {o.jumlah * or.count}</p>)}</>}
+                                    {or.isiMenu.length > 0 && <>{or.isiMenu.map(o => <p className={styles.isiPaket} key={o.isiMenu}>{order[o.isiMenu - 1].namaMenu} x {o.jumlah * or.count}</p>)}</>}
                                 </div>
                             )}
                         </ul>
                     : <p style={{textAlign: "center"}}>Order your desired menu by clicking the menu card on the left.</p>}
 
-                    {<h3>Total: IDR {order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}</h3>}
+                    {<h3>Total: IDR {order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}<sup>*</sup></h3>}
                     <div>
                         <button onClick={resetOrder} className='btn-danger'>clear</button>
                         <button onClick={() => !extendOrder ? handleSubmit('new') : handleSubmit('additional')} className="btn-primary">make order</button>

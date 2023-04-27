@@ -58,7 +58,7 @@ export default function TransactionHistory({dataTransaksi, dataOrder, dataMenu, 
 
                       {showIsi[showIsi.findIndex(s => s.idTransaksi === d.idTransaksi)].show && 
                       <>
-                        <tr colSpan={4} className={styles.animasi}>
+                        <tr colSpan={4}>
                           <th className={styles.isimenu}>Menu</th>
                           <th className={styles.isimenu}>Amount</th>
                           <th className={styles.isimenu}></th>

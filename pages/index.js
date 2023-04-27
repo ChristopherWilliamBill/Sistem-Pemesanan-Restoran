@@ -89,6 +89,10 @@ export default function Home({dataMenu}) {
   }
 
   const getRequestHelp = async (idMeja) => {
+    if(session.role !== "meja"){
+      return
+    }
+    
     const endpoint = `../api/help/${idMeja}`
     const options = {
         method: 'POST',
@@ -309,7 +313,7 @@ export default function Home({dataMenu}) {
             </div>
           }
         </div>
-        <p className={styles.tax}>Prices do not include 10% VAT and 5% service</p>
+        <p className={styles.tax}><sup>*</sup>Prices do not include 10% VAT and 5% service</p>
       </>
     )
   }
