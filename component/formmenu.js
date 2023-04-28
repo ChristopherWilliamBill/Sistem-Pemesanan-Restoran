@@ -276,6 +276,7 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
                 <div className={styles.right}>
                     {(!imageSrc && selectedMenu) && <Image className={styles.image} width={600} height={400} src={selectedMenu.gambar}></Image>}
                     {imageSrc && <img className={styles.image} src={URL.createObjectURL(imageSrc)}></img>}
+                    <label>Last edited by: {selectedMenu.username}</label>
                 </div>
             </div>
 

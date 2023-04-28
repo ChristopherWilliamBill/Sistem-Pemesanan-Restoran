@@ -180,8 +180,13 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                             )}
                         </ul>
                     : <p style={{textAlign: "center"}}>Order your desired menu by clicking the menu card on the left.</p>}
+
+                    <h4>Total: IDR {
+                        order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}
+                        <sup>*</sup>
+                    </h4>
                     
-                    {orderTambahan.reduce((i, o) => {return i + o.count}, 0) != 0 && //cek jumlah count > 0 (ada pesanan)
+                    {orderTambahan.reduce((i, o) => {return i + o.count}, 0) != 0 && //cek jumlah count > 0 (ada pesanan tambahan)
                         <> 
                             <h3>Additional Order</h3>
                             <h5>Waiting For Confirmation</h5>
@@ -193,7 +198,11 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                         </>
                     }
 
-                    <h4>Total: IDR {order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}<sup>*</sup></h4>
+                    {orderTambahan.reduce((i, o) => {return i + o.count}, 0) != 0 && 
+                    <h4>Total Additional: IDR {
+                        orderTambahan.filter(ot => ot.count > 0).reduce(function(totalTambahan, curmenu){return totalTambahan + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}
+                        <sup>*</sup>
+                    </h4>}
                     {!extendOrder && <button onClick={() => setExtendOrder(true)} className='btn-primary'>Add more order</button>}
                 </>
             : 
@@ -216,7 +225,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                         </ul>
                     : <p style={{textAlign: "center"}}>Order your desired menu by clicking the menu card on the left.</p>}
 
-                    {<h3>Total: IDR {order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}<sup>*</sup></h3>}
+                    {<h4>Total: IDR {order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}<sup>*</sup></h4>}
                     <div>
                         <button onClick={resetOrder} className='btn-danger'>clear</button>
                         <button onClick={() => !extendOrder ? handleSubmit('new') : handleSubmit('additional')} className="btn-primary">make order</button>

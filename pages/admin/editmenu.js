@@ -37,7 +37,7 @@ export default function EditMenu({dataMenu}){
 }
 
 export async function getStaticProps(){
-  const query = `SELECT * FROM "Menu"`
+  const query = `SELECT "Menu"."idMenu", "Menu"."namaMenu", "Menu"."deskripsiMenu", "Menu"."harga", "Menu"."idAdmin", "Menu"."aktif", "Menu"."gambar", "Admin"."username" FROM "Menu" INNER JOIN "Admin" ON "Menu"."idAdmin" = "Admin"."idAdmin" ORDER BY "Menu"."idMenu" ASC`
   const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu", "TerdiriMenu"."jumlah" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
 
   const res = await conn.query(query)
@@ -45,8 +45,6 @@ export async function getStaticProps(){
 
   const dataMenu = res.rows
   const dataPaket = resPaket.rows
-
-  dataMenu.sort((a,b) => a.idMenu - b.idMenu)
 
   for(let i = 0; i < dataMenu.length; i++){
     dataMenu[i].isiMenu = []

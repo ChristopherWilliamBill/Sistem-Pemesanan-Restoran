@@ -18,7 +18,7 @@ export default function OrderItem({or, order, jumlahCancel, jumlahCancelAddition
             </div>}
 
             {((or.statusPesanan < 3 && or.statusPesanan > 1) && or.status)  && <p>{or.delivered}/{or.count}</p>} 
-            {(!or.status) && <p>{or.count}</p>} 
+            {(!or.status) && <p>x {or.count}</p>} 
 
             {(or.statusPesanan == 2 && or.count == or.delivered) && <p>delivered</p>}
             {or.statusPesanan == 3 && <p>delivered</p>}
@@ -40,9 +40,9 @@ export default function OrderItem({or, order, jumlahCancel, jumlahCancelAddition
             }
             <div className={styles.info}>
                 {or.requestcancel > 0 && <p>x {or.requestcancel} requested to cancel</p>}
-
                 {/* Paket utama */}
-                {(or.isiMenu.length > 0 && or.status) && <>{or.isiMenu.map(o => <p key={or.isiMenu}>{order[o.isiMenu - 1].namaMenu} {or.delivered * o.jumlah}/{o.jumlah * or.count}</p>)}</>}
+                {(or.isiMenu.length > 0 && or.status <= 1) && <>{or.isiMenu.map(o => <p key={or.isiMenu}>{order[o.isiMenu - 1].namaMenu} x {o.jumlah * or.count}</p>)}</>}
+                {(or.isiMenu.length > 0 && or.status > 1) && <>{or.isiMenu.map(o => <p key={or.isiMenu}>{order[o.isiMenu - 1].namaMenu} {or.delivered * o.jumlah}/{o.jumlah * or.count}</p>)}</>}
 
                 {/* Paket additional */}
                 {(or.isiMenu.length > 0 && !or.status) && <>{or.isiMenu.map(o => <p key={or.isiMenu}>{order[o.isiMenu - 1].namaMenu} x {o.jumlah * or.count}</p>)}</>} 

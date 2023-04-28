@@ -2,6 +2,16 @@
   display: flex;
 }
 
+.switch{
+  display: flex;
+  padding-bottom: .5rem;
+}
+
+.switch label{
+  display: flex;
+
+}
+
 .table {
     border-collapse: collapse;
     margin: 25px 0;
@@ -42,7 +52,20 @@
     background-color: var(--color3);
     color: var(--color1);
 }
+
+.headercancel{
+  background-color: salmon;
+}
+
+.headercancel th {
+  text-align: center;
+}
+
+.cancel{
+  background-color: salmon;
+}
   
+
 .trtransaksi{
     background-color: var(--color2);
 }

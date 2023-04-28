@@ -45,22 +45,6 @@ button:hover{
   --color7: #EA5455;
 }
 
-/* :root {
-  --body-color:#fbfaf5;
-  --sidebar-color: #fff;
-  --primary-color: #003459;
-  --primary-color-light: #00a8e8;
-  --toggle-color: #BDBDBD;
-  --text-color: #333333;
-  --border-color: #E0E0E0;
-  --section-color: #FFFFFF;
-  --gradient-color: linear-gradient(to right, transparent, var(--border-color));
-  --linear-gradient: linear-gradient(-45deg, #003459, #00a8e8);
-  --soft-shadow:
-    2.8px 2.8px 2.2px rgba(0, 0, 0, 0.02),
-    6.7px 6.7px 5.3px rgba(0, 0, 0, 0.028),
-    12.5px 12.5px 10px rgba(0, 0, 0, 0.035),
-    22.3px 22.3px 17.9px rgba(0, 0, 0, 0.042),
-    41.8px 41.8px 33.4px rgba(0, 0, 0, 0.05),
-    100px 100px 80px rgba(0, 0, 0, 0.07);
-} */
+*::-webkit-scrollbar {
+  display: none;
+}

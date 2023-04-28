@@ -286,7 +286,7 @@ export default function Home({dataMenu}) {
         }
 
         {showNotification && <div className={styles.notification}>
-            {notification.map(n => <p key={n}>{n}</p>)}
+            {notification.slice().reverse().map(n => <p key={n}>{n}</p>)}
             {notification.length === 0 && <p>No notification</p>}
         </div>}
 

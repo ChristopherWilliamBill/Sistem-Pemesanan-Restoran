@@ -69,13 +69,14 @@ export default async (req, res) => {
         const queryDelete = `DELETE FROM "TerdiriPesanan" WHERE "idPesanan" = ${idPesanan} AND "isiPesanan" = ${isiPesanan}`
         const queryCheckIsi = `SELECT * FROM "TerdiriPesanan" WHERE "idPesanan" = ${idPesanan}`
         const querySetCancel = `UPDATE "Pesanan" SET "statusPesanan" = 5, "selesai" = 1 WHERE "idPesanan" = ${idPesanan}`
+        const queryKelolaCancel = `INSERT INTO "KelolaPesanan" ("idPesanan", "idAdmin", "aksi", "jam") VALUES (${idPesanan}, ${request.idAdmin}, 5, current_timestamp)`
 
         try{
             //reject pesanan
             const resultReject = await conn.query(queryReject)
             console.log(resultReject.rows)
 
-            //kalau semua sudah diantar (jumlah pesanan == jumlah delivered), semua terdiripesanan jadi statusnya 2
+            //kalau semua sudah diantar (jumlah pesanan == jumlah delivered), terdiripesanan untuk menu ini statusnya jadi 2
             if(resultReject.rows[0].jumlah == resultReject.rows[0].delivered){
                 const result = await conn.query(query)
             }
@@ -86,6 +87,7 @@ export default async (req, res) => {
                 const resultCheckIsi = await conn.query(queryCheckIsi) //jika tidak ada lagi terdiripesanan
                 if(resultCheckIsi.rows.length === 0){
                     const resultSetCancel = await conn.query(querySetCancel) //set status pesanan = 5 (dicancel)
+                    const resultCancel = await conn.query(queryKelolaCancel)
                     res.status(200).json({ message: 'Update Success' })
                     return
                 }
@@ -107,7 +109,7 @@ export default async (req, res) => {
             console.log(err)
             res.status(400).send({ message: 'Update Failed' })
         }
-    }else if(tipe === 'cancel'){
+    }else if(tipe === 'cancel'){ // cancel parsial dari pelanggan
         const queryDecrease = `UPDATE "TerdiriPesanan" SET "jumlah" = "jumlah" - ${request.jumlah} WHERE "idPesanan" = ${idPesanan} AND "isiPesanan" = ${isiPesanan} RETURNING "jumlah"`
         const queryDelete = `DELETE FROM "TerdiriPesanan" WHERE "idPesanan" = ${idPesanan} AND "isiPesanan" = ${isiPesanan}`
         const queryCheck = `SELECT * FROM "TerdiriPesanan" WHERE "idPesanan" = ${idPesanan}`

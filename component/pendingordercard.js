@@ -290,7 +290,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                                     {d.statusPesanan === 1 && 
                                         <>
                                             <input type='number' min="0" className={styles.inputnumber} onChange={({target}) => handleChangeJumlah(target.value, index, d.jumlah[index] - d.delivered[index])} value={jumlah[index]}></input>
-                                            <button className='btn-danger' onClick={() => rejectOrder('cancel', d.isiPesanan[index], jumlah[index])}>reject</button>
+                                            <button className='btn-danger' onClick={() => rejectOrder('reject', d.isiPesanan[index], jumlah[index])}>reject</button>
                                         </>
                                     }
                                     
@@ -314,9 +314,9 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                         </div>
 
                         {d.isiPaket[index].length > 0 && 
-                            d.isiPaket[index].map((isi, i) => d.statusPesanan === 3 ?
+                            d.isiPaket[index].map((isi, i) => (d.statusPesanan === 3 || d.statusPesanan === 1) ?
                                 (<p key={isi} className={styles.isiPaket}> 
-                                    x{d.jumlahPaket[index][i] * (d.jumlah[index])} {dataMenu[isi - 1].namaMenu}
+                                    x {d.jumlahPaket[index][i] * (d.jumlah[index])} {dataMenu[isi - 1].namaMenu}
                                 </p>)
                                 :
                                 (<p key={isi} className={styles.isiPaket}> 
