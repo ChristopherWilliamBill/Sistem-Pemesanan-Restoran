@@ -266,7 +266,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
             {d.statusPesanan === 3 && <h1 className={styles.printinfo}>Thank You!</h1>}
             <div className={styles.orderinfo}>
                 <p className={styles.printinfo}>{new Date().toString().slice(0,25)}</p>
-                <p className={styles.table}><b>Table: {d.idMeja}</b></p>
+                <p className={styles.table}>Table: {d.idMeja}</p>
                 {d.statusPesanan < 3 ? <p className={styles.waitingtime}><b>Waiting Time: {timeCalculator(d.jam.split('.')[0], time)}</b></p> : null}
             </div>
 
@@ -286,7 +286,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                                 Jika ada, harus ditanggapi terlebih dahulu */}
                             {d.requestcancel[index] === 0 &&
                                 <div className={styles.orderaction}>
-                                    {(d.delivered[index] === d.jumlah[index] && d.statusPesanan) === 2 && <p>delivered</p>}
+                                    {(d.delivered[index] === d.jumlah[index] && d.statusPesanan) === 2 && <p className={styles.delivered}>delivered</p>}
                                     {d.statusPesanan === 1 && 
                                         <>
                                             <input type='number' min="0" className={styles.inputnumber} onChange={({target}) => handleChangeJumlah(target.value, index, d.jumlah[index] - d.delivered[index])} value={jumlah[index]}></input>
@@ -294,21 +294,21 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                                         </>
                                     }
                                     
+                                    {(d.statusPesanan === 2 && d.delivered[index] < d.jumlah[index]) && 
                                     <div className={styles.orderinput}> 
-                                        {(d.statusPesanan === 2 && d.delivered[index] < d.jumlah[index]) && 
                                         <>
                                             <input type='number' min="0" className={styles.inputnumber} onChange={({target}) => handleChangeJumlah(target.value, index, d.jumlah[index] - d.delivered[index])} value={jumlah[index]}></input>
                                             {/* <input type='number' min="0" className={styles.inputnumber} onChange={({target}) => handleChangeJumlah(target.value, index, d.jumlah[index] - d.delivered[index])} value={jumlah[index]}></input> */}
-                                        </>}
-                                    </div>
+                                        </>
+                                    </div>}
 
-                                    <div className={styles.orderbutton}> 
-                                        {(d.delivered[index] != d.jumlah[index]) && d.statusPesanan === 2 && 
+                                    {(d.delivered[index] != d.jumlah[index]) && d.statusPesanan === 2 && 
+                                    <div className={styles.orderbutton}>     
                                         <>
                                             <button className='btn-primary' onClick={() => deliverOrder(d.isiPesanan[index], jumlah[index])}>deliver {jumlah[index]}</button>
                                             {/* <button className='btn-danger' onClick={() => rejectOrder('reject', d.isiPesanan[index], jumlah[index])}>reject</button> */}
-                                        </>}
-                                    </div>
+                                        </>
+                                    </div>}
                                 </div>
                             }
                         </div>
@@ -343,19 +343,19 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
             <div className={styles.total}>
                 <label>
                     <p>Subtotal: </p> 
-                    <p>Rp {calculateTotal().toLocaleString()}</p>
+                    <p className={styles.rp}>Rp {calculateTotal().toLocaleString()}</p>
                 </label>
                 <label>
                     <p>Tax: </p> 
-                    <p>Rp {(calculateTotal() * .1).toLocaleString()}</p>
+                    <p className={styles.rp}>Rp {(calculateTotal() * .1).toLocaleString()}</p>
                 </label>
                 <label>
                     <p>Services: </p> 
-                    <p>Rp {(calculateTotal() * .05).toLocaleString()}</p>
+                    <p className={styles.rp}>Rp {(calculateTotal() * .05).toLocaleString()}</p>
                 </label>
                 <label>
                     <h4>Total: </h4> 
-                    <h4>Rp {total.toLocaleString()}</h4>
+                    <h4 className={styles.rp}>Rp {total.toLocaleString()}</h4>
                 </label>
             </div>
             }

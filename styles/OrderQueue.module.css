@@ -7,10 +7,6 @@
     background-color: var(--color1);
 }
 
-.category{
-    text-align: center;
-}
-
 .navbar{
     width: 100%;
     display: flex;
@@ -52,12 +48,18 @@
 
 @media print{
 
-    .navbar, .category{
+    .navbar{
         visibility: hidden;
     }
 
     .container{
+        position: absolute;
+        top: .5rem;
+        width: 100%;
+        margin: 0;
+        border: none;
         display: block;
+        padding: 0;
     }
 
     .printarea{

@@ -70,7 +70,7 @@ export default function TransactionHistory({dataTransaksi, dataOrder, dataMenu, 
                       <React.Fragment key={d.uuid}>
                         <tr className={styles.trtransaksi}>
                           <td>{new Date(d.tanggal).toString().slice(0,15)}</td>
-                          <td>{d.uuid}</td>
+                          <td><p className={styles.uuid}>{d.uuid}</p></td>
                           <td>{d.username}</td>
                           <td>{d.idMeja}</td>
                         </tr>
