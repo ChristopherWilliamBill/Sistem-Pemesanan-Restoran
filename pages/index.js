@@ -118,6 +118,7 @@ export default function Home({dataMenu}) {
       return
     }
 
+    setExtendOrder(false)
     resetOrder()
     const endpoint = `../api/order/current/${idMeja}`
 
@@ -296,9 +297,11 @@ export default function Home({dataMenu}) {
               <MenuCard aktif={1} key={menu.idMenu} menu={menu} addToOrder={addToOrder} extendOrder={extendOrder} addToInputOrderTambahan={addToInputOrderTambahan} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
             ))}
 
+            {/* Menu tidak aktif tapi tetap ditampilkan
             {dataMenu.filter(d => d.aktif === 0).map((menu) => (
               <MenuCard aktif={0} key={menu.idMenu} menu={menu} addToOrder={addToOrder} extendOrder={extendOrder} addToInputOrderTambahan={addToInputOrderTambahan} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
-            ))}
+            ))} 
+            */}
           </div>
   
           {session.user.name.substring(0,5) === "Table" ? 

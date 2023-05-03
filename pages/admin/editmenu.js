@@ -17,7 +17,7 @@ export default function EditMenu({dataMenu}){
         <h3>Choose the menu to edit:</h3>
 
             {dataMenu.map(d => 
-              <p key={d.idMenu} className={styles.listitem} onClick={() => setSelectedMenu(d)}>
+              <p key={d.idMenu} className={d.aktif === 1 ? styles.listitem : styles.notactive} onClick={() => setSelectedMenu(d)}>
                 {d.namaMenu}
               </p>
             )}

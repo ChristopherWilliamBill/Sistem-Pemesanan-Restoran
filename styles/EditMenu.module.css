@@ -26,6 +26,14 @@
     margin: .5em;
 }
 
+.notactive{
+    list-style-type: none;
+    padding: 1rem;
+    background-color: salmon;
+    border-radius: 1rem;
+    margin: .5em;
+}
+
 .listitem:hover{
     background-color: var(--color3);
     color: var(--color1)

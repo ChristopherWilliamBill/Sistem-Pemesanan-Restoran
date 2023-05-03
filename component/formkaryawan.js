@@ -10,6 +10,11 @@ export default function FormKaryawan({dataAdmin}){
     const [role, setRole] = useState(dataAdmin ? dataAdmin.role : "karyawan")
 
     const handleSubmit = async () => {
+        if(namaAdmin === "" || password === ""){
+            alert('username or password invalid')
+            return
+        }
+
         let endpoint = '../api/karyawan'
         let idAdmin
         let method

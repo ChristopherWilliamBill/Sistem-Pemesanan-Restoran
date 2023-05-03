@@ -101,6 +101,17 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
         }else{
             desc = deskripsi
         }
+
+        if(namaMenu === '' || deskripsi === '' || harga === '0'){
+            alert('Invalid name, description, or price')
+            return
+        }
+
+        if((selectedMenu.isiMenu.length === deletedPaket.length) && paket.length === 0){
+            alert('Invalid Packet Contents')
+            return
+        }
+
         const resultImage = await uploadImage()
         const data = {
             namaMenu: namaMenu,
@@ -141,6 +152,12 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
         }
 
         const resultImage = await uploadImage()
+
+        if(namaMenu === '' || deskripsi === '' || harga === '0' || !resultImage){
+            alert('Invalid name, description, image, or price')
+            return
+        }
+
         const data = {
             namaMenu: namaMenu,
             deskripsiMenu: desc,
@@ -276,7 +293,11 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
                 <div className={styles.right}>
                     {(!imageSrc && selectedMenu) && <Image className={styles.image} width={600} height={400} src={selectedMenu.gambar}></Image>}
                     {imageSrc && <img className={styles.image} src={URL.createObjectURL(imageSrc)}></img>}
+                    {selectedMenu && <label>Menu type: {selectedMenu.isiMenu.length > 0 ? 'packet' : 'individual'}</label>}
+                    <br></br>
                     {selectedMenu && <label>Last edited by: {selectedMenu.username}</label>}
+
+                    {!selectedMenu && <label>Menu type: {paket.length > 0 ? 'packet' : 'individual'}</label>}
                 </div>
             </div>
 

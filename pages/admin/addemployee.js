@@ -24,12 +24,12 @@ export default function AddEmployee(){
 }
 
 AddEmployee.getLayout = function getLayout(page) {
-    return (
-      <Layout>
-        <div className={styles.rootcontainer}>
-          <NavBar key='tambahkaryawan' currentPath={'/admin/addemployee'}></NavBar>
-          {page}
-        </div>
-      </Layout>
-    )
+  return (
+    <Layout>
+      <div className={styles.rootcontainer}>
+        <NavBar key='tambahkaryawan' currentPath={'/admin/addemployee'}></NavBar>
+        {page}
+      </div>
+    </Layout>
+  )
 }

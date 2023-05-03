@@ -69,7 +69,7 @@ export default async (req, res) => {
             const queryJumlahPaket = `SELECT COUNT(*) FROM "TerdiriMenu" WHERE "idMenu" = ${request.idMenu}`
 
             try{
-                //paket tidak boleh tidak memiliki isi menu
+                //menu bertipe paket tidak boleh tidak memiliki isi menu
                 const resultCheck = await conn.query(queryCheck)
                 if(resultCheck.rows.some(r => r.idMenu == request.idMenu)){
                 const resultJumlah = await conn.query(queryJumlahPaket) //cek menu punya berapa isipaket
