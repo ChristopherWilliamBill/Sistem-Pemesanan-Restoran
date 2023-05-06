@@ -37,6 +37,11 @@ export default function Table({dataMeja}){
     }
 
     const handleSubmit = async () => {
+        if(username === '' || password === ''){
+            alert('Invalid password')
+            return
+        }
+
         let method = ''
         if(isNew){
             method = 'POST'

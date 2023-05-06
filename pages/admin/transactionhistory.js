@@ -45,12 +45,14 @@ export default function TransactionHistory({dataTransaksi, dataOrder, dataMenu, 
                   Cancelled Order
                 </label>
             </div>
+
             {dataTransaksi.length > 0 ?
               <>
                 <div className={styles.input}>
                   <div> From: <input type="date" value={fromDate} onChange={(e) => handleChangeFrom(e)}></input> </div>
                   <div> To: <input type="date" value={toDate} onChange={(e) => handleChangeTo(e)}></input> </div>
                 </div>
+                <button className='btn-primary' onClick={window.print}>Print</button>
                 <table className={styles.table}>
                   <tbody>
                   {cancel ? 
@@ -71,13 +73,12 @@ export default function TransactionHistory({dataTransaksi, dataOrder, dataMenu, 
                         <tr className={styles.trtransaksi}>
                           <td>{new Date(d.tanggal).toString().slice(0,15)}</td>
                           <td><p className={styles.uuid}>{d.uuid}</p></td>
-                          <td>{d.username}</td>
+                          <td>{d.aksi === 5 ? d.username : 'customer'}</td>
                           <td>{d.idMeja}</td>
                         </tr>
                       </React.Fragment>
                     )}
                   </>
-                  
                   : 
                   <>
                     <tr className={styles.header}>
@@ -150,7 +151,7 @@ export async function getServerSideProps(){
   const queryMenu = `SELECT * FROM "Menu" ORDER BY "idMenu"`
   const queryAdminAccept = `SELECT * FROM "KelolaPesanan" INNER JOIN "TerdiriTransaksi" ON "KelolaPesanan"."idPesanan" = "TerdiriTransaksi"."idPesanan" INNER JOIN "Admin" ON "Admin"."idAdmin" = "KelolaPesanan"."idAdmin" WHERE "aksi" = 2`
   const queryAdminFinish = `SELECT * FROM "KelolaPesanan" INNER JOIN "TerdiriTransaksi" ON "KelolaPesanan"."idPesanan" = "TerdiriTransaksi"."idPesanan" INNER JOIN "Admin" ON "Admin"."idAdmin" = "KelolaPesanan"."idAdmin" WHERE "aksi" = 4`
-  const queryCancel = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."tanggal", "Pesanan"."uuid", "KelolaPesanan"."idAdmin", "KelolaPesanan"."aksi", "Admin"."username" FROM "Pesanan" INNER JOIN "KelolaPesanan" ON "Pesanan"."idPesanan" = "KelolaPesanan"."idPesanan" INNER JOIN "Admin" ON "Admin"."idAdmin" = "KelolaPesanan"."idAdmin" WHERE "Pesanan"."statusPesanan" = 5 AND "KelolaPesanan"."aksi" = 5`
+  const queryCancel = `SELECT "Pesanan"."idPesanan", "Pesanan"."statusPesanan", "Pesanan"."jam", "Pesanan"."idMeja", "Pesanan"."tanggal", "Pesanan"."uuid", "KelolaPesanan"."idAdmin", "KelolaPesanan"."aksi", "Admin"."username" FROM "Pesanan" INNER JOIN "KelolaPesanan" ON "Pesanan"."idPesanan" = "KelolaPesanan"."idPesanan" INNER JOIN "Admin" ON "Admin"."idAdmin" = "KelolaPesanan"."idAdmin" WHERE "Pesanan"."statusPesanan" = 5`
 
   const result = await conn.query(query)
   const dataTransaksi = result.rows
@@ -191,7 +192,7 @@ export async function getServerSideProps(){
 TransactionHistory.getLayout = function getLayout(page) {
     return (
       <Layout>
-        <div className={styles.rootcontainer}>
+        <div>
           <NavBar key='riwayattransaksi' currentPath={'/admin/transactionhistory'}></NavBar>
           {page}
         </div>

@@ -70,41 +70,31 @@ export default async (req, res) => {
         const queryCheckIsi = `SELECT * FROM "TerdiriPesanan" WHERE "idPesanan" = ${idPesanan}`
         const querySetCancel = `UPDATE "Pesanan" SET "statusPesanan" = 5, "selesai" = 1 WHERE "idPesanan" = ${idPesanan}`
         const queryKelolaCancel = `INSERT INTO "KelolaPesanan" ("idPesanan", "idAdmin", "aksi", "jam") VALUES (${idPesanan}, ${request.idAdmin}, 5, current_timestamp)`
+        const queryStatus = `SELECT "statusPesanan" FROM "Pesanan" WHERE "idPesanan" = ${idPesanan}`
 
         try{
-            //reject pesanan
-            const resultReject = await conn.query(queryReject)
-            console.log(resultReject.rows)
-
-            //kalau semua sudah diantar (jumlah pesanan == jumlah delivered), terdiripesanan untuk menu ini statusnya jadi 2
-            if(resultReject.rows[0].jumlah == resultReject.rows[0].delivered){
-                const result = await conn.query(query)
-            }
-
-            //kalau semua direject, hapus terdiripesanan
-            if(resultReject.rows[0].jumlah == 0){
-                const resultDelete = await conn.query(queryDelete)
-                const resultCheckIsi = await conn.query(queryCheckIsi) //jika tidak ada lagi terdiripesanan
-                if(resultCheckIsi.rows.length === 0){
-                    const resultSetCancel = await conn.query(querySetCancel) //set status pesanan = 5 (dicancel)
-                    const resultCancel = await conn.query(queryKelolaCancel)
-                    res.status(200).json({ message: 'Update Success' })
-                    return
+            //cek status pesanan
+            const resultStatus = await conn.query(queryStatus)
+            //memastikan bahwa hanya pesanan baru yang dapat dicancel oleh admin
+            if(resultStatus.rows[0].statusPesanan === 1){
+                
+                //reject pesanan
+                const resultReject = await conn.query(queryReject)
+                //jika menu direject semua
+                if(resultReject.rows[0].jumlah === 0){
+                    const resultDelete = await conn.query(queryDelete) //hapus terdiri pesanan
+                    const resultCheckIsi = await conn.query(queryCheckIsi) //jika tidak ada lagi terdiripesanan
+                    if(resultCheckIsi.rows.length === 0){
+                        const resultSetCancel = await conn.query(querySetCancel) //set status pesanan = 5 (dicancel)
+                        const resultCancel = await conn.query(queryKelolaCancel) //catet id admin yang mengcancel
+                        res.status(200).json({ message: 'Update Success' })
+                        return
+                    }
                 }
+
+                res.status(200).json({ message: 'Update Success' })
+                return
             }
-
-            //cek jika semua terdiripesanan statusnya 2
-            const resultCheck = await conn.query(queryCheck)
-            console.log(resultCheck.rows)
-
-            //jika ya, status pesanan = 3 (deliverd all)
-            if(resultCheck.rows.every(r => r.status == 2)){
-                const resultFinish = await conn.query(queryFinish)
-                const resultKelola = await conn.query(queryKelola)
-            }
-
-            res.status(200).json({ message: 'Update Success' })
-
         }catch(err){
             console.log(err)
             res.status(400).send({ message: 'Update Failed' })

@@ -287,18 +287,18 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                             {d.requestcancel[index] === 0 &&
                                 <div className={styles.orderaction}>
                                     {(d.delivered[index] === d.jumlah[index] && d.statusPesanan) === 2 && <p className={styles.delivered}>delivered</p>}
-                                    {d.statusPesanan === 1 && 
-                                        <>
-                                            <input type='number' min="0" className={styles.inputnumber} onChange={({target}) => handleChangeJumlah(target.value, index, d.jumlah[index] - d.delivered[index])} value={jumlah[index]}></input>
-                                            <button className='btn-danger' onClick={() => rejectOrder('reject', d.isiPesanan[index], jumlah[index])}>reject</button>
-                                        </>
-                                    }
                                     
-                                    {(d.statusPesanan === 2 && d.delivered[index] < d.jumlah[index]) && 
+                                    {((d.statusPesanan === 2 && d.delivered[index] < d.jumlah[index]) || d.statusPesanan === 1) && 
                                     <div className={styles.orderinput}> 
                                         <>
                                             <input type='number' min="0" className={styles.inputnumber} onChange={({target}) => handleChangeJumlah(target.value, index, d.jumlah[index] - d.delivered[index])} value={jumlah[index]}></input>
-                                            {/* <input type='number' min="0" className={styles.inputnumber} onChange={({target}) => handleChangeJumlah(target.value, index, d.jumlah[index] - d.delivered[index])} value={jumlah[index]}></input> */}
+                                        </>
+                                    </div>}
+
+                                    {d.statusPesanan === 1 && 
+                                    <div className={styles.orderbutton}> 
+                                        <>
+                                            <button className='btn-danger' onClick={() => rejectOrder('reject', d.isiPesanan[index], jumlah[index])}>reject</button>
                                         </>
                                     </div>}
 
@@ -306,7 +306,6 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                                     <div className={styles.orderbutton}>     
                                         <>
                                             <button className='btn-primary' onClick={() => deliverOrder(d.isiPesanan[index], jumlah[index])}>deliver {jumlah[index]}</button>
-                                            {/* <button className='btn-danger' onClick={() => rejectOrder('reject', d.isiPesanan[index], jumlah[index])}>reject</button> */}
                                         </>
                                     </div>}
                                 </div>
