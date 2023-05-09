@@ -53,6 +53,7 @@
     }
 
     .container{
+        background-color: white;
         position: absolute;
         top: .5rem;
         width: 100%;

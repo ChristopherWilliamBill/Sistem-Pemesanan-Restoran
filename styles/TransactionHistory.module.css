@@ -78,6 +78,10 @@
 }
 
 @media print {
+  .total, .header{
+    color: black;
+  }
+  
   .container{
     width: 100%;
     margin: 0;

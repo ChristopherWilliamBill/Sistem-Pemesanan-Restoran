@@ -14,6 +14,7 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     const [harga, setHarga] = useState(selectedMenu ? selectedMenu.harga : 0)
     const [paket, setPaket] = useState(selectedMenu ? selectedMenu.isiMenu : [])
     const [deletedPaket, setDeletedPaket] = useState([])
+    const [category, setCategory] = useState(selectedMenu ? selectedMenu.idKategori : 1)
     const [imageSrc, setImageSrc] = useState();
     
     const socketInitializer = async () => {
@@ -107,10 +108,15 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
             return
         }
 
-        if((selectedMenu.isiMenu.length === deletedPaket.length) && paket.length === 0){
-            alert('Invalid Packet Contents')
+        if(selectedMenu.idKategori === 3 && paket.length === 0){
+            alert('Invalid Package Contents')
             return
         }
+
+        // if((selectedMenu.isiMenu.length === deletedPaket.length) && paket.length === 0){
+        //     alert('Invalid Package Contents')
+        //     return
+        // }
 
         const resultImage = await uploadImage()
         const data = {
@@ -121,6 +127,7 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
             idAdmin: idAdmin,
             deletedPaket: deletedPaket,
             paket: paket,
+            category: category,
             image: resultImage
         }    
         const JSONdata = JSON.stringify(data)
@@ -164,7 +171,8 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
             harga: harga,
             idAdmin: idAdmin,
             paket: paket,
-            image: resultImage
+            image: resultImage,
+            category: category
         }    
         const JSONdata = JSON.stringify(data)
         const endpoint = '../api/menu'
@@ -188,6 +196,15 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
 
     const handleChange = (e) => {
         setPaket(paket => [...paket, {isiMenu: parseInt(e.target.value), jumlah: 1}])
+        setCategory(3)
+    }
+
+    const handleChangeCategory = (e) => {
+        if(paket.length > 0){
+            setCategory(3)
+        }else{
+            setCategory(e.target.value)
+        }
     }
 
     const removePaket = (index, id) => {
@@ -255,6 +272,16 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
                             <input type='number' placeholder={selectedMenu && selectedMenu.harga} value={harga} onChange={({target}) => setHarga(target.value)} name="harga" required></input>
                         </div>
 
+                        {(!selectedMenu || selectedMenu.idKategori !== 3) && 
+                        <div className={styles.inputcontainer}>
+                            <p>Category</p>
+                            <select onChange={handleChangeCategory} value={category}>
+                                {paket.length === 0 && <option value={1}>Food</option>}
+                                {paket.length === 0 && <option value={2}>Drinks</option>}
+                                {paket.length > 0 && <option value={3}>Package</option>}
+                            </select>
+                        </div>}
+                        
                         {(paket.length > 0 || deletedPaket.length > 0 || !selectedMenu) &&
                             <div className={styles.inputpaketcontainer}>
                                 <p>Packet</p>
@@ -293,11 +320,8 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
                 <div className={styles.right}>
                     {(!imageSrc && selectedMenu) && <Image className={styles.image} width={600} height={400} src={selectedMenu.gambar}></Image>}
                     {imageSrc && <img className={styles.image} src={URL.createObjectURL(imageSrc)}></img>}
-                    {selectedMenu && <label>Menu type: {selectedMenu.isiMenu.length > 0 ? 'packet' : 'individual'}</label>}
                     <br></br>
                     {selectedMenu && <label>Last edited by: {selectedMenu.username}</label>}
-
-                    {!selectedMenu && <label>Menu type: {paket.length > 0 ? 'packet' : 'individual'}</label>}
                 </div>
             </div>
 

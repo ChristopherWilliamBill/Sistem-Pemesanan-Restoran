@@ -292,17 +292,29 @@ export default function Home({dataMenu}) {
         </div>}
 
         <div className={styles.container} onClick={() => setShowNotification(false)}>
-          <div className={styles.menucontainer}>
-            {dataMenu.filter(d => d.aktif === 1).map((menu) => (
-              <MenuCard aktif={1} key={menu.idMenu} menu={menu} addToOrder={addToOrder} extendOrder={extendOrder} addToInputOrderTambahan={addToInputOrderTambahan} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
-            ))}
+          <div className={styles.listmenucontainer}>
+            <h3 className={styles.category}>Food</h3>
+            <div className={styles.menucontainer}>
+              {dataMenu.filter(d => d.aktif === 1 && d.idKategori === 1).map((menu) => (
+                <MenuCard aktif={1} key={menu.idMenu} menu={menu} addToOrder={addToOrder} extendOrder={extendOrder} addToInputOrderTambahan={addToInputOrderTambahan} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
+              ))}
+            </div>
 
-            {/* Menu tidak aktif tapi tetap ditampilkan
-            {dataMenu.filter(d => d.aktif === 0).map((menu) => (
-              <MenuCard aktif={0} key={menu.idMenu} menu={menu} addToOrder={addToOrder} extendOrder={extendOrder} addToInputOrderTambahan={addToInputOrderTambahan} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
-            ))} 
-            */}
+            <h3 className={styles.category}>Drinks</h3>
+            <div className={styles.menucontainer}>
+              {dataMenu.filter(d => d.aktif === 1 && d.idKategori === 2).map((menu) => (
+                <MenuCard aktif={1} key={menu.idMenu} menu={menu} addToOrder={addToOrder} extendOrder={extendOrder} addToInputOrderTambahan={addToInputOrderTambahan} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
+              ))}
+            </div>
+
+            <h3 className={styles.category}>Package</h3>
+            <div className={styles.menucontainer}>
+              {dataMenu.filter(d => d.aktif === 1 && d.idKategori === 3).map((menu) => (
+                <MenuCard aktif={1} key={menu.idMenu} menu={menu} addToOrder={addToOrder} extendOrder={extendOrder} addToInputOrderTambahan={addToInputOrderTambahan} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
+              ))}
+            </div>
           </div>
+          
   
           {session.user.name.substring(0,5) === "Table" ? 
             <div className={styles.ordercontainer}>

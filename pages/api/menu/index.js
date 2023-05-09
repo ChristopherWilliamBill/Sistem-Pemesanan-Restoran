@@ -23,7 +23,7 @@ export default async (req, res) => {
                 imageUrl = '/v1678896383/nophoto.jpg'
             }
 
-            const queryPOST = `INSERT INTO "Menu" ("namaMenu", "deskripsiMenu", "harga", "idAdmin", "aktif", "gambar") VALUES ('${request.namaMenu}', '${request.deskripsiMenu}', ${request.harga}, '${request.idAdmin}', 1, '${imageUrl}') RETURNING "idMenu"`
+            const queryPOST = `INSERT INTO "Menu" ("namaMenu", "deskripsiMenu", "harga", "idAdmin", "aktif", "gambar", "idKategori") VALUES ('${request.namaMenu}', '${request.deskripsiMenu}', ${request.harga}, '${request.idAdmin}', 1, '${imageUrl}', ${request.category}) RETURNING "idMenu"`
 
             try{
                 const result = await conn.query(queryPOST)
@@ -59,10 +59,10 @@ export default async (req, res) => {
         case 'PUT': //Edit data menu
             let query = ''
             if(!request.image){
-                query = `UPDATE "Menu" SET "namaMenu" = '${request.namaMenu}', "deskripsiMenu" = '${request.deskripsiMenu}', "harga" = ${request.harga}, "idAdmin" = ${request.idAdmin} WHERE "idMenu" = ${request.idMenu}`
+                query = `UPDATE "Menu" SET "namaMenu" = '${request.namaMenu}', "deskripsiMenu" = '${request.deskripsiMenu}', "harga" = ${request.harga}, "idAdmin" = ${request.idAdmin}, "idKategori" = ${request.category} WHERE "idMenu" = ${request.idMenu}`
             }else{
                 const imageUrl = request.image.substring(49, request.image.length)
-                query = `UPDATE "Menu" SET "namaMenu" = '${request.namaMenu}', "deskripsiMenu" = '${request.deskripsiMenu}', "harga" = ${request.harga}, "idAdmin" = ${request.idAdmin}, "gambar" = '${imageUrl}' WHERE "idMenu" = ${request.idMenu}`
+                query = `UPDATE "Menu" SET "namaMenu" = '${request.namaMenu}', "deskripsiMenu" = '${request.deskripsiMenu}', "harga" = ${request.harga}, "idAdmin" = ${request.idAdmin}, "gambar" = '${imageUrl}', "idKategori" = ${request.category} WHERE "idMenu" = ${request.idMenu}`
             }
             const queryCheckIsiPaket = `SELECT * FROM "TerdiriMenu" WHERE "idMenu" = ${request.idMenu}`
             const queryCheck = `SELECT DISTINCT "idMenu" FROM "TerdiriMenu"`
@@ -74,7 +74,7 @@ export default async (req, res) => {
                 if(resultCheck.rows.some(r => r.idMenu == request.idMenu)){
                 const resultJumlah = await conn.query(queryJumlahPaket) //cek menu punya berapa isipaket
                 if(request.deletedPaket.length >= parseInt(resultJumlah.rows[0].count) && request.paket.length == 0){ //jika jumlah paket yg dihapus = jumlah paket saat ini, dan tidak ditambahkan lagi dengan paket lain, maka invalid
-                    res.status(200).json({ message: 'Packet must consist of at least 1 menu' })
+                    res.status(200).json({ message: 'Package must consist of at least 1 menu' })
                     return
                 }
                 }

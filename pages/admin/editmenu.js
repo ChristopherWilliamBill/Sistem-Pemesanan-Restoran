@@ -14,7 +14,7 @@ export default function EditMenu({dataMenu}){
     return(
       <div className={styles.container}>
         <div className={styles.listcontainer}>
-        <h3>Choose the menu to edit:</h3>
+        <h4>Choose menu to edit:</h4>
 
             {dataMenu.map(d => 
               <p key={d.idMenu} className={d.aktif === 1 ? styles.listitem : styles.notactive} onClick={() => setSelectedMenu(d)}>
@@ -37,7 +37,7 @@ export default function EditMenu({dataMenu}){
 }
 
 export async function getStaticProps(){
-  const query = `SELECT "Menu"."idMenu", "Menu"."namaMenu", "Menu"."deskripsiMenu", "Menu"."harga", "Menu"."idAdmin", "Menu"."aktif", "Menu"."gambar", "Admin"."username" FROM "Menu" INNER JOIN "Admin" ON "Menu"."idAdmin" = "Admin"."idAdmin" ORDER BY "Menu"."idMenu" ASC`
+  const query = `SELECT "Menu"."idMenu", "Menu"."namaMenu", "Menu"."deskripsiMenu", "Menu"."harga", "Menu"."idAdmin", "Menu"."aktif", "Menu"."gambar", "Admin"."username", "Kategori"."idKategori" FROM "Menu" INNER JOIN "Admin" ON "Menu"."idAdmin" = "Admin"."idAdmin" INNER JOIN "Kategori" ON "Menu"."idKategori" = "Kategori"."idKategori" ORDER BY "Menu"."idMenu" ASC`
   const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu", "TerdiriMenu"."jumlah" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
 
   const res = await conn.query(query)

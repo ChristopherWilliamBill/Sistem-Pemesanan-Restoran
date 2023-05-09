@@ -280,6 +280,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                             <p className={styles.namamenu}>{dataMenu[order - 1].namaMenu}</p> {/* nama menu */}
                             {(d.statusPesanan === 1 || d.statusPesanan === 3) && <p className={styles.orderjumlah}>x {d.jumlah[index]}</p>} {/* jumlah (x 3) */}
                             {(d.statusPesanan > 1 && d.statusPesanan !== 3) && <p className={styles.orderjumlah}>{d.delivered[index]}/{d.jumlah[index]}</p>} {/* delivered (1/3) */}
+                            <p className={styles.orderprint}>x {d.jumlah[index]}</p> {/* buat print */}
                             {d.statusPesanan === 3 && <p className={styles.harga}>Rp {dataMenu[order - 1].harga.toLocaleString()}</p>}
 
                             {/* Jika tidak ada request cancel...
@@ -323,6 +324,15 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                                 </p>)
                             )
                         }
+
+                        {/* buat print */}
+                        {d.isiPaket[index].length > 0 && 
+                            d.isiPaket[index].map((isi, i) => 
+                            <p key={isi} className={styles.isiPaketPrint}> 
+                                x {d.jumlahPaket[index][i] * (d.jumlah[index])} {dataMenu[isi - 1].namaMenu}
+                            </p>)
+                        }
+
 
                         {d.requestcancel[index] > 0 && 
                             <div className={styles.requestcancel}>
@@ -377,6 +387,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                                 <div className={styles.orderitem}>
                                     <p className={styles.additionalorder}>{dataMenu[order - 1].namaMenu}</p> 
                                     <p className={styles.orderjumlah}>x {d.jumlah[index]}</p>
+                                    <p className={styles.orderprint}>x {d.jumlah[index]}</p> {/* buat print */}
 
                                     <div className={styles.orderaction}>
                                         <div className={styles.orderinput}> 
