@@ -65,7 +65,7 @@ EditMenu.getLayout = function getLayout(page) {
   return (
     <Layout>
       <div className={styles.rootcontainer}>
-        <NavBar key='editmenu' currentPath={'/admin/editmenu'}></NavBar>
+        <NavBar currentPath={'/admin/editmenu'}></NavBar>
         {page}
       </div>    
     </Layout>

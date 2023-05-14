@@ -53,7 +53,7 @@ AddMenu.getLayout = function getLayout(page) {
     return (
       <Layout>
         <div className={styles.rootcontainer}>
-          <NavBar key='tambahmenu' currentPath={'/admin/addmenu'}></NavBar>
+          <NavBar currentPath={'/admin/addmenu'}></NavBar>
           {page}
         </div>
       </Layout>

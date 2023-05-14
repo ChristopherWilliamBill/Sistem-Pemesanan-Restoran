@@ -52,6 +52,7 @@
 }
 
 .isiPaket{
+    margin-bottom: .5rem;
     margin-left: 1em;
     font-size: small;
 }
@@ -172,6 +173,10 @@
     width: 100%;
 }
 
+.print{
+    display: none;
+}
+
 .uuid{
     text-align: left;
     width: 100%;
@@ -233,6 +238,10 @@
         display: block;
     }
 
+    .print{
+        display: inline;
+    }
+
     .orderlistcontainer{
         display: block;
         width: 100%;
@@ -241,7 +250,7 @@
     }
 
     .isiPaket{
-        display: none;
+        display: block;
         margin-left: 0;
     }
 

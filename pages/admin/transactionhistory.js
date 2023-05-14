@@ -193,7 +193,7 @@ TransactionHistory.getLayout = function getLayout(page) {
     return (
       <Layout>
         <div>
-          <NavBar key='riwayattransaksi' currentPath={'/admin/transactionhistory'}></NavBar>
+          <NavBar currentPath={'/admin/transactionhistory'}></NavBar>
           {page}
         </div>
       </Layout>

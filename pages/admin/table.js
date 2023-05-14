@@ -125,7 +125,7 @@ Table.getLayout = function getLayout(page) {
     return (
       <Layout>
         <div className={styles.rootcontainer}>
-            <NavBar key='meja' currentPath={'/admin/table'}></NavBar>
+            <NavBar currentPath={'/admin/table'}></NavBar>
             {page}
         </div>
       </Layout>

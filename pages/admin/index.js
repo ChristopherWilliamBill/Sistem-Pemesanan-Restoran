@@ -261,7 +261,7 @@ Admin.getLayout = function getLayout(page) {
   return (
     <Layout>
       <div className={styles.rootcontainer}>
-        <NavBar key='admin' currentPath={'/admin'}></NavBar>
+        <NavBar currentPath={'/admin'}></NavBar>
         {page}
       </div>
     </Layout>

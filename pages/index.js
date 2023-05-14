@@ -68,7 +68,7 @@ export default function Home({dataMenu}) {
   const requestHelp = async () => {
     const endpoint = `../api/help/${session.user.name.substring(6, session.user.name.length)}`
     const options = {
-      method: 'PUT',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' }    
     }
 
@@ -95,7 +95,7 @@ export default function Home({dataMenu}) {
     
     const endpoint = `../api/help/${idMeja}`
     const options = {
-        method: 'POST',
+        method: 'GET',
         headers: { 'Content-Type': 'application/json' }    
     }
 
@@ -123,7 +123,7 @@ export default function Home({dataMenu}) {
     const endpoint = `../api/order/current/${idMeja}`
 
     const options = {
-      method: 'POST',
+      method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     }
     const response = await fetch(endpoint, options)

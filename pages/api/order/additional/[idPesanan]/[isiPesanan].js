@@ -20,35 +20,35 @@ export default async (req, res) => {
     const {isiPesanan} = req.query
 
     const request = JSON.parse(JSON.stringify(req.body))
-    const tipe = request.tipe
+    //const tipe = request.tipe
 
-    if(tipe === 'accept'){ //accept parsial dari kitchen
-        const queryCheck = `SELECT "TerdiriPesanan"."idPesanan", "TerdiriPesanan"."isiPesanan" FROM "TerdiriPesanan" WHERE "idPesanan" = ${idPesanan} AND "isiPesanan" = ${isiPesanan}`
-        const queryDecrease = `UPDATE "PesananTambahan" SET "jumlah" = "jumlah" - ${request.jumlah} WHERE "idPesanan" = ${idPesanan} AND "isiPesanan" = ${isiPesanan} RETURNING "jumlah"`
-        const queryDelete = `DELETE FROM "PesananTambahan" WHERE "idPesanan" = ${idPesanan} AND "isiPesanan" = ${isiPesanan}`
+    // if(tipe === 'accept'){ //accept parsial dari kitchen
+    //     const queryCheck = `SELECT "TerdiriPesanan"."idPesanan", "TerdiriPesanan"."isiPesanan" FROM "TerdiriPesanan" WHERE "idPesanan" = ${idPesanan} AND "isiPesanan" = ${isiPesanan}`
+    //     const queryDecrease = `UPDATE "PesananTambahan" SET "jumlah" = "jumlah" - ${request.jumlah} WHERE "idPesanan" = ${idPesanan} AND "isiPesanan" = ${isiPesanan} RETURNING "jumlah"`
+    //     const queryDelete = `DELETE FROM "PesananTambahan" WHERE "idPesanan" = ${idPesanan} AND "isiPesanan" = ${isiPesanan}`
 
-        try{
-            let queryAccept = ''
-            const resultCheck = await conn.query(queryCheck) // cek pesanan tambahan sudah pernah dipesan sebelumnya / tidak
-            console.log(resultCheck.rows)
-            if(resultCheck.rows.length > 0){
-                queryAccept = `UPDATE "TerdiriPesanan" SET "jumlah" = "jumlah" + ${request.jumlah} WHERE "idPesanan" = ${idPesanan} AND "isiPesanan" = ${isiPesanan}`
-            }else{
-                queryAccept = `INSERT INTO "TerdiriPesanan" VALUES (${idPesanan}, ${isiPesanan}, ${request.jumlah}, 1, 0, 0)`
-            }  
+    //     try{
+    //         let queryAccept = ''
+    //         const resultCheck = await conn.query(queryCheck) // cek pesanan tambahan sudah pernah dipesan sebelumnya / tidak
+    //         console.log(resultCheck.rows)
+    //         if(resultCheck.rows.length > 0){
+    //             queryAccept = `UPDATE "TerdiriPesanan" SET "jumlah" = "jumlah" + ${request.jumlah} WHERE "idPesanan" = ${idPesanan} AND "isiPesanan" = ${isiPesanan}`
+    //         }else{
+    //             queryAccept = `INSERT INTO "TerdiriPesanan" VALUES (${idPesanan}, ${isiPesanan}, ${request.jumlah}, 1, 0, 0)`
+    //         }  
 
-            const resultAccept = await conn.query(queryAccept)
-            const resultDecrease = await conn.query(queryDecrease)
-            if(resultDecrease.rows[0].jumlah === 0){
-                const resultDelete = await conn.query(queryDelete)
-            }
+    //         const resultAccept = await conn.query(queryAccept)
+    //         const resultDecrease = await conn.query(queryDecrease)
+    //         if(resultDecrease.rows[0].jumlah === 0){
+    //             const resultDelete = await conn.query(queryDelete)
+    //         }
             
-            res.status(200).json({ message: 'Update Success' })
-        }catch(err){
-            console.log(err)
-            res.status(400).send({ message: 'Update Failed' })
-        }
-    }else if(tipe === 'reject'){ //reject parsial dari kitchen maupun pelanggan
+    //         res.status(200).json({ message: 'Update Success' })
+    //     }catch(err){
+    //         console.log(err)
+    //         res.status(400).send({ message: 'Update Failed' })
+    //     }
+    // }else if(tipe === 'reject'){ //reject parsial dari kitchen maupun pelanggan
         const queryDecrease = `UPDATE "PesananTambahan" SET "jumlah" = "jumlah" - ${request.jumlah} WHERE "idPesanan" = ${idPesanan} AND "isiPesanan" = ${isiPesanan} RETURNING "jumlah"`
         const queryDelete = `DELETE FROM "PesananTambahan" WHERE "idPesanan" = ${idPesanan} AND "isiPesanan" = ${isiPesanan}`
         const queryCheckAdditional = `SELECT * FROM "PesananTambahan" WHERE "idPesanan" = ${idPesanan}`
@@ -73,7 +73,7 @@ export default async (req, res) => {
             console.log(err)
             res.status(400).send({ message: 'Update Failed' })
         }
-    }
+    //}
     
     return
 }

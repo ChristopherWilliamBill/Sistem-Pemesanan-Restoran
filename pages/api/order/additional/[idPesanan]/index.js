@@ -17,10 +17,10 @@ export default async (req, res) => {
     }
 
     const request = JSON.parse(JSON.stringify(req.body))
-    const tipe = request.tipe
+    //const tipe = request.tipe
     const { idPesanan } = req.query
 
-    if(tipe === 'accept'){ //accept all dari kitchen
+    //if(tipe === 'accept'){ //accept all dari kitchen
         const queryDelete = `DELETE FROM "PesananTambahan" WHERE "idPesanan" = ${idPesanan} RETURNING *`
         const queryCheckMultiple = `SELECT "isiPesanan" FROM "TerdiriPesanan" WHERE "idPesanan" = ${idPesanan}`
 
@@ -48,23 +48,24 @@ export default async (req, res) => {
             console.log(err)
             res.status(400).send({ message: 'Update Failed' })
         }
-    }else if(tipe === 'reject'){ //reject all dari kitchen
-        const queryDelete = `DELETE FROM "PesananTambahan" WHERE "idPesanan" = ${idPesanan}`
-        const queryCheck = `SELECT "status" FROM "TerdiriPesanan" WHERE "idPesanan" = ${idPesanan}`
-        const queryFinish = `UPDATE "Pesanan" SET "statusPesanan" = 3 WHERE "idPesanan" = ${idPesanan}`
+    //}
+    // else if(tipe === 'reject'){ //reject all dari kitchen
+    //     const queryDelete = `DELETE FROM "PesananTambahan" WHERE "idPesanan" = ${idPesanan}`
+    //     const queryCheck = `SELECT "status" FROM "TerdiriPesanan" WHERE "idPesanan" = ${idPesanan}`
+    //     const queryFinish = `UPDATE "Pesanan" SET "statusPesanan" = 3 WHERE "idPesanan" = ${idPesanan}`
       
-        try{
-            const resultDelete = await conn.query(queryDelete)
-            const resultCheck = await conn.query(queryCheck)
-            if(resultCheck.rows.every(r => r.status === 2)){
-                const resultFinish = await conn.query(queryFinish)
-            }
-            res.status(200).json({ message: 'Update Success' })
-        }catch(err){
-            console.log(err)
-            res.status(400).send({ message: 'Update Failed' })
-        }
-    }
+    //     try{
+    //         const resultDelete = await conn.query(queryDelete)
+    //         const resultCheck = await conn.query(queryCheck)
+    //         if(resultCheck.rows.every(r => r.status === 2)){
+    //             const resultFinish = await conn.query(queryFinish)
+    //         }
+    //         res.status(200).json({ message: 'Update Success' })
+    //     }catch(err){
+    //         console.log(err)
+    //         res.status(400).send({ message: 'Update Failed' })
+    //     }
+    // }
 
     return
 }

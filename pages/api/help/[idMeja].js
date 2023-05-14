@@ -16,7 +16,7 @@ export default async (req, res) => {
     const queryCheck = `SELECT "help" FROM "Meja" WHERE "idMeja" = ${idMeja}`
 
     switch (method) {
-        case 'POST': // check help status
+        case 'GET': // check help status
             const resultCheck = await conn.query(queryCheck)
         
             try{
@@ -26,7 +26,7 @@ export default async (req, res) => {
                 res.status(400).send({ message: 'Failed' })
             }
             break
-        case 'PUT': // requesting help
+        case 'POST': // requesting help
             try{
                 const resultCheck = await conn.query(queryCheck)
                 let help = 1
@@ -42,7 +42,7 @@ export default async (req, res) => {
             }
             break
         default:
-            res.status(405).end(`Method ${method} Not Allowed`)
+            res.status(405).send(`Method ${method} Not Allowed`)
     }
     return
 }

@@ -117,7 +117,6 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
     const cancelAdditional = async (menu, jumlah) => {
         if(jumlah === 0){ return }
         const data = {
-            tipe: 'reject',
             jumlah: jumlah
         }
 
