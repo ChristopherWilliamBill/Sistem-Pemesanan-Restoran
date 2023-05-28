@@ -1,10 +1,6 @@
 import styles from '../styles/OrderItem.module.css'
 
-const handleFocus = (event) => {
-    event.target.select()
-}
-
-export default function OrderItem({or, order, jumlahCancel, jumlahCancelAdditional, index, handleChange, handleChangeAdditional, cancelMenu, requestCancel, cancelAdditional}){
+export default function OrderItem({or, order, jumlahCancel, jumlahCancelAdditional, index, handleClick, handleClickAdditional, cancelMenu, requestCancel, cancelAdditional}){
 
     return(
         <li className={styles.container}>
@@ -13,7 +9,14 @@ export default function OrderItem({or, order, jumlahCancel, jumlahCancelAddition
 
             {or.statusPesanan == 1 && 
             <div className={styles.aksicontainer}>
-                <input type="number" min="0" onFocus={handleFocus} value={jumlahCancel[index]} max={or.count - or.delivered} onChange={({target}) => handleChange(target.value, index, or.count - or.delivered)}></input>
+                <div className={styles.jumlah}>
+                    <button className='btn-primary' onClick={() => handleClick('-', index, or.count - or.delivered)}>-</button>
+                    {jumlahCancel[index]}
+                    <button className='btn-primary' onClick={() => handleClick('+', index, or.count - or.delivered)}>+</button>
+                </div>
+                
+
+                {/* <input type="number" min="0" onFocus={handleFocus} value={jumlahCancel[index]} max={or.count - or.delivered} onChange={({target}) => handleChange(target.value, index, or.count - or.delivered)}></input> */}
                 <button className='btn-danger' onClick={() => cancelMenu(or, jumlahCancel[index])}>cancel</button>
             </div>}
 
@@ -26,13 +29,23 @@ export default function OrderItem({or, order, jumlahCancel, jumlahCancelAddition
                 <div className={styles.aksicontainer}>
                     {/* <button className='btn-danger' onClick={() => requestCancel(or, jumlahCancelAdditional[index])}>cancel</button> */}
                     {typeof or.requestcancel !== 'undefined' ?
-                        <>
-                            <input type="number" min="0" onFocus={handleFocus} value={jumlahCancel[index]} max={or.count - or.delivered - or.requestcancel} onChange={({target}) => handleChange(target.value, index, or.count - or.delivered - or.requestcancel)}></input>
+                        <> 
+                            <div className={styles.jumlah}>
+                                <button className='btn-primary' onClick={() => handleClick('-', index, or.count - or.delivered - or.requestcancel)}>-</button>
+                                {jumlahCancel[index]}
+                                <button className='btn-primary' onClick={() => handleClick('+', index, or.count - or.delivered - or.requestcancel)}>+</button>
+                            </div>
+                            {/* <input type="number" min="0" onFocus={handleFocus} value={jumlahCancel[index]} max={or.count - or.delivered - or.requestcancel} onChange={({target}) => handleChange(target.value, index, or.count - or.delivered - or.requestcancel)}></input> */}
                             <button className='btn-danger' onClick={() => requestCancel(or, jumlahCancel[index])}>cancel</button>
                         </> 
                     :
                         <>
-                            <input type="number" min="0" onFocus={handleFocus} value={jumlahCancelAdditional[index]} max={or.count - or.delivered} onChange={({target}) => handleChangeAdditional(target.value, index, or.count)}></input>
+                            <div className={styles.jumlah}>
+                                <button className='btn-primary' onClick={() => handleClickAdditional('-', index, or.count)}>-</button>
+                                {jumlahCancelAdditional[index]}
+                                <button className='btn-primary' onClick={() => handleClickAdditional('+', index, or.count)}>+</button>
+                            </div>
+                            {/* <input type="number" min="0" onFocus={handleFocus} value={jumlahCancelAdditional[index]} max={or.count - or.delivered} onChange={({target}) => handleChangeAdditional(target.value, index, or.count)}></input> */}
                             <button className='btn-danger' onClick={() => cancelAdditional(or, jumlahCancelAdditional[index])}>cancel</button>
                         </>
                     }

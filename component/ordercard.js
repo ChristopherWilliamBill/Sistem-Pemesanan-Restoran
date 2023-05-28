@@ -143,6 +143,30 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
         }
     }
 
+    const handleClick = (aksi, index, max) => {
+        const temp = [...jumlahCancel]
+
+        if(aksi === '-'){ temp[index]-- }
+        if(aksi === '+'){ temp[index]++ }
+
+        if(temp[index] > max){ temp[index] = max }
+        if(temp[index] < 0){ temp[index] = 0 }
+
+        setJumlahCancel(temp)
+    }
+
+    const handleClickAdditional = (aksi, index, max) => {
+        const temp = [...jumlahCancelAdditional]
+
+        if(aksi === '-'){ temp[index]-- }
+        if(aksi === '+'){ temp[index]++ }
+
+        if(temp[index] > max){ temp[index] = max }
+        if(temp[index] < 0){ temp[index] = 0 }
+
+        setJumlahCancelAdditional(temp)
+    }
+
     const handleChange = (jumlah, index, max) => {
         let temp = [...jumlahCancel]
         if(!jumlah){ jumlah = 0 }
@@ -156,7 +180,6 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
         let temp = [...jumlahCancelAdditional]
         if(!jumlah){ jumlah = 0 }
         if(jumlah > max){ jumlah = max }
-        console.log(max)
 
         temp[index] = jumlah
         setJumlahCancelAdditional(temp)
@@ -175,7 +198,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                     {order.reduce((i, o) => {return i + o.count}, 0) != 0 ? //cek jumlah count > 0 (ada pesanan)
                         <ul className={styles.ul}>
                             {order.filter(o => o.count > 0).map((or, index) => 
-                                <OrderItem key={or} or={or} order={order} jumlahCancel={jumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} index={index} handleChange={handleChange} handleChangeAdditional={handleChangeAdditional} cancelMenu={cancelMenu} requestCancel={requestCancel} cancelAdditional={cancelAdditional}></OrderItem>
+                                <OrderItem key={or.idMenu} or={or} order={order} jumlahCancel={jumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} index={index} handleClick={handleClick} handleClickAdditional={handleClickAdditional} cancelMenu={cancelMenu} requestCancel={requestCancel} cancelAdditional={cancelAdditional}></OrderItem>
                             )}
                         </ul>
                     : <p style={{textAlign: "center"}}>Order your desired menu by clicking the menu card on the left.</p>}
@@ -191,7 +214,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                             <h5>Waiting For Confirmation</h5>
                             <ul className={styles.ul}>
                             {orderTambahan.filter(ot => ot.count > 0).map((or, index) => 
-                                <OrderItem key={or} or={or} order={order} jumlahCancel={jumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} index={index} handleChange={handleChange} handleChangeAdditional={handleChangeAdditional} cancelMenu={cancelMenu} requestCancel={requestCancel} cancelAdditional={cancelAdditional}></OrderItem>
+                                <OrderItem key={or.idMenu} or={or} order={order} jumlahCancel={jumlahCancel} jumlahCancelAdditional={jumlahCancelAdditional} index={index}  handleClick={handleClick} handleClickAdditional={handleClickAdditional} cancelMenu={cancelMenu} requestCancel={requestCancel} cancelAdditional={cancelAdditional}></OrderItem>
                             )}
                             </ul>
                         </>

@@ -22,7 +22,7 @@ export default function OrderQueue({dataMenu, dataO}){
 
   const printOrder = async (index) => {
     if(dataOrder[index].requestcancel.some(dr => dr === 1)){
-      alert('handle cancellation request first!')
+      alert('Handle cancellation request first!')
       return
     }
     

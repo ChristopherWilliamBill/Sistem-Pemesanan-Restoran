@@ -102,8 +102,6 @@ export default function Home({dataMenu}) {
     const response = await fetch(endpoint, options)
     const result = await response.json()
 
-    console.log(result)
-
     if(result.message === 1){
       setIsRequestingHelp(true)
     }else if(result.message === 0){

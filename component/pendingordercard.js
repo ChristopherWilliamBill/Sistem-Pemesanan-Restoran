@@ -164,6 +164,11 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
     }
 
     const acceptAllAdditionalOrder = async () => {
+        if(d.requestcancel.some(r => r > 0)){
+            alert('Handle cancellation request first!')
+            return
+        }
+
         setPrintAdditional(1)
         const data = {idAdmin: idAdmin}
         const JSONdata = JSON.stringify(data)

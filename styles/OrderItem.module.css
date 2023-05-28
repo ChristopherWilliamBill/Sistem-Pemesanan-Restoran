@@ -25,3 +25,10 @@
     font-size: small;
     margin: .5rem;
 }
+
+.jumlah{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-evenly;
+}
