@@ -13,8 +13,15 @@ export default function Header({admin}){
     } 
 
     const [audio, setAudio] = useState(null)
-    const [notification, setNotification] = useState([])
-    const [showNotification, setShowNotification] = useState(false);
+    const [notification, setNotification] = useState(() => {
+        if (typeof window === 'undefined') {
+            return []
+        }
+        const savedNotif = localStorage.getItem('notifHeader')
+        return savedNotif ? JSON.parse(savedNotif) : [] 
+    })
+
+    const [showNotification, setShowNotification] = useState(false)
     const [unseenNotif, setUnseenNotif] = useState(0)
 
     const socketInitializer = async () => {
@@ -22,22 +29,25 @@ export default function Header({admin}){
         socket = io()
 
         socket.on('connect', () => {
-        console.log('connected')
+            console.log('connected')
         })
 
         socket.on('neworder', (msg) => {
-        console.log('order baru diterima dari meja ' + msg)
-        console.log(msg)
-        setNotification(notification => [...notification, `New Order From Table ${msg} (${new Date().toLocaleTimeString()})`])    
-        setUnseenNotif((unseenNotif) => unseenNotif + 1)
+            setNotification(notification => {
+                const newNotif = [...notification, `New Order From Table ${msg} (${new Date().toLocaleTimeString()})`]
+                if(newNotif.length > 15){
+                    newNotif.shift()
+                }
+                return newNotif
+            })    
+            setUnseenNotif((unseenNotif) => unseenNotif + 1)
         })
 
         socket.on('notifyhelp', (msg) => {
-        console.log(msg)
-        if(msg.help === 1){
-            setNotification(notification => [...notification, `Table ${msg.idMeja} requesting help (${new Date().toLocaleTimeString()})`])
-            setUnseenNotif((unseenNotif) => unseenNotif + 1)
-        }
+            if(msg.help === 1){
+                setNotification(notification => [...notification, `Table ${msg.idMeja} requesting help (${new Date().toLocaleTimeString()})`])
+                setUnseenNotif((unseenNotif) => unseenNotif + 1)
+            }
         })
     }
 
@@ -62,6 +72,10 @@ export default function Header({admin}){
         }
     }, [notification])
 
+    useEffect(() => {
+        localStorage.setItem('notifHeader', JSON.stringify(notification));
+    }, [notification]);
+
     return(
         <>
             <div className={styles.container}>
@@ -79,7 +93,7 @@ export default function Header({admin}){
                         {notification.length === 0 ? 'No notification' :
                             notification.reverse().map((n, index) => <p key={index}>{n}</p>)
                         }
-                        {notification.length > 0 && <button className='btn-danger' onClick={() => setNotification([])}>clear</button>}
+                        {notification.length > 0 && <button className='btn-danger' onClick={() => {setNotification([]); localStorage.removeItem('notifHeader')}}>clear</button>}
                     </div>
                 }
             </div>

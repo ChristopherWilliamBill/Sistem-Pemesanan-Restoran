@@ -15,7 +15,13 @@ export default function Home({dataMenu}) {
 
   const { data: session, status } = useSession()
   const [showNotification, setShowNotification] = useState(false);
-  const [notification, setNotification] = useState([]);
+  const [notification, setNotification] = useState(() => {
+    if (typeof window === 'undefined') {
+      return []
+    }
+    const savedNotif = localStorage.getItem('notifPelanggan')
+    return savedNotif ? JSON.parse(savedNotif) : [] 
+  })
   const [isWaiting, setIsWaiting] = useState(false);
   const [idPesanan, setIdPesanan] = useState(0)
   const [uuid, setUuid] = useState('')
@@ -46,8 +52,15 @@ export default function Home({dataMenu}) {
         getCurrentOrder(msg.idMeja)
         if(msg.message === 'Order finished.'){
           setNotification([])
+          localStorage.removeItem('notifPelanggan')
         }else{
-          setNotification(notification => [...notification, msg.message])
+          setNotification(notification => {
+            const newNotif = [...notification, msg.message]
+            if(newNotif.length > 15){
+                newNotif.shift()
+            }
+            return newNotif
+          })  
         }
         if(audio){
           audio.play()
@@ -193,6 +206,10 @@ export default function Home({dataMenu}) {
       getRequestHelp(x)
     }
   },[status])
+
+  useEffect(() => {
+    localStorage.setItem('notifPelanggan', JSON.stringify(notification));
+  }, [notification]);
 
   const resetOrder = () =>{
     setOrder(dataMenu)
