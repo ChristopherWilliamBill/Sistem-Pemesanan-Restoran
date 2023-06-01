@@ -85,7 +85,7 @@ export default (req, res) => {
 
             socket.on('newmenukitchen', async msg => {
                 try{
-                    socket.broadcast.emit('newmenupelanggan', 'kitchen')
+                    socket.broadcast.emit('newmenupelanggan', msg)
                 }catch(err){
                     console.log(err)
                 }

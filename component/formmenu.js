@@ -56,7 +56,7 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
         const result = await response.json()
         console.log(result)
         if(result.revalidated){
-            socket.emit('newmenukitchen', 'kitchen')
+            socket.emit('newmenukitchen', 'activate')
         }
         alert(result.message)
         router.reload()
@@ -145,7 +145,7 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
         alert(result.message)
 
         if(result.revalidated){
-            socket.emit('newmenu', 'kitchen')
+            socket.emit('newmenukitchen', 'edit')
             router.reload()
         }
     }
@@ -189,7 +189,7 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
         alert(result.message)
 
         if(result.revalidated){
-            socket.emit('newmenu', 'kitchen')
+            socket.emit('newmenukitchen', 'new')
             router.reload()
         }
     }

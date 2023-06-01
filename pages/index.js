@@ -42,8 +42,8 @@ export default function Home({dataMenu}) {
       console.log('connected')
     })
 
-    socket.on('newmenupelanggan', () => {
-      router.reload();
+    socket.on('newmenupelanggan', (msg) => {
+      router.reload()
     })
 
     if(session){
