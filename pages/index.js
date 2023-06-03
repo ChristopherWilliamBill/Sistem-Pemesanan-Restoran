@@ -7,6 +7,7 @@ import MenuCard from '../component/menucard';
 import OrderCard from '../component/ordercard';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import io from 'socket.io-client';
+import Swal from "sweetalert2";
 
 let socket = null
 
@@ -31,7 +32,6 @@ export default function Home({dataMenu}) {
   const [orderTambahan, setOrderTambahan] = useState(dataMenu);
   const [jumlahCancel, setJumlahCancel] = useState([])
   const [jumlahCancelAdditional, setJumlahCancelAdditional] = useState([])
-  const [audio, setAudio] = useState(null)
   const [isRequestingHelp, setIsRequestingHelp] = useState(false)
 
   const socketInitializer = async () => {
@@ -62,9 +62,6 @@ export default function Home({dataMenu}) {
             return newNotif
           })  
         }
-        if(audio){
-          audio.play()
-        }
       })
     }
   }
@@ -89,13 +86,13 @@ export default function Home({dataMenu}) {
     const result = await response.json()
 
     if(result.message === 1){
-      alert('Help requested')
       setIsRequestingHelp(true)
       socket.emit('requesthelp', {idMeja: session.user.name.substring(6, session.user.name.length), help: 1 })
+      Swal.fire({title: "Help requested", timer: 1500, showConfirmButton: false, icon: "success"})
     }else if(result.message === 0){
-      alert('Done')
       setIsRequestingHelp(false)
       socket.emit('requesthelp', {idMeja: session.user.name.substring(6, session.user.name.length), help: 0})
+      Swal.fire({title: "Done", timer: 1500, showConfirmButton: false, icon: "success"})
     }else{
       alert('Failed')
     }
@@ -140,7 +137,7 @@ export default function Home({dataMenu}) {
     const response = await fetch(endpoint, options)
     const dataJSON = await response.json()
 
-    if(dataJSON.message != "Failed" && dataJSON.message.orderUtama[0].statusPesanan < 4){
+    if(dataJSON.message != "Failed" && dataJSON.message.orderUtama[0] && dataJSON.message.orderUtama[0].statusPesanan < 4){
       setIdPesanan(dataJSON.message.orderUtama[0].idPesanan)
       setUuid(dataJSON.message.orderUtama[0].uuid)
 
@@ -196,8 +193,6 @@ export default function Home({dataMenu}) {
       socketCleanUp()
     }
   }, [status])
-
-  useEffect(() => setAudio(new Audio('/notification.mp3')),[])
 
   useEffect(() => {
     if(session){

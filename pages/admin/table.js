@@ -65,7 +65,7 @@ export default function Table({dataMeja}){
     
         const response = await fetch(endpoint, options)
         const result = await response.json()
-        alert(result.message)
+
         if(result.revalidated){
             router.reload()
         }

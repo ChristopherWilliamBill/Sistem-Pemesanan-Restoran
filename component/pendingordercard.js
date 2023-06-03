@@ -1,13 +1,16 @@
 import styles from '../styles/PendingOrderCard.module.css'
 import { useState, useEffect } from 'react';
 import { timeCalculator } from '../module/timecalculator';
+import Swal from 'sweetalert2';
 
 export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, notifyTable, idAdmin, index, printOrder}){
     const calculateTotal = () => {
         let total = 0
-        for(let i = 0; i < d.isiPesanan.length; i++){
-            total += (dataMenu[d.isiPesanan[i] - 1].harga * d.jumlah[i])
-        }
+        if(d.isiPesanan.every(i => i !== null)){
+            for(let i = 0; i < d.isiPesanan.length; i++){
+                total += (dataMenu[d.isiPesanan[i] - 1].harga * d.jumlah[i])
+            }
+        } 
         return total
     }
 
@@ -17,7 +20,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
 
     const handleOrder = async (status) => {
         if(status === 3 && d.requestcancel.some(r => r > 0)){
-            alert('Handle cancellation request first!')
+            Swal.fire({title: "Handle cancellation request first!", timer: 1500, showConfirmButton: false, icon: "error"})
             return
         }
         const data = {status: status, idAdmin: idAdmin}
@@ -164,10 +167,10 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
     }
 
     const acceptAllAdditionalOrder = async () => {
-        if(d.requestcancel.some(r => r > 0)){
-            alert('Handle cancellation request first!')
-            return
-        }
+        // if(d.requestcancel.some(r => r > 0)){
+        //     Swal.fire({title: "Handle cancellation request first!", timer: 1500, showConfirmButton: false, icon: "error"})
+        //     return
+        // }
 
         setPrintAdditional(1)
         const data = {idAdmin: idAdmin}
@@ -212,6 +215,13 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
     // }
 
     const handleRequestCancel = async (aksi, idPesanan, isiPesanan) => {
+        let sisaPesanan = d.requestcancel.filter(rc => rc >= 0).length
+        let pesananTambahan = d.requestcancel.length - sisaPesanan
+        
+        if(sisaPesanan === 1 && aksi === 'approve' && pesananTambahan > 0){ // jika pembatalan pesanan terakhir mau di approve, tapi masih ada pesanan tambahan, handle tambahan dulu
+            Swal.fire({title: "Handle additional order first!", timer: 1500, showConfirmButton: false, icon: "error"})
+            return
+        }
         const data = {aksi: aksi, idPesanan: idPesanan, isiPesanan: isiPesanan}
         const JSONdata = JSON.stringify(data)
         const endpoint = '../api/cancellationrequest'
@@ -258,7 +268,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
 
     useEffect(() => {
         if(printAdditional === 1){
-            printOrder(index)
+            printOrder(index, 'tambahan')
             window.onafterprint = () => {
                 setPrintAdditional(0)
             }
@@ -267,6 +277,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
 
     return(
         <div className={styles.ordercard}> 
+        {console.log(d)}
             {d.statusPesanan === 3 && <h1 className={styles.printinfo}>Thank You!</h1>}
             <div className={styles.orderinfo}>
                 <p className={styles.printinfo}>{new Date().toString().slice(0,25)}</p>
@@ -276,6 +287,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
 
             <p className={styles.uuid}>ID: {d.uuid}</p>
 
+            {d.isiPesanan.every(i => i !== null) && //memastikan ada orderan
             <div className={printAdditional === 0 ? styles.orderlistcontainer : styles.dontprint}>
                 <div className={styles.orderlist}>
                 {d.isiPesanan.map((order, index) => d.status[index] !== 3 && (
@@ -343,7 +355,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                     </div>
                 ))}
                 </div>
-            </div>
+            </div>}
 
             {d.statusPesanan === 3 && 
             <div className={styles.total}>
@@ -369,7 +381,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
             <div className={styles.btn}>
                 {status === 1 && <button className='btn-primary' onClick={() => handleOrder(2)}>Accept</button>}
                 {status === 2 && <button className='btn-primary' onClick={() => handleOrder(3)}>Deliver All</button>}   
-                {status >= 2 && <button className='btn-primary' onClick={() => printOrder(index)}>Print</button>}     
+                {status >= 2 && <button className='btn-primary' onClick={() => printOrder(index, 'utama')}>Print</button>}     
                 {status === 3 && <button className='btn-primary' onClick={() => {handleOrder(4); finishOrder()}}>Done</button>}    
             </div>
 

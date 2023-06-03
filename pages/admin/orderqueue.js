@@ -6,6 +6,7 @@ import io from 'socket.io-client'
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { orderFormatter } from '../../module/orderformatter';
+import Swal from 'sweetalert2';
 
 let socket = null
 
@@ -20,12 +21,14 @@ export default function OrderQueue({dataMenu, dataO}){
   const [currentIndexPayment, setCurrentIndexPayment] = useState(0)
 
 
-  const printOrder = async (index) => {
-    if(dataOrder[index].requestcancel.some(dr => dr === 1)){
-      alert('Handle cancellation request first!')
-      return
+  const printOrder = async (index, tipe) => {
+    if(tipe === 'utama'){
+      if(dataOrder[index].requestcancel.some(dr => dr === 1)){
+        Swal.fire({title: "Handle cancellation request first!", timer: 1500, showConfirmButton: false, icon: "error"})
+        return
+      }
     }
-    
+
     let temp = print.slice()
     temp[index] = 1
     setPrint(temp)

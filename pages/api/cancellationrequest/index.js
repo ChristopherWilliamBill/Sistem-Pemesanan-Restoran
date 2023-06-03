@@ -37,6 +37,8 @@ export default async (req, res) => {
             const queryFinish = `UPDATE "Pesanan" SET "statusPesanan" = 3 WHERE "idPesanan" = ${request.idPesanan}`
             const queryCheckIsi = `SELECT * FROM "TerdiriPesanan" WHERE "idPesanan" = ${request.idPesanan}`
             const querySetCancel = `UPDATE "Pesanan" SET "statusPesanan" = 5, "selesai" = 1 WHERE "idPesanan" = ${request.idPesanan}`
+            const queryCheckTambahan = `SELECT * FROM "PesananTambahan" WHERE "idPesanan" = ${request.idPesanan}`
+            const queryDeleteTambahan = `DELETE FROM "PesananTambahan" WHERE "idPesanan" = ${request.idPesanan}`
         
             try{
                 if(request.aksi === 'approve'){
@@ -48,10 +50,12 @@ export default async (req, res) => {
                     if(jumlah === 0){
                         const resultDelete = await conn.query(queryDelete)
                         const resultCheckIsi = await conn.query(queryCheckIsi) //jika tidak ada lagi terdiripesanan
+
                         if(resultCheckIsi.rows.length === 0){
-                        const resultSetCancel = await conn.query(querySetCancel) //set status pesanan = 5 (dicancel)
-                        res.status(200).json({ message: 'Update Success' })
-                        return
+                            const resultSetCancel = await conn.query(querySetCancel) //set status pesanan = 5 (dicancel)
+                            const resultDeleteTambahan = await conn.query(queryDeleteTambahan) 
+                            res.status(200).json({ message: 'Update Success' })
+                            return
                         }
                     }
                 }
@@ -68,8 +72,12 @@ export default async (req, res) => {
                     const resultStatus2 = await conn.query(queryStatus2)
                     
                     const resultCheck = await conn.query(queryCheck) 
+                    const resultCheckTambahan = await conn.query(queryCheckTambahan)
+
                     if(resultCheck.rows.every(r => r.status === 2)){ //jika semua statusnya sudah 2, finish
-                        const resultFinish = await conn.query(queryFinish)
+                        if(resultCheckTambahan.rows.length === 0){ //tidak ada lagi pesanan tambahan
+                            const resultFinish = await conn.query(queryFinish)
+                        }
                     }
                 }else{
                     const queryStatus1 = `UPDATE "TerdiriPesanan" SET "status" = 1 WHERE "idPesanan" = ${request.idPesanan} AND "isiPesanan" = ${request.isiPesanan}`

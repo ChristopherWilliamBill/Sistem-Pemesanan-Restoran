@@ -58,7 +58,6 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
         if(result.revalidated){
             socket.emit('newmenukitchen', 'activate')
         }
-        alert(result.message)
         router.reload()
     } 
 
@@ -142,7 +141,6 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     
         const response = await fetch(endpoint, options)
         const result = await response.json()
-        alert(result.message)
 
         if(result.revalidated){
             socket.emit('newmenukitchen', 'edit')
@@ -186,7 +184,6 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     
         const response = await fetch(endpoint, options)
         const result = await response.json()
-        alert(result.message)
 
         if(result.revalidated){
             socket.emit('newmenukitchen', 'new')

@@ -1,11 +1,12 @@
 import styles from "../styles/OrderCard.module.css"
 import OrderItem from './orderitem';
+import Swal from "sweetalert2";
 
 export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder, resetOrder, notifyKitchen, occupyTable, isWaiting, setIsWaiting, meja, idPesanan, getCurrentOrder, setExtendOrder, extendOrder, jumlahCancel, setJumlahCancel, jumlahCancelAdditional, setJumlahCancelAdditional, uuid}){
     
     const handleSubmit = async (tipe) => {
         if(order.reduce((i, o) => {return i + o.count}, 0) == 0){
-            alert("Order your desired menu by clicking the menu card on the left.")
+            Swal.fire({title: "Order your desired menu by clicking the menu card on the left.", timer: 2000, showConfirmButton: false, icon: "info"})
             return
         }
 
@@ -56,7 +57,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
             setExtendOrder(false)
         }
 
-        alert(result.message)
+        Swal.fire({title: result.message, timer: 1500, showConfirmButton: false, icon: "success"})
     }
 
     const requestCancel = async (menu, jumlah) => {
@@ -164,24 +165,6 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
         if(temp[index] > max){ temp[index] = max }
         if(temp[index] < 0){ temp[index] = 0 }
 
-        setJumlahCancelAdditional(temp)
-    }
-
-    const handleChange = (jumlah, index, max) => {
-        let temp = [...jumlahCancel]
-        if(!jumlah){ jumlah = 0 }
-        if(jumlah > max){ jumlah = max }
-
-        temp[index] = jumlah
-        setJumlahCancel(temp)
-    }
-
-    const handleChangeAdditional = (jumlah, index, max) => {
-        let temp = [...jumlahCancelAdditional]
-        if(!jumlah){ jumlah = 0 }
-        if(jumlah > max){ jumlah = max }
-
-        temp[index] = jumlah
         setJumlahCancelAdditional(temp)
     }
 
