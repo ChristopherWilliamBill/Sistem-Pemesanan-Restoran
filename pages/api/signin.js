@@ -10,8 +10,8 @@ export default async (req, res) => {
   const request = JSON.parse(req.body)
   let query = ""
 
-  if(request.role === "admin"){
-    query = `SELECT * FROM "Admin" WHERE "username" = '${request.username}' AND "password" = '${request.password}'`
+  if(request.role === "karyawan" || request.role === "manager"){
+    query = `SELECT * FROM "Admin" WHERE "username" = '${request.username}' AND "password" = '${request.password}' AND "role" = '${request.role}'`
   }
 
   if(request.role === "meja"){
@@ -21,6 +21,7 @@ export default async (req, res) => {
   const result = await conn.query(query)
   const user = result.rows
   console.log(request)
+  console.log(user)
 
 
   //user = array, user.length ngecek ada user atau ga
@@ -32,7 +33,6 @@ export default async (req, res) => {
     res.status(200).json(user)
     return
   }
-  console.log(user)
 
   res.status(401).send({ message: 'username or password invalid' })
 }

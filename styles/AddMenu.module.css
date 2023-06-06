@@ -12,3 +12,12 @@
 .rootcontainer{
     display: flex;
 }
+
+.manageronly{
+    display: flex;
+    margin-left: 20%;
+    margin-top: 15%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}

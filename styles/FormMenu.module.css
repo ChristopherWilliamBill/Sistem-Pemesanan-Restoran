@@ -111,3 +111,10 @@
     height: auto;
     border-radius: .5rem;
 }
+
+.inputinfo{
+    padding: .5rem;
+    display: flex;
+    justify-content: space-between;
+    width: 50%;
+}

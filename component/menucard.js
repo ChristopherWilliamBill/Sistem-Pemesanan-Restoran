@@ -1,5 +1,8 @@
 import styles from '../styles/MenuCard.module.css'
 import Image from 'next/image'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPepperHot } from '@fortawesome/free-solid-svg-icons';
+import { faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 
 export default function MenuCard({aktif, menu, addToOrder, addToInputOrderTambahan, extendOrder}){
 
@@ -22,11 +25,20 @@ export default function MenuCard({aktif, menu, addToOrder, addToInputOrderTambah
                     height={400}
                 />
             </div>
-            <h3>{menu.namaMenu}</h3>
-            {aktif === 1 && <p className={styles.deskripsi}>{menu.deskripsiMenu}</p>}
-            {aktif === 0 && <p className={styles.deskripsi}>unavailable</p>}
+            <h3>
+                {menu.namaMenu}             
+            </h3>
+            <p className={styles.deskripsi}>{menu.deskripsiMenu}</p>
 
-            <p><b>IDR {menu.harga.toLocaleString()}</b></p>
+            <div className={styles.info}>
+                {aktif === 1 && <p><b>IDR {menu.discount > 0 ? <><del className={styles.diskon}>{menu.harga.toLocaleString()}</del>{(menu.harga - (menu.harga * menu.discount/100)).toLocaleString()}</> : menu.harga.toLocaleString()}</b></p>}
+                {aktif === 0 && <p><b>Sold Out</b></p>}
+            </div>
+
+            <div className={styles.iconcontainer}>
+                {menu.isSpicy === 1 && <FontAwesomeIcon icon={faPepperHot} className={styles.icon}/>}
+                {menu.isFavorite === 1 && <FontAwesomeIcon icon={faThumbsUp} className={styles.icon}/>}
+            </div>
         </div>
     )
 }

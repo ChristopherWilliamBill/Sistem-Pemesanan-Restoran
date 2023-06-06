@@ -14,4 +14,3 @@ export function timeCalculator(initialTime, currentTime) {
 
     return toHMS(toSeconds(currentTime) - toSeconds(initialTime))
 }
-

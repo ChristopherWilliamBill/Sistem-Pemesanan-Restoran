@@ -279,48 +279,55 @@ export default function Home({dataMenu}) {
   if (status === "authenticated"){
     return (
       <>
-        <h1 className={styles.title}>Welcome {session.user.name} !</h1>
-        {session.user.name.substring(0,5) === "Table" &&  
-        <div>
-          <button className={styles.notifbutton} onClick={() => setShowNotification(!showNotification)}>
-            Notification
-          </button>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Welcome {session.user.name} !</h1>
+          {session.user.name.substring(0,5) === "Table" &&  
+          <div>
+            <button className={styles.notifbutton} onClick={() => setShowNotification(!showNotification)}>
+              Notification
+            </button>
 
-          <button className={styles.help} onClick={() => requestHelp()}>
-            { isRequestingHelp ? 'Done' :'Request help'}
-          </button>
+            <button className={styles.help} onClick={() => requestHelp()}>
+              { isRequestingHelp ? 'Done' :'Request help'}
+            </button>
 
-          <button className={styles.logout} onClick={handleSignOut}>
-            Sign Out
-          </button>
+            <button className={styles.logout} onClick={handleSignOut}>
+              Sign Out
+            </button>
+          </div>
+          }
+          <div className={styles.categorybuttoncontainer}>
+            <a href='#makanan'>Food</a>
+            <a href='#minuman'>Drinks</a>
+            <a href='#paket'>Package</a>
+          </div>
+
+          {showNotification && <div className={styles.notification}>
+              {notification.slice().reverse().map(n => <p key={n}>{n}</p>)}
+              {notification.length === 0 && <p>No notification</p>}
+          </div>}
         </div>
-        }
-
-        {showNotification && <div className={styles.notification}>
-            {notification.slice().reverse().map(n => <p key={n}>{n}</p>)}
-            {notification.length === 0 && <p>No notification</p>}
-        </div>}
 
         <div className={styles.container} onClick={() => setShowNotification(false)}>
           <div className={styles.listmenucontainer}>
-            <h3 className={styles.category}>Food</h3>
+            <h3 className={styles.category} id='makanan'>Food</h3>
             <div className={styles.menucontainer}>
-              {dataMenu.filter(d => d.aktif === 1 && d.idKategori === 1).map((menu) => (
-                <MenuCard aktif={1} key={menu.idMenu} menu={menu} addToOrder={addToOrder} extendOrder={extendOrder} addToInputOrderTambahan={addToInputOrderTambahan} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
+              {dataMenu.filter(d => d.idKategori === 1).map((menu) => (
+                <MenuCard aktif={menu.aktif} key={menu.idMenu} menu={menu} addToOrder={addToOrder} extendOrder={extendOrder} addToInputOrderTambahan={addToInputOrderTambahan} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
               ))}
             </div>
 
-            <h3 className={styles.category}>Drinks</h3>
+            <h3 className={styles.category} id='minuman'>Drinks</h3>
             <div className={styles.menucontainer}>
-              {dataMenu.filter(d => d.aktif === 1 && d.idKategori === 2).map((menu) => (
-                <MenuCard aktif={1} key={menu.idMenu} menu={menu} addToOrder={addToOrder} extendOrder={extendOrder} addToInputOrderTambahan={addToInputOrderTambahan} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
+              {dataMenu.filter(d => d.idKategori === 2).map((menu) => (
+                <MenuCard aktif={menu.aktif} key={menu.idMenu} menu={menu} addToOrder={addToOrder} extendOrder={extendOrder} addToInputOrderTambahan={addToInputOrderTambahan} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
               ))}
             </div>
 
-            <h3 className={styles.category}>Package</h3>
+            <h3 className={styles.category} id='paket'>Package</h3>
             <div className={styles.menucontainer}>
-              {dataMenu.filter(d => d.aktif === 1 && d.idKategori === 3).map((menu) => (
-                <MenuCard aktif={1} key={menu.idMenu} menu={menu} addToOrder={addToOrder} extendOrder={extendOrder} addToInputOrderTambahan={addToInputOrderTambahan} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
+              {dataMenu.filter(d => d.idKategori === 3).map((menu) => (
+                <MenuCard aktif={menu.aktif} key={menu.idMenu} menu={menu} addToOrder={addToOrder} extendOrder={extendOrder} addToInputOrderTambahan={addToInputOrderTambahan} isWaiting={isWaiting} setIsWaiting={setIsWaiting}></MenuCard>
               ))}
             </div>
           </div>
@@ -338,7 +345,6 @@ export default function Home({dataMenu}) {
             </div>
           }
         </div>
-        <p className={styles.tax}><sup>*</sup>Prices do not include 10% VAT and 5% service</p>
       </>
     )
   }

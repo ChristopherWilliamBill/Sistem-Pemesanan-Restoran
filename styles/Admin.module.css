@@ -88,3 +88,13 @@
     margin-bottom: 1rem;
     border-radius: .5rem;
 }
+
+.switchtimeframe{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.switchtimeframe button{
+    margin-left: .5rem;
+}

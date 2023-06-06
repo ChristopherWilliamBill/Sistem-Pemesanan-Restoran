@@ -17,8 +17,7 @@ export const authOptions = {
                 const hasil = await res.json();
                 
                 if(res.ok && hasil){
-                    console.log("NEXTAUTH: ", hasil[0])
-                    return {
+                    return { //hasil return disimpan di properti user di jwt
                         idAdmin: hasil[0].idAdmin,
                         name: hasil[0].username,
                         role: hasil[0].role,
@@ -38,9 +37,8 @@ export const authOptions = {
 
             return token
         },
-        session: ({token, session, user}) => {
-            // If you want to make something available you added to the token (like access_token and user.id from above) via the jwt() callback, 
-            // you have to explicitly forward it here to make it available to the client.
+        session: ({token, session}) => {
+            // kirim ke client
             if(token){
                 session.idAdmin = token.idAdmin
                 session.role = token.role

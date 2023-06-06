@@ -16,7 +16,10 @@ export default function AddEmployee(){
             <h1>Add Employee</h1>
             <FormKaryawan></FormKaryawan>
           </div>
-          : 'Only for manager'
+          : 
+          <div className={styles.manageronly}>
+            Only for manager
+          </div>
         }
       </>
     )

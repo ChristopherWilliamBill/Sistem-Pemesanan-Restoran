@@ -8,7 +8,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         let total = 0
         if(d.isiPesanan.every(i => i !== null)){
             for(let i = 0; i < d.isiPesanan.length; i++){
-                total += (dataMenu[d.isiPesanan[i] - 1].harga * d.jumlah[i])
+                total += ((dataMenu[d.isiPesanan[i] - 1].harga - (dataMenu[d.isiPesanan[i] - 1].harga * dataMenu[d.isiPesanan[i] - 1].discount/100)) * d.jumlah[i])
             }
         } 
         return total
@@ -118,32 +118,6 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         setJumlah(new Array(d.isiPesanan.length).fill(0))
     }
 
-    // const acceptAdditionalOrder = async (isiPesanan, jumlah) => {
-    //     if(jumlah === 0){return}
-    //     const data = {
-    //         tipe: 'accept',
-    //         jumlah: jumlah
-    //     }
-
-    //     const JSONdata = JSON.stringify(data)
-    //     const endpoint = `../api/order/additional/${d.idPesanan}/${isiPesanan}`
-
-    //     const options = {
-    //         method: "PUT",
-    //         headers: {
-    //             'Content-type': 'application/json'
-    //         },
-    //         body: JSONdata
-    //     }
-    //     const response = await fetch(endpoint, options)
-    //     const result = await response.json()
-    //     const message = `Additional order ${dataMenu[isiPesanan - 1].namaMenu} x ${jumlah} accepted`
-
-    //     notifyKitchen()
-    //     notifyTable({idMeja: d.idMeja, message: message})
-    //     setJumlah(new Array(d.isiPesanan.length).fill(0))
-    // }
-
     const rejectOrder = async (tipe, isiPesanan, jumlah) => {
         if(jumlah === 0){return}
         const data = {tipe: tipe, idAdmin: idAdmin, jumlah:jumlah}
@@ -167,11 +141,6 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
     }
 
     const acceptAllAdditionalOrder = async () => {
-        // if(d.requestcancel.some(r => r > 0)){
-        //     Swal.fire({title: "Handle cancellation request first!", timer: 1500, showConfirmButton: false, icon: "error"})
-        //     return
-        // }
-
         setPrintAdditional(1)
         const data = {idAdmin: idAdmin}
         const JSONdata = JSON.stringify(data)
@@ -192,27 +161,6 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
         notifyTable({idMeja: d.idMeja, message: "All additional order accepted."})
         setJumlah(new Array(d.isiPesanan.length).fill(0))
     }
-
-    // const rejectAllAdditionalOrder = async () => {
-    //     const data = {tipe: 'reject', idAdmin: idAdmin}
-    //     const JSONdata = JSON.stringify(data)
-    //     const endpoint = `../api/order/additional/${d.idPesanan}`
-    
-    //     const options = {
-    //         method: 'PUT',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSONdata
-    //     }
-    
-    //     const response = await fetch(endpoint, options)
-    //     const result = await response.json()
-
-    //     notifyKitchen()
-    //     notifyTable({idMeja: d.idMeja, message: "All additional order rejected."})
-    //     setJumlah(new Array(d.isiPesanan.length).fill(0))
-    // }
 
     const handleRequestCancel = async (aksi, idPesanan, isiPesanan) => {
         let sisaPesanan = d.requestcancel.filter(rc => rc >= 0).length
@@ -297,7 +245,7 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                             {(d.statusPesanan === 1 || d.statusPesanan === 3) && <p className={styles.orderjumlah}>x {d.jumlah[index]}</p>} {/* jumlah (x 3) */}
                             {(d.statusPesanan > 1 && d.statusPesanan !== 3) && <p className={styles.orderjumlah}>{d.delivered[index]}/{d.jumlah[index]}</p>} {/* delivered (1/3) */}
                             <p className={styles.orderprint}>x {d.jumlah[index]}</p> {/* buat print */}
-                            {d.statusPesanan === 3 && <p className={styles.harga}>Rp {dataMenu[order - 1].harga.toLocaleString()}</p>}
+                            {d.statusPesanan === 3 && <p className={styles.harga}>Rp {(dataMenu[order - 1].harga - (dataMenu[order - 1].harga * dataMenu[order - 1].discount/100)).toLocaleString()}</p>}
 
                             {/* Jika tidak ada request cancel...
                                 Jika ada, harus ditanggapi terlebih dahulu */}
@@ -404,7 +352,6 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                                         </div>
 
                                         <div className={styles.orderbutton}> 
-                                            {/* <button className='btn-primary' onClick={() => {acceptAdditionalOrder(d.isiPesanan[index], jumlah[index])}}>accept {jumlah[index]}</button> */}
                                             <button className='btn-danger' onClick={() => {rejectAdditionalOrder(d.isiPesanan[index], jumlah[index])}}>reject {jumlah[index]}</button>
                                         </div>
                                     </div>
@@ -418,7 +365,6 @@ export default function PendingOrderCard({d, dataMenu, status, notifyKitchen, no
                         <div className={styles.additionalbtn}>
                             <button className='btn-primary' onClick={acceptAllAdditionalOrder}>Accept</button>
                             <button className='btn-primary' onClick={() => setPrintAdditional(1)}>Print</button>
-                            {/* <button className='btn-danger' onClick={rejectAllAdditionalOrder}>Reject All</button> */}
                         </div>
                     </div>
                 </div>

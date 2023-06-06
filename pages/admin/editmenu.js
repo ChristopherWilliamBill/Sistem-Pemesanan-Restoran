@@ -12,19 +12,25 @@ export default function EditMenu({dataMenu}){
   const { data: session, status } = useSession()
   if (status === "authenticated") {
     return(
-      <div className={styles.container}>
-        <div className={styles.listcontainer}>
-        <h4>Choose menu to edit:</h4>
-
+      <>
+        { session.role === 'manager' ?
+        <div className={styles.container}>
+          <div className={styles.listcontainer}>
+          <h4>Choose menu to edit:</h4>
             {dataMenu.map(d => 
               <p key={d.idMenu} className={d.aktif === 1 ? styles.listitem : styles.notactive} onClick={() => setSelectedMenu(d)}>
                 {d.namaMenu}
               </p>
             )}
+          </div>
+          {selectedMenu == null ? <p>No menu selected</p> : <FormMenu key={selectedMenu.idMenu} selectedMenu={selectedMenu} dataMenu={dataMenu} idAdmin={session.idAdmin}></FormMenu>}
         </div>
-
-        {selectedMenu == null ? <p>No menu selected</p> : <FormMenu key={selectedMenu.idMenu} selectedMenu={selectedMenu} dataMenu={dataMenu} idAdmin={session.idAdmin}></FormMenu>}
-      </div>
+        : 
+        <div className={styles.manageronly}>
+          Only for manager
+        </div>
+        }
+      </>
     )
   }
 
@@ -37,7 +43,7 @@ export default function EditMenu({dataMenu}){
 }
 
 export async function getStaticProps(){
-  const query = `SELECT "Menu"."idMenu", "Menu"."namaMenu", "Menu"."deskripsiMenu", "Menu"."harga", "Menu"."idAdmin", "Menu"."aktif", "Menu"."gambar", "Admin"."username", "Kategori"."idKategori" FROM "Menu" INNER JOIN "Admin" ON "Menu"."idAdmin" = "Admin"."idAdmin" INNER JOIN "Kategori" ON "Menu"."idKategori" = "Kategori"."idKategori" ORDER BY "Menu"."idMenu" ASC`
+  const query = `SELECT "Menu"."idMenu", "Menu"."namaMenu", "Menu"."deskripsiMenu", "Menu"."harga", "Menu"."idAdmin", "Menu"."aktif", "Menu"."gambar", "Menu"."isSpicy", "Menu"."isFavorite", "Menu"."discount", "Admin"."username", "Kategori"."idKategori" FROM "Menu" INNER JOIN "Admin" ON "Menu"."idAdmin" = "Admin"."idAdmin" INNER JOIN "Kategori" ON "Menu"."idKategori" = "Kategori"."idKategori" ORDER BY "Menu"."idMenu" ASC`
   const queryPaket = `SELECT "Menu"."idMenu", "TerdiriMenu"."isiMenu", "TerdiriMenu"."jumlah" FROM "Menu" INNER JOIN "TerdiriMenu" ON "Menu"."idMenu" = "TerdiriMenu"."idMenu"`
 
   const res = await conn.query(query)

@@ -43,21 +43,28 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
             body: JSONdata
         }
 
-        const response = await fetch(endpoint, options)
-        const result = await response.json()
-
-        if(result.message === "Order Success"){
-            if(tipe === 'new'){
-                occupyTable()
+        Swal.fire({
+            title: 'Make Order?',
+            showCancelButton: true,
+            confirmButtonText: 'Order',
+            denyButtonText: 'Cancel',
+        }).then(async (result) => {
+            if(result.isConfirmed){
+                const response = await fetch(endpoint, options)
+                const result = await response.json()
+                if(result.message === "Order Success"){
+                    if(tipe === 'new'){
+                        occupyTable()
+                    }
+                    notifyKitchen()
+                    resetOrder()
+                    getCurrentOrder(meja.substring(6, meja.length))
+                    setIsWaiting(true)
+                    setExtendOrder(false)
+                    Swal.fire({title: result.message, timer: 1500, showConfirmButton: false, icon: "success"})
+                }
             }
-            notifyKitchen()
-            resetOrder()
-            getCurrentOrder(meja.substring(6, meja.length))
-            setIsWaiting(true)
-            setExtendOrder(false)
-        }
-
-        Swal.fire({title: result.message, timer: 1500, showConfirmButton: false, icon: "success"})
+        })
     }
 
     const requestCancel = async (menu, jumlah) => {
@@ -77,12 +84,22 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
             },
             body: JSONdata
         }
-        const response = await fetch(endpoint, options)
-        const result = await response.json()
 
-        setJumlahCancel([])
-        getCurrentOrder(meja.substring(6, meja.length))
-        notifyKitchen()
+        Swal.fire({
+            title: 'Cancel menu?',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No'
+        }).then(async (result) => {
+            if(result.isConfirmed){
+                const response = await fetch(endpoint, options)
+                const result = await response.json()
+
+                setJumlahCancel([])
+                getCurrentOrder(meja.substring(6, meja.length))
+                notifyKitchen()
+            }
+        })
     }
 
     const cancelMenu = async (menu, jumlah) => {
@@ -101,18 +118,28 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
             },
             body: JSONdata
         }
-        const response = await fetch(endpoint, options)
-        const result = await response.json()
 
-        setJumlahCancel([])
-        getCurrentOrder(meja.substring(6, meja.length))
-        notifyKitchen()
+        Swal.fire({
+            title: 'Cancel menu?',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No'
+        }).then(async (result) => {
+            if(result.isConfirmed){
+                const response = await fetch(endpoint, options)
+                const result = await response.json()
 
-        if(result.message === "All menu cancelled"){
-            resetOrder()
-            setIsWaiting(false)
-            setExtendOrder(false)
-        }
+                setJumlahCancel([])
+                getCurrentOrder(meja.substring(6, meja.length))
+                notifyKitchen()
+
+                if(result.message === "All menu cancelled"){
+                    resetOrder()
+                    setIsWaiting(false)
+                    setExtendOrder(false)
+                }
+            }
+        })
     }
 
     const cancelAdditional = async (menu, jumlah) => {
@@ -186,10 +213,10 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                         </ul>
                     : <p style={{textAlign: "center"}}>Order your desired menu by clicking the menu card on the left.</p>}
 
-                    <h4>Total: IDR {
-                        order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}
-                        <sup>*</sup>
+                    <h4>Total + Tax and Services: IDR {
+                        order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (((curmenu.harga - (curmenu.harga * curmenu.discount/100)) * curmenu.count) * 1.15)}, 0).toLocaleString()}
                     </h4>
+
                     
                     {orderTambahan.reduce((i, o) => {return i + o.count}, 0) != 0 && //cek jumlah count > 0 (ada pesanan tambahan)
                         <> 
@@ -204,10 +231,10 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                     }
 
                     {orderTambahan.reduce((i, o) => {return i + o.count}, 0) != 0 && 
-                    <h4>Total Additional: IDR {
-                        orderTambahan.filter(ot => ot.count > 0).reduce(function(totalTambahan, curmenu){return totalTambahan + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}
-                        <sup>*</sup>
-                    </h4>}
+                    <h4>Total + Tax and Services: IDR {
+                        orderTambahan.filter(ot => ot.count > 0).reduce(function(totalTambahan, curmenu){return totalTambahan + (((curmenu.harga - (curmenu.harga * curmenu.discount/100)) * curmenu.count) * 1.15)}, 0).toLocaleString()}
+                    </h4>
+                    }
                     {!extendOrder && <button onClick={() => setExtendOrder(true)} className='btn-primary'>Add more order</button>}
                 </>
             : 
@@ -230,7 +257,7 @@ export default function OrderCard({order, orderTambahan, addToOrder, reduceOrder
                         </ul>
                     : <p style={{textAlign: "center"}}>Order your desired menu by clicking the menu card on the left.</p>}
 
-                    {<h4>Total: IDR {order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (curmenu.harga * curmenu.count)}, 0).toLocaleString()}<sup>*</sup></h4>}
+                    {<h4>Total + Tax and Services: IDR {order.filter(o => o.count > 0).reduce(function(totalharga, curmenu){return totalharga + (((curmenu.harga - (curmenu.harga * curmenu.discount/100)) * curmenu.count) * 1.15)}, 0).toLocaleString()}</h4>}
                     <div>
                         <button onClick={resetOrder} className='btn-danger'>clear</button>
                         <button onClick={() => !extendOrder ? handleSubmit('new') : handleSubmit('additional')} className="btn-primary">make order</button>

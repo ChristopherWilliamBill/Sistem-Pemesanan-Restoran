@@ -70,7 +70,6 @@ export default function OrderQueue({dataMenu, dataO}){
       socketCleanUp()
     }
   }, [])
-  // useEffect(() => setPrint(new Array(dataOrder.filter(d => d.statusPesanan == 2).length).fill(0)), [dataOrder])
 
   useEffect(() => {
     if(!print.every(p => p == 0)){

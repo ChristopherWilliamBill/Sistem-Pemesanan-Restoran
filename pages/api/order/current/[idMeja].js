@@ -2,7 +2,7 @@ import {conn} from '../../../../module/pg.js';
 import { getToken } from "next-auth/jwt"
 
 export default async (req, res) => {
-  //CURRENT ORDER by idmeja
+  //GET CURRENT ORDER by idmeja
   if(req.method !== "GET"){
     res.status(405).send({ message: 'Method not allowed'})
     return

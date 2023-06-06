@@ -13,9 +13,17 @@ export default function AddMenu({dataMenu}){
 
   if (status === "authenticated") {
     return(
-      <div className={styles.container}>
-        <FormMenu selectedMenu={null} dataMenu={dataMenu} idAdmin={session.idAdmin}></FormMenu>
-      </div>
+      <>
+        {session.role === 'manager' ? 
+        <div className={styles.container}>
+          <FormMenu selectedMenu={null} dataMenu={dataMenu} idAdmin={session.idAdmin}></FormMenu>
+        </div>
+        : 
+        <div className={styles.manageronly}>
+          Only for manager
+        </div>
+        }
+      </>
     )
   }
 }
@@ -50,12 +58,12 @@ export async function getStaticProps(){
 }
 
 AddMenu.getLayout = function getLayout(page) {
-    return (
-      <Layout>
-        <div className={styles.rootcontainer}>
-          <NavBar currentPath={'/admin/addmenu'}></NavBar>
-          {page}
-        </div>
-      </Layout>
-    )
+  return (
+    <Layout>
+      <div className={styles.rootcontainer}>
+        <NavBar currentPath={'/admin/addmenu'}></NavBar>
+        {page}
+      </div>
+    </Layout>
+  )
 }

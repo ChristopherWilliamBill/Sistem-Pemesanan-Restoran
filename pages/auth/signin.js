@@ -22,7 +22,7 @@ export default function SignIn() {
                 if(role === "meja"){
                     router.replace('../')
                 }
-                if(role === "admin"){
+                if(role === "karyawan" || role === "manager"){
                     router.replace('../admin')
                 }
             }else{
@@ -38,8 +38,10 @@ export default function SignIn() {
                 <div className={styles.switch}>
                     <input type="radio" id="radiomeja" name="switch" value={"meja"} onChange={({target}) => setRole(target.value)} defaultChecked/>
                     <label htmlFor="radiomeja">Table</label>
-                    <input type="radio" id="radioadmin" name="switch" value={"admin"} onChange={({target}) => setRole(target.value)}/>
-                    <label htmlFor="radioadmin">Admin</label>
+                    <input type="radio" id="radiokaryawan" name="switch" value={"karyawan"} onChange={({target}) => setRole(target.value)}/>
+                    <label htmlFor="radiokaryawan">Employee</label>
+                    <input type="radio" id="radiomanager" name="switch" value={"manager"} onChange={({target}) => setRole(target.value)}/>
+                    <label htmlFor="radiomanager">Manager</label>
                 </div>
                 <div>
                     <label>Username</label>

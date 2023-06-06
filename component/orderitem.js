@@ -15,8 +15,6 @@ export default function OrderItem({or, order, jumlahCancel, jumlahCancelAddition
                     <button className='btn-primary' onClick={() => handleClick('+', index, or.count - or.delivered)}>+</button>
                 </div>
                 
-
-                {/* <input type="number" min="0" onFocus={handleFocus} value={jumlahCancel[index]} max={or.count - or.delivered} onChange={({target}) => handleChange(target.value, index, or.count - or.delivered)}></input> */}
                 <button className='btn-danger' onClick={() => cancelMenu(or, jumlahCancel[index])}>cancel</button>
             </div>}
 
@@ -27,7 +25,6 @@ export default function OrderItem({or, order, jumlahCancel, jumlahCancelAddition
             {or.statusPesanan == 3 && <p>delivered</p>}
             {(or.statusPesanan == 2 && or.count != or.delivered) && 
                 <div className={styles.aksicontainer}>
-                    {/* <button className='btn-danger' onClick={() => requestCancel(or, jumlahCancelAdditional[index])}>cancel</button> */}
                     {typeof or.requestcancel !== 'undefined' ?
                         <> 
                             <div className={styles.jumlah}>
@@ -35,7 +32,6 @@ export default function OrderItem({or, order, jumlahCancel, jumlahCancelAddition
                                 {jumlahCancel[index]}
                                 <button className='btn-primary' onClick={() => handleClick('+', index, or.count - or.delivered - or.requestcancel)}>+</button>
                             </div>
-                            {/* <input type="number" min="0" onFocus={handleFocus} value={jumlahCancel[index]} max={or.count - or.delivered - or.requestcancel} onChange={({target}) => handleChange(target.value, index, or.count - or.delivered - or.requestcancel)}></input> */}
                             <button className='btn-danger' onClick={() => requestCancel(or, jumlahCancel[index])}>cancel</button>
                         </> 
                     :
@@ -45,7 +41,6 @@ export default function OrderItem({or, order, jumlahCancel, jumlahCancelAddition
                                 {jumlahCancelAdditional[index]}
                                 <button className='btn-primary' onClick={() => handleClickAdditional('+', index, or.count)}>+</button>
                             </div>
-                            {/* <input type="number" min="0" onFocus={handleFocus} value={jumlahCancelAdditional[index]} max={or.count - or.delivered} onChange={({target}) => handleChangeAdditional(target.value, index, or.count)}></input> */}
                             <button className='btn-danger' onClick={() => cancelAdditional(or, jumlahCancelAdditional[index])}>cancel</button>
                         </>
                     }

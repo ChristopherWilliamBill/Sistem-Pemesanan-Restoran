@@ -27,7 +27,10 @@ export default function EditEmployee({dataAdmin}){
           {selectedAdmin == null ? <p>No admin selected</p> : <FormKaryawan key={selectedAdmin.idAdmin} dataAdmin={selectedAdmin}></FormKaryawan>}
         </div>
 
-        : 'Only for manager'
+        : 
+        <div className={styles.manageronly}>
+          Only for manager
+        </div>
       }
     </>
   )

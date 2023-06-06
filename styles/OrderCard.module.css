@@ -2,7 +2,6 @@
     background-color: beige;
     width: 100%;
     border-radius: .5rem;
-    margin-top: 1rem;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;

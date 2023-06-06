@@ -23,7 +23,7 @@ export default async (req, res) => {
                 imageUrl = '/v1678896383/nophoto.jpg'
             }
 
-            const queryPOST = `INSERT INTO "Menu" ("namaMenu", "deskripsiMenu", "harga", "idAdmin", "aktif", "gambar", "idKategori") VALUES ('${request.namaMenu}', '${request.deskripsiMenu}', ${request.harga}, '${request.idAdmin}', 1, '${imageUrl}', ${request.category}) RETURNING "idMenu"`
+            const queryPOST = `INSERT INTO "Menu" ("namaMenu", "deskripsiMenu", "harga", "idAdmin", "aktif", "gambar", "idKategori", "isSpicy", "isFavorite", "discount") VALUES ('${request.namaMenu}', '${request.deskripsiMenu}', ${request.harga}, '${request.idAdmin}', 1, '${imageUrl}', ${request.category}, ${request.isSpicy}, ${request.isFavorite}, ${request.discount}) RETURNING "idMenu"`
 
             try{
                 const result = await conn.query(queryPOST)
@@ -59,10 +59,10 @@ export default async (req, res) => {
         case 'PUT': //Edit data menu
             let query = ''
             if(!request.image){
-                query = `UPDATE "Menu" SET "namaMenu" = '${request.namaMenu}', "deskripsiMenu" = '${request.deskripsiMenu}', "harga" = ${request.harga}, "idAdmin" = ${request.idAdmin}, "idKategori" = ${request.category} WHERE "idMenu" = ${request.idMenu}`
+                query = `UPDATE "Menu" SET "namaMenu" = '${request.namaMenu}', "deskripsiMenu" = '${request.deskripsiMenu}', "harga" = ${request.harga}, "idAdmin" = ${request.idAdmin}, "idKategori" = ${request.category}, "isSpicy" = ${request.isSpicy}, "isFavorite" = ${request.isFavorite}, "discount" = ${request.discount} WHERE "idMenu" = ${request.idMenu}`
             }else{
                 const imageUrl = request.image.substring(49, request.image.length)
-                query = `UPDATE "Menu" SET "namaMenu" = '${request.namaMenu}', "deskripsiMenu" = '${request.deskripsiMenu}', "harga" = ${request.harga}, "idAdmin" = ${request.idAdmin}, "gambar" = '${imageUrl}', "idKategori" = ${request.category} WHERE "idMenu" = ${request.idMenu}`
+                query = `UPDATE "Menu" SET "namaMenu" = '${request.namaMenu}', "deskripsiMenu" = '${request.deskripsiMenu}', "harga" = ${request.harga}, "idAdmin" = ${request.idAdmin}, "gambar" = '${imageUrl}', "idKategori" = ${request.category}, "isSpicy" = ${request.isSpicy}, "isFavorite" = ${request.isFavorite}, "discount" = ${request.discount} WHERE "idMenu" = ${request.idMenu}`
             }
             const queryCheckIsiPaket = `SELECT * FROM "TerdiriMenu" WHERE "idMenu" = ${request.idMenu}`
             const queryCheck = `SELECT DISTINCT "idMenu" FROM "TerdiriMenu"`

@@ -12,9 +12,12 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
     const [namaMenu, setNamaMenu] = useState(selectedMenu ? selectedMenu.namaMenu : '')
     const [deskripsi, setDeskripsi] = useState(selectedMenu ? selectedMenu.deskripsiMenu : '')
     const [harga, setHarga] = useState(selectedMenu ? selectedMenu.harga : 0)
+    const [discount, setDiscount] = useState(selectedMenu ? selectedMenu.discount : 0)
     const [paket, setPaket] = useState(selectedMenu ? selectedMenu.isiMenu : [])
     const [deletedPaket, setDeletedPaket] = useState([])
     const [category, setCategory] = useState(selectedMenu ? selectedMenu.idKategori : 1)
+    const [isSpicy, setIsSpicy] = useState(selectedMenu ? selectedMenu.isSpicy : 0)
+    const [isFavorite, setIsFavorite] = useState(selectedMenu ? selectedMenu.isFavorite : 0)
     const [imageSrc, setImageSrc] = useState();
     
     const socketInitializer = async () => {
@@ -102,8 +105,8 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
             desc = deskripsi
         }
 
-        if(namaMenu === '' || deskripsi === '' || harga === '0'){
-            alert('Invalid name, description, or price')
+        if(namaMenu === '' || deskripsi === '' || harga === '0' || discount > 99 || discount < 0){
+            alert('Invalid name, description, discount, or price')
             return
         }
 
@@ -111,11 +114,6 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
             alert('Invalid Package Contents')
             return
         }
-
-        // if((selectedMenu.isiMenu.length === deletedPaket.length) && paket.length === 0){
-        //     alert('Invalid Package Contents')
-        //     return
-        // }
 
         const resultImage = await uploadImage()
         const data = {
@@ -127,7 +125,10 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
             deletedPaket: deletedPaket,
             paket: paket,
             category: category,
-            image: resultImage
+            image: resultImage,
+            discount: discount,
+            isSpicy: isSpicy,
+            isFavorite: isFavorite
         }    
         const JSONdata = JSON.stringify(data)
         const endpoint = '../api/menu'
@@ -158,8 +159,8 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
 
         const resultImage = await uploadImage()
 
-        if(namaMenu === '' || deskripsi === '' || harga === '0' || !resultImage){
-            alert('Invalid name, description, image, or price')
+        if(namaMenu === '' || deskripsi === '' || harga === '0' || !resultImage || discount > 99 || discount < 0){
+            alert('Invalid name, description, image, discount, or price')
             return
         }
 
@@ -170,8 +171,11 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
             idAdmin: idAdmin,
             paket: paket,
             image: resultImage,
-            category: category
-        }    
+            category: category,
+            discount: discount,
+            isSpicy: isSpicy,
+            isFavorite: isFavorite
+        }
         const JSONdata = JSON.stringify(data)
         const endpoint = '../api/menu'
         const options = {
@@ -233,7 +237,6 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
             }
             else return p;
         }))
-        console.log(paket)
     }
 
     return(
@@ -310,6 +313,19 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
                         <div className={styles.inputcontainer}>
                             <p>Picture</p>
                             <input type="file" name="gambarmenu" onChange={({target}) => setImageSrc(target.files[0])}></input>
+                        </div>
+
+                        <div className={styles.inputinfo}>
+                            <p>Spicy</p>
+                            <input type="checkbox" checked={Boolean(isSpicy)} onChange={(event) => setIsSpicy(event.target.checked ? 1 : 0)}></input>
+
+                            <p>Favorite</p>
+                            <input type="checkbox" checked={Boolean(isFavorite)} onChange={(event) => setIsFavorite(event.target.checked ? 1 : 0)}></input>
+                        </div>
+
+                        <div className={styles.inputcontainer}>
+                            <p>Discount</p>
+                            <input type='number' placeholder={selectedMenu && selectedMenu.discount} value={discount} onChange={({target}) => setDiscount(target.value)} name="discount" required max={99} min={0}></input>
                         </div>
                     </div>
                 </div>

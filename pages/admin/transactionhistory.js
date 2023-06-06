@@ -174,8 +174,6 @@ export async function getServerSideProps(){
   const show = []
   dataTransaksi.map(d => show.push({idTransaksi: d.idTransaksi, show: false}))
 
-  console.log(dataOrder)
-
   return{
     props:{
       dataTransaksi,

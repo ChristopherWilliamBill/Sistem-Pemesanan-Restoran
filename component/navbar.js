@@ -45,22 +45,22 @@ export default function NavBar({currentPath}){
                 }
             </div>
 
-            <div className={styles.section}>
-                <h3>Menu</h3>
-                <Link href="/admin/editmenu">
-                    <a className={selectedPage['/admin/editmenu'] ? styles.selected : styles.card}>Edit Menu</a>
-                </Link>
+            {session.role === "manager" && <>
+                <div className={styles.section}>
+                    <h3>Menu</h3>
+                    <Link href="/admin/editmenu">
+                        <a className={selectedPage['/admin/editmenu'] ? styles.selected : styles.card}>Edit Menu</a>
+                    </Link>
 
-                <Link href="/admin/addmenu">
-                    <a className={selectedPage['/admin/addmenu'] ? styles.selected : styles.card}>Add Menu</a>
-                </Link>
+                    <Link href="/admin/addmenu">
+                        <a className={selectedPage['/admin/addmenu'] ? styles.selected : styles.card}>Add Menu</a>
+                    </Link>
 
-                <Link href="/">
-                    <a className={styles.card}>Menu</a>
-                </Link>
-            </div>
+                    <Link href="/">
+                        <a className={styles.card}>Menu</a>
+                    </Link>
+                </div>
 
-            {session.role === "manager" && 
                 <div className={styles.section}>
                     <h3>Employee</h3>
 
@@ -72,7 +72,7 @@ export default function NavBar({currentPath}){
                         <a className={selectedPage['/admin/addemployee'] ? styles.selected : styles.card}>Add Employee</a>
                     </Link>
                 </div>
-            }
+            </>}
         </div>
     )
 }
