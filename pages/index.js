@@ -75,6 +75,13 @@ export default function Home({dataMenu}) {
     socket.emit('occupytable', session.user.name.substring(6, session.user.name.length))
   }
 
+  const resetOrder = () =>{
+    setOrder(dataMenu)
+    setOrderTambahan(dataMenu)
+    setIdPesanan(0)
+    setIsWaiting(false)
+  } 
+
   const requestHelp = async () => {
     const endpoint = `../api/help/${session.user.name.substring(6, session.user.name.length)}`
     const options = {
@@ -205,13 +212,6 @@ export default function Home({dataMenu}) {
   useEffect(() => {
     localStorage.setItem('notifPelanggan', JSON.stringify(notification));
   }, [notification]);
-
-  const resetOrder = () =>{
-    setOrder(dataMenu)
-    setOrderTambahan(dataMenu)
-    setIdPesanan(0)
-    setIsWaiting(false)
-  } 
 
   const resetInputOrderTambahan = () =>{
     setInputOrderTambahan(dataMenu)
