@@ -37,7 +37,7 @@ export default function EditEmployee({dataAdmin}){
 }
 
 export async function getStaticProps(){
-  const query = `SELECT * FROM "Admin"`
+  const query = `SELECT * FROM "Admin" ORDER BY "idAdmin"`
   const res = await conn.query(query)
   const dataAdmin = res.rows
 

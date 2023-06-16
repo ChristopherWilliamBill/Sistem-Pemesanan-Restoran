@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import io from 'socket.io-client'
 import sha256 from 'crypto-js/sha256';
+import Swal from "sweetalert2";
 
 let socket = null
 
@@ -60,8 +61,10 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
         console.log(result)
         if(result.revalidated){
             socket.emit('newmenukitchen', 'activate')
+            Swal.fire({title: "Menu Updated", timer: 2000, showConfirmButton: false, icon: "success"}).then(async() => {
+                router.reload()
+            })
         }
-        router.reload()
     } 
 
     const uploadImage = async () => {
@@ -105,13 +108,13 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
             desc = deskripsi
         }
 
-        if(namaMenu === '' || deskripsi === '' || harga === '0' || discount > 99 || discount < 0){
-            alert('Invalid name, description, discount, or price')
+        if(namaMenu === '' || desc === '' || harga === '0' || discount > 99 || discount < 0){
+            Swal.fire({title: "Invalid name, description, discount, or price", timer: 1500, showConfirmButton: false, icon: "error"})
             return
         }
 
         if(selectedMenu.idKategori === 3 && paket.length === 0){
-            alert('Invalid Package Contents')
+            Swal.fire({title: "Invalid Package Contents", timer: 1500, showConfirmButton: false, icon: "error"})
             return
         }
 
@@ -143,27 +146,33 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
         const response = await fetch(endpoint, options)
         const result = await response.json()
 
+        if(result.message === 'Cannot increase price while menu is being ordered'){
+            Swal.fire({title: 'Cannot increase price while menu is being ordered', timer: 1500, showConfirmButton: false, icon: "error"})
+        }
+
         if(result.revalidated){
             socket.emit('newmenukitchen', 'edit')
-            router.reload()
+            Swal.fire({title: "Menu Updated", timer: 2000, showConfirmButton: false, icon: "success"}).then(async() => {
+                router.reload()
+            })
         }
     }
 
     const handleSubmitNew = async () => {
         let desc = ''
         if (paket.length > 0 || deletedPaket.length > 0){
-            desc = paket.map((p,i) => (i !== paket.length - 1 ? `${p.jumlah} x ${dataMenu[p.isiMenu - 1].namaMenu}, ` : `${p.jumlah} x ${dataMenu[p.isiMenu - 1].namaMenu}`))
+            for(let i = 0; i < paket.length; i++){
+                if(i !== paket.length - 1){
+                    desc = desc + `${paket[i].jumlah} x ${dataMenu[paket[i].isiMenu - 1].namaMenu}, `
+                }else{
+                    desc = desc + `${paket[i].jumlah} x ${dataMenu[paket[i].isiMenu - 1].namaMenu}`
+                }
+            }
         }else{
             desc = deskripsi
         }
 
         const resultImage = await uploadImage()
-
-        if(namaMenu === '' || deskripsi === '' || harga === '0' || !resultImage || discount > 99 || discount < 0){
-            alert('Invalid name, description, image, discount, or price')
-            return
-        }
-
         const data = {
             namaMenu: namaMenu,
             deskripsiMenu: desc,
@@ -176,6 +185,13 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
             isSpicy: isSpicy,
             isFavorite: isFavorite
         }
+        console.log(data)
+
+        if(namaMenu === '' || desc === '' || harga === '0' || !resultImage || discount > 99 || discount < 0){
+            Swal.fire({title: "Invalid name, description, image, discount, or price", timer: 1500, showConfirmButton: false, icon: "error"})
+            return
+        }
+
         const JSONdata = JSON.stringify(data)
         const endpoint = '../api/menu'
         const options = {
@@ -187,11 +203,16 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
         }
     
         const response = await fetch(endpoint, options)
+        console.log(response)
+
         const result = await response.json()
+        console.log(result)
 
         if(result.revalidated){
             socket.emit('newmenukitchen', 'new')
-            router.reload()
+            Swal.fire({title: "Menu Added", timer: 2000, showConfirmButton: false, icon: "success"}).then(async() => {
+                router.reload()
+            })
         }
     }
 

@@ -20,7 +20,6 @@ export default function OrderQueue({dataMenu, dataO}){
   const [currentIndexKitchen, setCurrentIndexKitchen] = useState(0)
   const [currentIndexPayment, setCurrentIndexPayment] = useState(0)
 
-
   const printOrder = async (index, tipe) => {
     if(tipe === 'utama'){
       if(dataOrder[index].requestcancel.some(dr => dr === 1)){
@@ -94,6 +93,20 @@ export default function OrderQueue({dataMenu, dataO}){
     if(tab === "payment" && currentIndexPayment + 3 < dataOrder.filter(d => d.statusPesanan === 3).length){ setCurrentIndexPayment(currentIndexPayment + 3) }
   }
 
+  useEffect(() => {
+    if((dataOrder.filter(d => d.statusPesanan === 1).slice(currentIndexNewOrders, currentIndexNewOrders + 3).length) === 0 && currentIndexNewOrders > 0){
+      setCurrentIndexNewOrders(currentIndexNewOrders - 3)
+    }
+
+    if((dataOrder.filter(d => d.statusPesanan === 2).slice(currentIndexKitchen, currentIndexKitchen + 3).length) === 0 && currentIndexKitchen > 0){
+      setCurrentIndexKitchen(currentIndexKitchen - 3)
+    }
+
+    if((dataOrder.filter(d => d.statusPesanan === 3).slice(currentIndexPayment, currentIndexPayment + 3).length) === 0 && currentIndexPayment > 0){
+      setCurrentIndexPayment(currentIndexPayment - 3)
+    }
+  }, [dataOrder])
+
   if (status === "authenticated") {
     if(!dataOrder){
       return <h1>LOADING</h1>
@@ -102,9 +115,9 @@ export default function OrderQueue({dataMenu, dataO}){
     return(
       <>
         <div className={styles.navbar}>
-          <button onClick={() => setTab("neworders")} className={tab === "neworders" ? styles.selected : 'false'}>New Orders</button>
-          <button onClick={() => setTab("kitchen")} className={tab === "kitchen" ? styles.selected : 'false'}>In the Kitchen</button>
-          <button onClick={() => setTab("payment")} className={tab === "payment" ? styles.selected : 'false'}>Waiting for Payment</button>
+          <button onClick={() => {setTab("neworders"); setCurrentIndexNewOrders(0)}} className={tab === "neworders" ? styles.selected : 'false'}>New Orders</button>
+          <button onClick={() => {setTab("kitchen"); setCurrentIndexKitchen(0)}} className={tab === "kitchen" ? styles.selected : 'false'}>In the Kitchen</button>
+          <button onClick={() => {setTab("payment"); setCurrentIndexPayment(0)}} className={tab === "payment" ? styles.selected : 'false'}>Waiting for Payment</button>
         </div>
 
         {tab === "neworders" && 
@@ -112,7 +125,7 @@ export default function OrderQueue({dataMenu, dataO}){
             {visibleOrderNewOrders.length > 0 && 
             <div className={styles.buttoncarousel}>
               <button className='btn-primary' onClick={handlePrevClick}>&#60;</button>
-              <label>Page {currentIndexNewOrders + 1}/{Math.ceil(dataOrder.filter(d => d.statusPesanan === 1).length/3)}</label>
+              <label>Page {currentIndexNewOrders === 0 ? currentIndexNewOrders + 1 : currentIndexNewOrders/3 + 1}/{Math.ceil(dataOrder.filter(d => d.statusPesanan === 1).length/3)}</label>
               <button className='btn-primary' onClick={handleNextClick}>&#62;</button>
             </div>}
 
@@ -131,7 +144,8 @@ export default function OrderQueue({dataMenu, dataO}){
           <>
             {visibleOrderKitchen.length > 0 && 
             <div className={styles.buttoncarousel}>
-              <button className='btn-primary' onClick={handlePrevClick}>&#60;</button>
+              {/* &#60; ---> simbol < > */}
+              <button className='btn-primary' onClick={handlePrevClick}>&#60;</button> 
               <label>Page {currentIndexKitchen === 0 ? currentIndexKitchen + 1 : currentIndexKitchen/3 + 1}/{Math.ceil(dataOrder.filter(d => d.statusPesanan === 2).length/3)}</label>
               <button className='btn-primary' onClick={handleNextClick}>&#62;</button>
             </div>}
@@ -157,7 +171,7 @@ export default function OrderQueue({dataMenu, dataO}){
             {visibleOrderPayment.length > 0 && 
             <div className={styles.buttoncarousel}>
               <button className='btn-primary' onClick={handlePrevClick}>&#60;</button>
-              <label>Page {currentIndexPayment + 1}/{Math.ceil(dataOrder.filter(d => d.statusPesanan === 3).length/3)}</label>
+              <label>Page {currentIndexPayment === 0 ? currentIndexPayment + 1 : currentIndexPayment/3 + 1}/{Math.ceil(dataOrder.filter(d => d.statusPesanan === 3).length/3)}</label>
               <button className='btn-primary' onClick={handleNextClick}>&#62;</button>
             </div>}
 

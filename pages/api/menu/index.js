@@ -2,6 +2,7 @@ import {conn} from '../../../module/pg';
 import { getToken } from "next-auth/jwt"
 
 export default async (req, res) => {
+    console.log('masuk')
 
     const token = await getToken({ req })
     if (token) {
@@ -24,7 +25,7 @@ export default async (req, res) => {
             }
 
             const queryPOST = `INSERT INTO "Menu" ("namaMenu", "deskripsiMenu", "harga", "idAdmin", "aktif", "gambar", "idKategori", "isSpicy", "isFavorite", "discount") VALUES ('${request.namaMenu}', '${request.deskripsiMenu}', ${request.harga}, '${request.idAdmin}', 1, '${imageUrl}', ${request.category}, ${request.isSpicy}, ${request.isFavorite}, ${request.discount}) RETURNING "idMenu"`
-
+            console.log(queryPOST)
             try{
                 const result = await conn.query(queryPOST)
                 const idMenu = result.rows[0].idMenu
@@ -64,17 +65,28 @@ export default async (req, res) => {
                 const imageUrl = request.image.substring(49, request.image.length)
                 query = `UPDATE "Menu" SET "namaMenu" = '${request.namaMenu}', "deskripsiMenu" = '${request.deskripsiMenu}', "harga" = ${request.harga}, "idAdmin" = ${request.idAdmin}, "gambar" = '${imageUrl}', "idKategori" = ${request.category}, "isSpicy" = ${request.isSpicy}, "isFavorite" = ${request.isFavorite}, "discount" = ${request.discount} WHERE "idMenu" = ${request.idMenu}`
             }
+
+            const queryCheckIsOrdered = `SELECT "Menu"."harga" FROM "Pesanan" INNER JOIN "TerdiriPesanan" ON "Pesanan"."idPesanan" = "TerdiriPesanan"."idPesanan" INNER JOIN "Menu" ON "Menu"."idMenu" = "TerdiriPesanan"."isiPesanan" WHERE "TerdiriPesanan"."isiPesanan" = ${request.idMenu} AND "Pesanan"."selesai" = 0`
             const queryCheckIsiPaket = `SELECT * FROM "TerdiriMenu" WHERE "idMenu" = ${request.idMenu}`
             const queryCheck = `SELECT DISTINCT "idMenu" FROM "TerdiriMenu"`
             const queryJumlahPaket = `SELECT COUNT(*) FROM "TerdiriMenu" WHERE "idMenu" = ${request.idMenu}`
 
             try{
+                //tidak bisa nambahin harga waktu menu udah dipesen
+                const resultCheckIsOrdered = await conn.query(queryCheckIsOrdered)
+                if(resultCheckIsOrdered.rows.length > 0){
+                    if(request.harga > resultCheckIsOrdered.rows[0].harga){
+                        res.status(403).json({ message: 'Cannot increase price while menu is being ordered' })
+                        return
+                    }
+                }
+                
                 //menu bertipe paket tidak boleh tidak memiliki isi menu
                 const resultCheck = await conn.query(queryCheck)
                 if(resultCheck.rows.some(r => r.idMenu == request.idMenu)){
                 const resultJumlah = await conn.query(queryJumlahPaket) //cek menu punya berapa isipaket
                 if(request.deletedPaket.length >= parseInt(resultJumlah.rows[0].count) && request.paket.length == 0){ //jika jumlah paket yg dihapus = jumlah paket saat ini, dan tidak ditambahkan lagi dengan paket lain, maka invalid
-                    res.status(200).json({ message: 'Package must consist of at least 1 menu' })
+                    res.status(403).json({ message: 'Package must consist of at least 1 menu' })
                     return
                 }
                 }

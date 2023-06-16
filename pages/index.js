@@ -272,6 +272,7 @@ export default function Home({dataMenu}) {
 
   const handleSignOut = () => {
     if(confirm('Are you sure you want to sign out?')){
+      localStorage.removeItem('notifPelanggan')
       signOut()
     }
   }

@@ -44,6 +44,8 @@ export default function Kitchen({dataO, dataMenu, dataPaket}){
             <div className={styles.container}>
                 <h4>Orders to make: </h4>
 
+                {dataOrder.length === 0 ? <p>No confirmed orders yet.</p> :
+
                 <div className={styles.ordercontainer}>
                     {dataOrder.map(d => 
                         <div key={d.isiPesanan} className={styles.card}>
@@ -67,7 +69,7 @@ export default function Kitchen({dataO, dataMenu, dataPaket}){
                             }
                         </div>
                     )}
-                </div>
+                </div>}
             </div>
         )
     }

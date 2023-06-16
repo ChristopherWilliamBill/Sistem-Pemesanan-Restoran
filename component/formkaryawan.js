@@ -1,6 +1,8 @@
 import { useState } from "react";
 import styles from "../styles/FormKaryawan.module.css"
 import { useRouter } from "next/router";
+import Swal from "sweetalert2";
+
 
 export default function FormKaryawan({dataAdmin}){
     const router = useRouter()
@@ -48,9 +50,13 @@ export default function FormKaryawan({dataAdmin}){
 
         if(result.revalidated){
             if(dataAdmin){  
-                router.reload()
+                Swal.fire({title: "Employee Updated", timer: 2000, showConfirmButton: false, icon: "success"}).then(async() => {
+                    router.reload()
+                })
             }else{
-                router.push('/admin/editemployee')
+                Swal.fire({title: "Employee Added", timer: 2000, showConfirmButton: false, icon: "success"}).then(async() => {
+                    router.push('/admin/editemployee')
+                })
             } 
         }
     }

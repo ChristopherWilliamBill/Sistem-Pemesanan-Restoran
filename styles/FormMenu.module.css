@@ -12,6 +12,7 @@
     flex-direction: column;
     justify-content: space-evenly;
     font-weight: 700;
+    overflow-y: scroll;
 }
 
 .container{
