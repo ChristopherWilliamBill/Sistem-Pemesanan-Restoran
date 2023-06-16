@@ -132,7 +132,8 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
             discount: discount,
             isSpicy: isSpicy,
             isFavorite: isFavorite
-        }    
+        }   
+
         const JSONdata = JSON.stringify(data)
         const endpoint = '../api/menu'
         const options = {
@@ -146,8 +147,8 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
         const response = await fetch(endpoint, options)
         const result = await response.json()
 
-        if(result.message === 'Cannot increase price while menu is being ordered'){
-            Swal.fire({title: 'Cannot increase price while menu is being ordered', timer: 1500, showConfirmButton: false, icon: "error"})
+        if(result.message === 'Cannot change menu details while menu is being ordered'){
+            Swal.fire({title: 'Cannot change menu details while menu is being ordered', timer: 1500, showConfirmButton: false, icon: "error"})
         }
 
         if(result.revalidated){
