@@ -148,7 +148,7 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
         const result = await response.json()
 
         if(result.message === 'Cannot change menu details while menu is being ordered'){
-            Swal.fire({title: 'Cannot change menu details while menu is being ordered', timer: 1500, showConfirmButton: false, icon: "error"})
+            Swal.fire({title: 'Cannot change menu details while menu is being ordered', timer: 2000, showConfirmButton: false, icon: "error"})
         }
 
         if(result.revalidated){
