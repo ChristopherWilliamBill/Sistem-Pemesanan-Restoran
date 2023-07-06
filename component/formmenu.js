@@ -108,7 +108,7 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
             desc = deskripsi
         }
 
-        if(namaMenu === '' || desc === '' || harga === '0' || discount > 99 || discount < 0){
+        if(namaMenu === '' || desc === '' || harga == 0 || discount > 99 || discount < 0){
             Swal.fire({title: "Invalid name, description, discount, or price", timer: 1500, showConfirmButton: false, icon: "error"})
             return
         }
@@ -188,7 +188,7 @@ export default function FormMenu({selectedMenu, dataMenu, idAdmin}){
         }
         console.log(data)
 
-        if(namaMenu === '' || desc === '' || harga === '0' || !resultImage || discount > 99 || discount < 0){
+        if(namaMenu === '' || desc === '' || harga == 0 || !resultImage || discount > 99 || discount < 0){
             Swal.fire({title: "Invalid name, description, image, discount, or price", timer: 1500, showConfirmButton: false, icon: "error"})
             return
         }
